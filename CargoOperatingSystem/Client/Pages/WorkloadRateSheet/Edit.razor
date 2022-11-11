@@ -1,0 +1,24 @@
+﻿@page "/workloadratesheets/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Edit Workload Rate Sheet</h3>
+
+<FormComponent ButtonText="Update" OnValidSubmit="@EditWorkloadRateSheet" workloadRateSheet="workloadRateSheet"/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    WorkloadRateSheet workloadRateSheet = new WorkloadRateSheet();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        workloadRateSheet = await _client.GetFromJsonAsync<WorkloadRateSheet>($"{Endpoints.WorkloadRateSheetsEndpoint}{id}");
+    }
+
+    private async Task EditWorkloadRateSheet()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.WorkloadRateSheetsEndpoint}{id}", workloadRateSheet);
+        _navManager.NavigateTo(Endpoints.WorkloadRateSheetsIndex);
+    }
+}

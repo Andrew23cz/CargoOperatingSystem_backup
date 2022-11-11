@@ -1,0 +1,25 @@
+﻿@page "/suppliers/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Edit Supplier</h3>
+<hr />
+<br/>
+<FormComponent ButtonText="Update" OnValidSubmit="@EditSupplier" supplier="supplier"/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    Supplier supplier = new Supplier();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        supplier = await _client.GetFromJsonAsync<Supplier>($"{Endpoints.SuppliersEndpoint}{id}");
+    }
+
+    private async Task EditSupplier()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.SuppliersEndpoint}{id}", supplier);
+        _navManager.NavigateTo(Endpoints.SuppliersIndex);
+    }
+}

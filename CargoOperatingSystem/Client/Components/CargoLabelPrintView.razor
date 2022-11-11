@@ -1,0 +1,130 @@
+﻿<div class="hideWhenPrint">
+    <button class="btn-danger" @onclick="Print" style="margin-bottom: 10px;">Print Cargo Labels</button>
+</div>
+
+@if (Hawbs == null)
+{
+    <div class="alert alert-info">Loading HAWBs ...</div>
+}
+else
+{
+    @foreach (var hawb in Hawbs)
+    {
+        for (var i = 0; i < hawb.Pieces; i++)
+        {
+            <div id="cargolabelgrid01">
+
+                <div id="airlinename">
+                    <div>@mawb.AirlineName</div>
+                </div>
+
+                <div id="barcode">
+                    <div>AWB BAR0 BAR0 </div>
+                </div>
+
+                <div id="awbnumber_lbl">
+                    <div>Air Waybill No.</div>
+                </div>
+
+                <div id="awbnumber">
+                    <div>@mawb.AwbNumber</div>
+                </div>
+
+                <div id="destination01_lbl">
+                    <div>Destination</div>
+                </div>
+
+                <div id="destination01">
+                    <div>@mawb.Destination</div>
+                </div>
+
+                <div id="pieces01_lbl">
+                    <div>No of Pieces</div>
+                </div>
+
+                <div id="pieces01">
+                    <div>@mawb.Pieces</div>
+                </div>
+
+                <div id="weight01_lbl">
+                    <div>Weight</div>
+                </div>
+
+                <div id="weight01">
+                    <div>@mawb.GrossWeight kg</div>
+                </div>
+
+                <div id="origin_lbl">
+                    <div>Origin</div>
+                </div>
+
+                <div id="origin">
+                    <div>@mawb.Origin</div>
+                </div>
+
+                <div id="transitpoint_lbl">
+                    <div>Transit Points</div>
+                </div>
+
+                <div id="transitpoint01">
+                    <div>@mawb.FirstFlightDest &nbsp;-&nbsp; @mawb.SecondFlightDest</div>
+                </div>
+
+                <!-- <div id="transitpoint02">
+                    <div>PEK</div>
+                </div> -->
+
+                <div id="hawbnumber_lbl">
+                    <div>House Waybill No.</div>
+                </div>
+
+                <div id="hawbnumber">
+                    <div>@hawb.HawbNumber</div>
+                </div>
+
+                <div id="destination02_lbl">
+                    <div>Destination</div>
+                </div>
+
+                <div id="destination02">
+                    <div>@hawb.Destination</div>
+                </div>
+
+                <div id="pieces02_lbl">
+                    <div>Pieces</div>
+                </div>
+
+                <div id="pieces02">
+                    <div>@hawb.Pieces</div>
+                </div>
+
+                <div id="weight02_lbl">
+                    <div>Weight</div>
+                </div>
+
+                <div id="weight02">
+                    <div>@hawb.GrossWeight</div>
+                </div>
+
+                <div id="hawbbarcode">
+                    <div>HAW BAR0 BAR0</div>
+                </div>
+
+            </div>    
+            
+            <div class="pagebreak"> </div>
+        }
+    }
+}
+
+
+
+
+@code {
+    [Parameter] public Mawb mawb { get; set; }
+    [Parameter] public EventCallback Print { get; set; }
+    [Parameter] public IList<Hawb> Hawbs { get; set; }
+
+    
+
+}

@@ -1,0 +1,87 @@
+﻿@page "/arrivals/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">List Of Arrivals</h3>
+<hr />
+
+<a href="/arrivals/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Arrival
+</a>
+<br/>
+<br/>
+
+@if(Arrivals == null)
+{
+    <div class="alert alert-info">Loading Arrivals ...</div>
+}
+else
+{
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Arrival Point</th>
+                <th>Arrival Date&Time</th>
+                <th>License Plate</th>
+                <th>Car Colour</th>
+                <th>Driver Name</th>
+                <th>Driver Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var arrival in Arrivals)
+            {
+                <tr>
+                    <td>@arrival.ArrivalPoint</td>
+                    <td>@arrival.ArrivalTime</td>
+                    <td>@arrival.LicensePlate</td>
+                    <td>@arrival.CarColour</td>
+                    <td>@arrival.DriverName</td>
+                    <td>@arrival.DriverPhone</td>
+                    <td>
+                        <a href="/arrivals/view/@arrival.Id" class="btn btn-primary btn-sm">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/arrivals/edit/@arrival.Id" class="btn btn-warning btn-sm">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger btn-sm" @onclick=@(()=>Delete(@arrival.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
+
+
+@code {
+    private IList<Arrival> Arrivals;
+
+    
+
+    protected async override Task OnInitializedAsync()
+    {
+        Arrivals = await _client.GetFromJsonAsync<IList<Arrival>>(Endpoints.ArrivalsEndpoint);
+    }
+
+    private async Task Delete(int arrivalId)
+    {
+        var arrival = Arrivals.First(q => q.Id == arrivalId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {arrival.Id}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.ArrivalsEndpoint}{arrivalId}");
+            await OnInitializedAsync();
+        }
+    }
+
+}

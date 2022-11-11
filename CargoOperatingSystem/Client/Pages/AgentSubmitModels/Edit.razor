@@ -1,0 +1,603 @@
+﻿@page "/agentsubmitmodels/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 id="Title">Shipment Booking</h3>
+
+<EditForm id="BookForm" Model="@agentSubmitModel" OnValidSubmit="@EditShipment">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="row">
+
+        <div id="AwbNumber" class="mb-1">
+            <label>AWB Number: @agentSubmitModel.AwbNumber</label>
+        </div>
+        
+        
+        <div id="SaveButton">
+            <button type="submit" form="BookForm" class="btn btn-success btn-lg" disabled="@(!context.Validate() || !context.IsModified())">
+                <span class="oi oi-book"></span>
+                Save Booking
+            </button>
+        </div>
+
+    </div>
+    <br/>
+
+
+    <div class="container-fluid px-0">
+
+        <div class="row">
+
+            <div id="ShpmtSpecAndFlts" class="col-5 pb-2 mr-2"  style="background-color: darkgray">
+
+                <div id="ShipmentDetailsLabel">
+                    <label style="margin:0">Shipment Details</label>
+                </div>
+                
+                <div id="OriginDestCommRow" class="row pl-3">
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Origin</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitModel.Origin" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.Origin)" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Final Destination</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitModel.Destination" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.Destination)" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Commodity</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitModel.Commodity" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.Commodity)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="PcsGwVolRow" class="row pl-3">
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Pieces</label>
+                        <div>
+                            <InputNumber @bind-Value="@agentSubmitModel.Pieces" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.Pieces)" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Gross Weight</label>
+                        <div>
+                            <InputNumber @bind-Value="@agentSubmitModel.GrossWeight" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.GrossWeight)" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Volume</label>
+                        <div>
+                            <InputNumber @bind-Value="@agentSubmitModel.Volume" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.Volume)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ShcRow" class="row pl-3">
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">SHC-1</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitModel.ShcA" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.ShcA)" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">SHC-2</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitModel.ShcB" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.ShcB)" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">SHC-3</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitModel.ShcC" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.ShcC)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="chwinput" class="row pl-3 mb-1">
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Chargeable Weight</label>
+                        <div>
+                            <InputNumber @bind-Value="@agentSubmitModel.ChargeableWeight" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.ChargeableWeight)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="FirstFlightRow" class="row pl-3">
+                    <div id="FirstFlightNumber" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">1st Flight Number</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitModel.FirstFlightNumber" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.FirstFlightNumber)" />
+                        </div>
+                    </div>
+                    <div id="FirstFlightDate" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">1st Flight Date</label>
+                        <div>
+                            <InputDate @bind-Value="@agentSubmitModel.FirstFlightDate" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.FirstFlightDate)" />
+                        </div>
+                    </div>
+                    <div id="FirstFlightDest" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">1st Flight Dest</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitModel.FirstFlightDest" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.FirstFlightDest)" />
+                        </div>
+                    </div>
+                </div>
+                <div id="SecondFlightRow" class="row pl-3">
+                    <div id="SecondFlightNumber" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">2nd Flight Number</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitModel.SecondFlightNumber" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.SecondFlightNumber)" />
+                        </div>
+                    </div>
+                    <div id="SecondFlightDate" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">2nd Flight Date</label>
+                        <div>
+                            <InputDate @bind-Value="@agentSubmitModel.SecondFlightDate" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.SecondFlightDate)" />
+                        </div>
+                    </div>
+                    <div id="SecondFlightDest" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">2nd Flight Dest</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitModel.SecondFlightDest" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.SecondFlightDest)" />
+                        </div>
+                    </div>
+                </div>
+                <div  id="ThirdFlightRow" class="row pl-3">
+                    <div id="ThirdFlightNumber" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">3rd Flight Number</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitModel.ThirdFlightNumber" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.ThirdFlightNumber)" />
+                        </div>
+                    </div>
+                    <div id="ThirdFlightDate" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">3rd Flight Date</label>
+                        <div>
+                            <InputDate @bind-Value="@agentSubmitModel.ThirdFlightDate" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.ThirdFlightDate)" />
+                        </div>
+                    </div>
+                    <div id="ThirdFlightDest" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">3rd Flight Dest</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitModel.ThirdFlightDest" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> agentSubmitModel.ThirdFlightDest)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="DimmInputBox" class="col-5"  style="background-color: darkgray">
+                <div>
+                    <DimensionForm OnValidSubmit="@CreateDimension" agentSubmitDim="agentSubmitDim"/>
+            
+                    <br/>
+
+                    @if (ThisModelDims == null)
+                    {
+                        <div class="alert alert-info">Loading Dimensions ...</div>
+                    }
+                    else
+                    {
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Pieces</th>
+                                    <th>Length</th>
+                                    <th>Width</th>
+                                    <th>Height</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var agentSubmitDim in ThisModelDims)
+                                {
+                                    <tr>
+                                        <td>@agentSubmitDim.Pieces</td>
+                                        <td>@agentSubmitDim.Length</td>
+                                        <td>@agentSubmitDim.Width</td>
+                                        <td>@agentSubmitDim.Height</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm" type="button" @onclick=@(()=>DeleteDimension(@agentSubmitDim.Id))>
+                                                <span class="oi oi-delete"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0 mt-2">
+
+        <div class="row">
+
+            <div id="ShpmtSpecAndFlts" class="col-5 pb-2 mr-2"  style="background-color: darkgray">
+
+                <div id="ShipmentDetailsLabel">
+                    <label style="margin:0">Requested Services</label>
+                </div>
+                
+                    <div class="row">
+
+
+                        <div id="OriginDestCommRow" class="pl-3">
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">MAWB issuing:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadAwbIssuing" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadAwbIssuing)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.WorkloadAwbIssuingNote" class="form-control-sm" style="width:260px" placeholder="Please insert note re. MAWB issuing"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadAwbIssuingNote)" />
+                                </div>
+                            </div>
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">HAWB issuing:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadHawbIssuing" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadHawbIssuing)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.WorkloadHawbIssuingNote" class="form-control-sm" style="width:260px" placeholder="Please insert note re. HAWB issuing"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadHawbIssuingNote)" />
+                                </div>
+                            </div>
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Cargo labels:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadCargoLabels" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadCargoLabels)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.WorkloadCargoLabelsNote" class="form-control-sm" style="width:260px" placeholder="Please insert note re. Cargo Labels"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadCargoLabelsNote)" />
+                                </div>
+                            </div>
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Cargo Acceptance:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadAcceptanceAssist" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadAcceptanceAssist)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.WorkloadCargoLabelsNote" class="form-control-sm" style="width:260px" placeholder="Please insert note re. Cargo Labels"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadCargoLabelsNote)" />
+                                </div>
+                            </div>
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Preparation for security check:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadSecurityCheckPrepare" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadSecurityCheckPrepare)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.WorkloadSecurityCheckPrepareNote" class="form-control-sm" style="width:260px" placeholder="Please insert note re. Security Check"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadSecurityCheckPrepareNote)" />
+                                </div>
+                            </div>
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Assistance during security check:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadSecurityCheckAssist" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadSecurityCheckAssist)" />
+                                </div>
+                            </div>
+                             <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.WorkloadSecurityCheckAssistNote" class="form-control-sm" style="width:260px" placeholder="Please insert note re. Security Check"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadSecurityCheckAssistNote)" />
+                                </div>
+                            </div>
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Packing Assistance:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadPackingAssist" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadPackingAssist)" />
+                                </div>
+                            </div>
+                             <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.WorkloadPackingAssistNote" class="form-control-sm" style="width:260px" placeholder="Please insert note re. Packing Assistance"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadPackingAssistNote)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="WorkloadRow01" class="pl-3">
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">DG Cargo Acceptance:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadAcceptanceAssistDG" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadAcceptanceAssistDG)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.WorkloadAcceptanceAssistDGNote" class="form-control-sm" style="width:260px" placeholder="Please insert note re. DG Acceptance"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadAcceptanceAssistDGNote)" />
+                                </div>
+                            </div>
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Special Cargo Labels:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadSpecCargoLabels" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadSpecCargoLabels)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.WorkloadSpecCargoLabelsNote" class="form-control-sm" style="width:260px" placeholder="Please insert note re. Spec. Cargo Labels"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadSpecCargoLabelsNote)" />
+                                </div>
+                            </div>
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Documents Pick-up:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadPickUpDocuments" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadPickUpDocuments)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.WorkloadPickUpDocumentsNote" class="form-control-sm" style="width:260px" placeholder="Please insert note re. Docs Pick-Up"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadPickUpDocumentsNote)" />
+                                </div>
+                            </div>
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Manual Data Insertion:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadManualDataInsertion" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadManualDataInsertion)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.WorkloadManualDataInsertionNote" class="form-control-sm" style="width:260px" placeholder="Please insert note re. Data Insertion"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadManualDataInsertionNote)" />
+                                </div>
+                            </div>
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Import Cargo Processing:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadImportCgoProcessing" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadImportCgoProcessing)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.WorkloadImportCgoProcessingNote" class="form-control-sm" style="width:260px" placeholder="Please insert note re. Import Shipment"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadImportCgoProcessingNote)" />
+                                </div>
+                            </div>
+                            <div class="form-inline mt-1 mr-3">
+                                <label id="InputLabelCheckBox">DG Cargo Consulting:</label>
+                                <div>
+                                    <InputCheckbox @bind-Value="@agentSubmitModel.WorkloadConsultingDG" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadConsultingDG)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+            </div>
+
+            <div id="DimmInputBox" class="col-5"  style="background-color: darkgray">
+
+                <div id="ShipmentDetailsLabel">
+                    <label style="margin:0">Requested Services</label>
+                </div>
+
+                <div id="PickupArrivalRow01" class="row pl-3">
+
+                    <div class="form-inline mt-1 mr-3">
+                        <label id="InputLabelCheckBox">Order Pick-Up service for shipment:</label>
+                        <div>
+                            <InputCheckbox @bind-Value="@pickupChecked" class="form-control-sm"/>
+                        </div>
+                    </div>
+
+                    <div>
+                        @if (pickupChecked)
+                        {
+                            <div class="form-group mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Pick-Up Date:</label>
+                                <div>
+                                    <InputDate @bind-Value="@agentSubmitModel.PickupDate" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.WorkloadImportCgoProcessingNote)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Picku-Up Address:</label>
+                                <div>
+                                    <InputTextArea @bind-Value="@agentSubmitModel.PickupAddress" class="form-control-sm" placeholder="Enlarge Input Window By Mouse-Dragging At Corner" style="width:400px"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.PickupAddress)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Delivery Address:</label>
+                                <div>
+                                    <InputTextArea @bind-Value="@agentSubmitModel.PickupDeliveryAddress" class="form-control-sm" placeholder="Enlarge Input Window By Mouse-Dragging At Corner" style="width:400px"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.PickupDeliveryAddress)" />
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Arrival Date:</label>
+                                <div>
+                                    <InputDate @bind-Value="@agentSubmitModel.ArrivalTime" class="form-control-sm"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.ArrivalTime)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Arrival Address:</label>
+                                <div>
+                                    <InputTextArea @bind-Value="@agentSubmitModel.ArrivalPoint" class="form-control-sm"  placeholder="Enlarge Input Window By Mouse-Dragging At Corner" style="width:400px"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.ArrivalPoint)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Truck License Plate:</label>
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.ArrivalLicensePlate" class="form-control-sm" placeholder="Insert If Available" style="width:400px"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.ArrivalLicensePlate)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Driver Name:</label>
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.ArrivalDriverName" class="form-control-sm" placeholder="Insert If Available" style="width:400px"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.ArrivalDriverName)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Driver Phone:</label>
+                                <div>
+                                    <InputNumber @bind-Value="@agentSubmitModel.ArrivalDriverPhone" class="form-control-sm" placeholder="Insert If Available" style="width:400px"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.ArrivalDriverPhone)" />
+                                </div>
+                            </div>
+                            <div id="WorkloadNote" class="form-group mt-1 mr-3">
+                                <label id="InputLabelCheckBox">Truck Colour:</label>
+                                <div>
+                                    <InputText @bind-Value="@agentSubmitModel.ArrivalCarColour" class="form-control-sm" placeholder="Insert If Available" style="width:400px"/>
+                                    <ValidationMessage For="@(()=> agentSubmitModel.ArrivalCarColour)" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+</EditForm>
+
+
+@code {
+    [Parameter] public int id { get; set; }
+    AgentSubmitModel agentSubmitModel = new AgentSubmitModel();
+    IList<AgentSubmitDim> ThisModelDims;
+    bool shipmentNotChanged = true;
+    bool shipmentSavedByDimUpdate = false;
+    bool pickupChecked = false;
+
+    AgentSubmitDim agentSubmitDim = new AgentSubmitDim();
+    AwbStock awbstock = new AwbStock();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if(shipmentNotChanged)
+        {
+            agentSubmitModel = await _client.GetFromJsonAsync<AgentSubmitModel>($"{Endpoints.AgentSubmitModelsEndpoint}{id}");
+
+        }
+
+        ThisModelDims = await _client.GetFromJsonAsync<IList<AgentSubmitDim>>($"{Endpoints.AgentSubmitDimsEndpoint}GetAgentSubmitDimsByShipmentId/{agentSubmitModel.Id}");
+        shipmentNotChanged = true;
+        shipmentSavedByDimUpdate = false;
+    }
+
+    private async Task EditShipment()
+    {
+        
+        var success = await _client.PutAsJsonAsync($"{Endpoints.AgentSubmitModelsEndpoint}{id}", agentSubmitModel);
+
+        if (success.IsSuccessStatusCode && !shipmentSavedByDimUpdate)
+        {
+            await js.InvokeVoidAsync("alert", "SAVED");
+        }
+
+        await OnParametersSetAsync();
+    }
+
+    private async Task DeleteDimension(int dimensionId)
+    {
+        //var dimensionToDelete = AgentSubmitDims.First(q => q.Id == dimensionId);
+        var dimensionToDelete = await _client.GetFromJsonAsync<AgentSubmitDim>($"{Endpoints.AgentSubmitDimsEndpoint}{dimensionId}");
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {dimensionToDelete.Pieces}pcs / {dimensionToDelete.Length}x{dimensionToDelete.Width}x{dimensionToDelete.Height}cm?");
+
+        if (confirm)
+        {
+            var success = await _client.DeleteAsync($"{Endpoints.AgentSubmitDimsEndpoint}{dimensionId}");
+            if (success.IsSuccessStatusCode)
+            {
+                shipmentNotChanged = false;
+                success.Dispose();
+                await OnParametersSetAsync();
+                shipmentSavedByDimUpdate = true;
+                await PopulateChwAndVol();
+            }
+        }
+    }
+
+    private async Task CreateDimension()
+    {
+        agentSubmitDim.AgentSubmitModelId = agentSubmitModel.Id; 
+        var success = await _client.PostAsJsonAsync(Endpoints.AgentSubmitDimsEndpoint, agentSubmitDim);
+        if (success.IsSuccessStatusCode)
+        {
+            shipmentNotChanged = false;
+            success.Dispose();
+            await OnParametersSetAsync();
+            shipmentSavedByDimUpdate = true;
+            await PopulateChwAndVol();
+        }
+    }
+
+    private async Task PopulateChwAndVol()
+    {
+        agentSubmitModel.Volume = ChwCalculator.CalculateVolume(ThisModelDims);
+        agentSubmitModel.ChargeableWeight = ChwCalculator.CalculateChW(ThisModelDims, (double)agentSubmitModel.GrossWeight);
+        await EditShipment();
+    }
+
+    
+    private async Task HawbDangerAlert()
+    {
+        await js.InvokeVoidAsync("alert", "MAWB Data Capture Not Finalized!");
+    }
+}

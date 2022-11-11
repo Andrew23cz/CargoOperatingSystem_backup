@@ -1,0 +1,167 @@
+﻿
+<div class="hideWhenPrint">
+    <button class="btn-danger" @onclick="Print" style="margin-bottom: 10px;">Print Cargo Manifest</button>
+</div>
+
+<div id="mawbgrid">
+
+  <div id="docname">
+    <div>CARGO MANIFEST</div>
+    <div>@mawb.IssuingAgent</div>
+  </div>
+  <div id="awbno">
+    <div>AWB NUMBER</div>
+    <div>@mawb.AwbNumber</div>
+  </div>
+
+  <div id="shipper">
+    <div>Shipper:</div>
+    <div>@mawb.ShipperName</div>
+    <div>@mawb.ShipperAddressA</div>
+    <div>@mawb.ShipperAddressB</div>
+    <div>@mawb.ShipperAddressC</div>
+  </div>
+
+  <div id="consignee">
+    <div>Consignee:</div>
+    <div>@mawb.ConsigneeName</div>
+    <div>@mawb.ConsigneeAddressA</div>
+    <div>@mawb.ConsigneeAddressB</div>
+    <div>@mawb.ConsigneeAddressC</div>
+  </div>
+  
+  <div id="date">
+    <div>@mawb.IssuingDate.ToShortDateString()</div>
+  </div>
+
+  <div id="flights">
+    <div>Carrier:&nbsp;@mawb.AirlineName</div>
+    <div>Flights:&nbsp;@mawb.FirstFlightNoAndDate,:&nbsp;@mawb.SecondFlightNoAndDate</div>
+  </div>
+
+</div>
+
+@if (Hawbs == null)
+{
+    <div class="alert alert-info">Loading HAWBs ...</div>
+}
+else
+{
+    @foreach (var hawb in Hawbs)
+    {
+        <div id="hawbgrid">
+
+            <div id="hawbno">
+            <div>HAWB NUMBER</div>
+            <div>@hawb.HawbNumber</div>
+            </div>
+            <div id="dest">
+            <div>Destination::&nbsp;@hawb.Destination</div>
+            </div>
+
+            <div id="shipper_hawb">
+            <div>Shipper:</div>
+            <div>@hawb.ShipperName</div>
+            <div>@hawb.ShipperAddressA</div>
+            <div>@hawb.ShipperAddressB</div>
+            <div>@hawb.ShipperAddressC</div>
+            </div>
+
+            <div id="consignee_hawb">
+            <div>Consignee:</div>
+            <div>@hawb.ConsigneeName</div>
+            <div>@hawb.ConsigneeAddressA</div>
+            <div>@hawb.ConsigneeAddressB</div>
+            <div>@hawb.ConsigneeAddressC</div>
+            </div>
+  
+            <div id="pcsweight">
+            <div>Pieces::&nbsp;@hawb.Pieces</div>
+            <div>Gross Weight::&nbsp;@hawb.GrossWeight</div>
+            </div>
+
+            <div id="goodsdesc">
+            <div>GOODS DESCRIPTION</div>
+            <div>@hawb.Commodity</div>
+            </div>
+  
+        </div>
+
+    }
+}
+<br/>
+<div>Total Pieces::&nbsp;@mawb.Pieces</div>
+<div>Total Weight::&nbsp;@mawb.GrossWeight</div>
+
+
+
+
+
+@*<body href="css/960_12_col.css">
+ 
+
+    <div class="hideWhenPrint">
+        <button class="btn-danger" @onclick="Print" style="margin-bottom: 10px;">Print MAWB</button>
+    </div>
+
+    <div class="container_12 clearfix">
+        <div id="header" class="grid_12">
+            <h1>Consolidation Manifest</h1>
+            <h2>@mawb.AwbNumber</h2>
+        </div>
+        <div class="article grid_6">
+            <div id="Mawb_Shipper_Column">
+                <p>@mawb.ShipperName
+                   @mawb.ShipperAddressA
+                   @mawb.ShipperAddressB
+                   @mawb.ShipperAddressC</p>
+            </div>
+        </div>
+        <div class="article grid_6">
+            <div id="Mawb_Consignee_Column">
+                <p>@mawb.ConsigneeName
+                   @mawb.ConsigneeAddressA
+                   @mawb.ConsigneeAddressB
+                   @mawb.ConsigneeAddressC</p>
+            </div>
+        </div>
+    </div>*@
+    
+
+    @*<div style="text-align:left; font-size:30px">
+        Consolidation Manifest
+        <span style="float:right; font-size:30px">
+            @mawb.AwbNumber
+        </span>
+    </div>*@
+
+
+    @*@if (Hawbs == null)
+    {
+        <div class="alert alert-info">Loading HAWBs ...</div>
+    }
+    else
+    {
+        @foreach (var hawb in Hawbs)
+        {
+            <br/>
+            <hr/>
+            <div>@hawb.HawbNumber</div>
+            <div>@($"{hawb.Pieces} / {hawb.GrossWeight} / {hawb.Volume} / {hawb.Origin} - {hawb.Destination}")</div>
+            <hr/>
+        }
+    }*@
+
+@*</body>*@
+
+
+
+@code {
+    [Parameter] public Mawb mawb { get; set; }
+    [Parameter] public EventCallback Print { get; set; }
+    [Parameter] public IList<Hawb> Hawbs { get; set; }
+
+    
+
+
+}

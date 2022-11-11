@@ -1,0 +1,36 @@
+﻿@page "/mawbs/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card-title">Master Air Waybill Data Capturing</h3>
+
+<hr/>
+
+<FormComponent ButtonText="Update" OnValidSubmit="@EditMawb" mawb="mawb"/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    Mawb mawb = new Mawb();
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        mawb = await _client.GetFromJsonAsync<Mawb>($"{Endpoints.MawbsEndpoint}{id}");
+
+    }
+
+    private async Task EditMawb()
+    {
+        var success = await _client.PutAsJsonAsync($"{Endpoints.MawbsEndpoint}{id}", mawb);
+        if (success.IsSuccessStatusCode)
+        {
+            await js.InvokeVoidAsync("alert", "SAVED");
+
+        }
+        await OnParametersSetAsync();
+        _navManager.NavigateTo($"{Endpoints.ShipmentsEdit}{mawb.ShipmentId}");
+
+    }
+}

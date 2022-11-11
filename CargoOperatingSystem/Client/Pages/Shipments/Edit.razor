@@ -1,0 +1,382 @@
+﻿@page "/shipments/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card-title">Shipment Booking</h3>
+
+<div class="row>">
+    <div>
+        @if(shipment.Mawb == null)
+        {
+            <a href="/mawbs/create/@shipment.Id" class="btn btn-warning mr-3">
+                <span class="oi oi-plus"></span>
+                New MAWB Data Capture
+            </a>
+            <a href="" class="btn btn-danger mx-3" @onclick="@HawbDangerAlert"  @onclick:preventDefault>
+                <span class="oi oi-circle-x"></span>
+                Add HAWB Data Capture
+            </a>
+        }
+        else
+        {
+            <a href="/mawbs/edit/@shipment.Mawb.Id" class="btn btn-success mr-3">
+                <span class="oi oi-circle-check"></span>
+                Edit MAWB Data Capture
+            </a>
+            <a href="/hawbs/mawbindex/@shipment.Mawb.Id" class="btn btn-warning mx-3">
+                <span class="oi oi-plus"></span>
+                HAWB Data Capture
+            </a>
+        }
+
+        @if(shipment.Workload == null)
+        {
+            <a href="/workloads/create/@shipment.Id" class="btn btn-warning mx-3">
+                <span class="oi oi-plus"></span>
+                Create New Workload
+            </a>
+        }
+        else
+        {
+            <a href="/workloads/edit/@shipment.Workload.Id" class="btn btn-success mx-3">
+                <span class="oi oi-circle-check"></span>
+                Update Workload
+            </a>
+        }
+
+        @if(shipment.Arrival == null)
+        {
+            <a href="/arrivals/create/@shipment.Id" class="btn btn-warning mx-3">
+                <span class="oi oi-plus"></span>
+                Set Shipment Arrival
+            </a>
+        }
+        else
+        {
+            <a href="/arrivals/edit/@shipment.Arrival.Id" class="btn btn-success mx-3">
+                <span class="oi oi-circle-check"></span>
+                Update Shipment Arrival
+            </a>
+        }
+    </div>
+</div>
+
+<hr/>
+<br/>
+
+<EditForm Model="@shipment" OnValidSubmit="@EditShipment">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div>
+        <button type="submit" class="btn btn-success">
+            Save Booking
+        </button>
+    </div>
+    <hr/>
+
+    <label>AWB Number: @shipment.AwbNumber</label>
+    <hr/>
+    
+    <div class="form-inline">
+        <label class="pr-3">Customer:</label>
+        <div>
+            <InputSelect @bind-Value="shipment.CustomerId" class="form-control">
+                <option value="">-- Select Customer --</option>
+                @if (Customers != null)
+                {
+                    foreach (var customer in Customers)
+                    {
+                        <option value="@customer.Id">@customer.CompanyName</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => shipment.CustomerId)" />
+        </div>
+    </div>
+    <br/>
+    
+    <div class="row">
+        <div class="form-group mx-3">
+            <label>Pieces:</label>
+            <div>
+                <InputNumber @bind-Value="@shipment.Pieces" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.Pieces)" />
+            </div>
+        </div>
+        <div class="form-group mx-3">
+            <label>Gross Weight:</label>
+            <div>
+                <InputNumber @bind-Value="@shipment.GrossWeight" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.GrossWeight)" />
+            </div>
+        </div>
+        <div class="form-group mx-3">
+            <label>Volume:</label>
+            <div>
+                <InputNumber @bind-Value="@shipment.Volume" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.Volume)" />
+            </div>
+        </div>
+        <div class="form-group mx-3">
+            <label>Chargeable Weight:</label>
+            <div>
+                <InputNumber @bind-Value="@shipment.ChargeableWeight" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.ChargeableWeight)" />
+            </div>
+        </div>
+    </div>
+    <br/>
+
+    <div class="row">
+        <div class="form-group mx-3">
+            <label>Origin:</label>
+            <div>
+                <InputText @bind-Value="@shipment.Origin" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.Origin)" />
+            </div>
+        </div>
+        <div class="form-group mx-3">
+            <label>Destination:</label>
+            <div>
+                <InputText @bind-Value="@shipment.Destination" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.Destination)" />
+            </div>
+        </div>
+        <div class="form-group mx-3">
+            <label>Commodity:</label>
+            <div>
+                <InputText @bind-Value="@shipment.Commodity" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.Commodity)" />
+            </div>
+        </div>
+    </div>
+    <br/>
+
+    <div class="row">
+        <div class="form-inline mx-3">
+            <label>1st Flight:&nbsp;&nbsp;</label>
+            <div>
+                <InputText @bind-Value="@shipment.FirstFlightNumber" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.FirstFlightNumber)" />
+            </div>
+        </div>
+        <div class="form-inline mx-3">
+            <label>Date:</label>
+            <div>
+                <InputDate @bind-Value="@shipment.FirstFlightDate" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.FirstFlightDate)" />
+            </div>
+        </div>
+        <div class="form-inline mx-3">
+            <label>Dest:</label>
+            <div>
+                <InputText @bind-Value="@shipment.FirstFlightDest" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.FirstFlightDest)" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-inline mx-3">
+            <label>2nd Flight:&nbsp;</label>
+            <div>
+                <InputText @bind-Value="@shipment.SecondFlightNumber" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.SecondFlightNumber)" />
+            </div>
+        </div>
+        <div class="form-inline mx-3">
+            <label>Date:</label>
+            <div>
+                <InputDate @bind-Value="@shipment.SecondFlightDate" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.SecondFlightDate)" />
+            </div>
+        </div>
+        <div class="form-inline mx-3">
+            <label>Dest:</label>
+            <div>
+                <InputText @bind-Value="@shipment.SecondFlightDest" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.SecondFlightDest)" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-inline mx-3">
+            <label>3rd Flight:&nbsp;&nbsp;</label>
+            <div>
+                <InputText @bind-Value="@shipment.ThirdFlightNumber" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.ThirdFlightNumber)" />
+            </div>
+        </div>
+        <div class="form-inline mx-3">
+            <label>Date:</label>
+            <div>
+                <InputDate @bind-Value="@shipment.ThirdFlightDate" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.ThirdFlightDate)" />
+            </div>
+        </div>
+        <div class="form-inline mx-3">
+            <label>Dest:</label>
+            <div>
+                <InputText @bind-Value="@shipment.ThirdFlightDest" class="form-control"/>
+                <ValidationMessage For="@(()=> shipment.ThirdFlightDest)" />
+            </div>
+        </div>
+    </div>
+    <br/>
+    
+</EditForm>
+
+<br/>
+
+<DimensionForm OnValidSubmit="@CreateDimension" dimension="dimension"/> 
+
+<br/>
+
+@if (ThisShpmtDims == null)
+{
+    <div class="alert alert-info">Loading Dimensions ...</div>
+}
+else
+{
+    <table class="table table-responsive table-sm">
+        <thead>
+            <tr>
+                <th>Pieces</th>
+                <th>Length</th>
+                <th>Width</th>
+                <th>Height</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dimension in ThisShpmtDims)
+            {
+                <tr>
+                    <td>@dimension.Pieces</td>
+                    <td>@dimension.Length</td>
+                    <td>@dimension.Width</td>
+                    <td>@dimension.Height</td>
+                    <td>
+                        <button class="btn btn-danger" @onclick=@(()=>DeleteDimension(@dimension.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    [Parameter] public int id { get; set; }
+    Shipment shipment = new Shipment();
+    //IList<Workload> Workloads;
+    //IList<Mawb> Mawbs;
+    //IList<Delivery> Deliveries;
+    //IList<Arrival> Arrivals;
+
+    IList<Customer> Customers;
+    IList<Dimmension> Dimensions;
+    IList<Dimmension> ThisShpmtDims;
+    bool shipmentNotChanged = true;
+
+
+    Dimmension dimension = new Dimmension();
+    AwbStock awbstock = new AwbStock();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if(shipmentNotChanged)
+        {
+            shipment = await _client.GetFromJsonAsync<Shipment>($"{Endpoints.ShipmentsEndpoint}{id}");
+            shipmentNotChanged = true;
+        }
+        Customers = await _client.GetFromJsonAsync<IList<Customer>>($"{Endpoints.CustomersEndpoint}");
+        Dimensions = await _client.GetFromJsonAsync<IList<Dimmension>>($"{Endpoints.DimmensionsEndpoint}");
+        ThisShpmtDims = Dimensions.Where(q => q.ShipmentId == shipment.Id).ToList();
+
+        
+        //Workloads = await _client.GetFromJsonAsync<IList<Workload>>($"{Endpoints.WorkloadsEndpoint}");
+        //Mawbs = await _client.GetFromJsonAsync<IList<Mawb>>($"{Endpoints.MawbsEndpoint}");
+        
+        //Deliveries = await _client.GetFromJsonAsync<IList<Delivery>>($"{Endpoints.DeliveriesEndpoint}");
+        //Arrivals = await _client.GetFromJsonAsync<IList<Arrival>>($"{Endpoints.ArrivalsEndpoint}");
+    }
+
+
+    private async Task EditShipment()
+    {
+        if (shipment.ShipmentStatus == "Created" && shipment.CustomerId != null)
+        {
+            shipment.ShipmentStatus = "Booked";
+
+        }
+
+        var success = await _client.PutAsJsonAsync($"{Endpoints.ShipmentsEndpoint}{id}", shipment);
+
+        if (success.IsSuccessStatusCode)
+        {
+            await EditAwbStock(shipment.AwbStockId);
+            await js.InvokeVoidAsync("alert", "SAVED");
+        }
+
+        await OnParametersSetAsync();
+    }
+
+    private async Task DeleteDimension(int dimensionId)
+    {
+        var dimension = Dimensions.First(q => q.Id == dimensionId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {dimension.Pieces}pcs / {dimension.Length}x{dimension.Width}x{dimension.Height}cm?");
+
+        if (confirm)
+        {
+            var success = await _client.DeleteAsync($"{Endpoints.DimmensionsEndpoint}{dimensionId}");
+            if (success.IsSuccessStatusCode)
+            {
+                shipmentNotChanged = false;
+                success.Dispose();
+                await OnParametersSetAsync();
+                await PopulateChwAndVol();
+            }
+        }
+    }
+
+    private async Task CreateDimension()
+    {
+        //dimension.ShipmentId = shipment.Id; 
+        var success = await _client.PostAsJsonAsync(Endpoints.DimmensionsEndpoint, dimension);
+        if (success.IsSuccessStatusCode)
+        {
+            shipmentNotChanged = false;
+            success.Dispose();
+            await OnParametersSetAsync();
+            await PopulateChwAndVol();
+        }
+    }
+
+    private async Task PopulateChwAndVol()
+    {
+        shipment.Volume = ChwCalculator.CalculateVolume(ThisShpmtDims);
+        shipment.ChargeableWeight = ChwCalculator.CalculateChW(ThisShpmtDims, (double)shipment.GrossWeight);
+        await OnParametersSetAsync();
+    }
+
+    private async Task EditAwbStock(int awbStockId)
+    {
+        awbstock = await _client.GetFromJsonAsync<AwbStock>($"{Endpoints.AwbStocksEndpoint}{awbStockId}");
+
+        if(awbstock.CustomerId != shipment.CustomerId)
+        {
+            awbstock.CustomerId = shipment.CustomerId;
+            await _client.PutAsJsonAsync($"{Endpoints.AwbStocksEndpoint}{awbStockId}", awbstock);
+        }
+    }
+
+    private async Task HawbDangerAlert()
+    {
+        await js.InvokeVoidAsync("alert", "MAWB Data Capture Not Finalized!");
+    }
+}

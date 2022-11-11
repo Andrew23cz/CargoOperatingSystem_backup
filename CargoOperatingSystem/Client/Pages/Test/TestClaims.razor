@@ -1,0 +1,59 @@
+﻿@page "/test/claims/"
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+<h3>Claims Principal Data</h3>
+
+<button class="btn btn-info" @onclick="GetClaimsPrincipalData">Get Claims Principal Data</button>
+
+<div>@authMessage</div>
+@if (claims.Count() > 0)
+{
+    <table>
+        <tbody>
+            <tr>
+                <td>User Id</td>
+                <td>:</td>
+                <td>@userId</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>:</td>
+                <td>@email</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        @foreach (var claim in claims)
+        {
+            <li>@claim.Type: @claim.Value</li>
+        }
+    </ul>
+}
+
+@code{
+
+    async Task GetClaimsPrincipalData()
+        {
+            AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            ClaimsPrincipal user = authState.User;
+            if (user.Identity.IsAuthenticated)
+            {
+                authMessage = $"{user.Identity.Name} is authenticated.";
+                claims = user.Claims;
+            }
+            else
+            {
+                authMessage = "The user is NOT authenticated";
+            }
+        }
+
+        string userId => claims.FirstOrDefault(a => a.Type == "sub")?.Value ?? "";
+        string email => claims.FirstOrDefault(a => a.Type == "email")?.Value ?? "";
+        string authMessage;
+        IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+    }
+

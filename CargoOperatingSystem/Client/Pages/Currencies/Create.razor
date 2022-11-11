@@ -1,0 +1,24 @@
+﻿@page "/currencies/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Create Currency</h3>
+<hr />
+<br/>
+
+<FormComponent ButtonText="Create Currency" OnValidSubmit="@CreateCurrency" currency="currency"/> 
+
+
+@code {
+
+    Currency currency = new Currency();
+    
+    private async Task CreateCurrency()
+    {
+        await _client.PostAsJsonAsync(Endpoints.CurrencyEndpoint, currency);
+        _navManager.NavigateTo(Endpoints.CurrencyIndex);
+    }
+
+
+}

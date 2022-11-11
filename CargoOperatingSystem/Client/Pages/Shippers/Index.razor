@@ -1,0 +1,87 @@
+﻿@page "/shippers/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">List Of Shippers</h3>
+<hr />
+
+<a href="/shippers/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Shipper
+</a>
+<br/>
+<br/>
+
+@if(Shippers == null)
+{
+    <div class="alert alert-info">Loading Shippers ...</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var shipper in Shippers)
+            {
+                <tr>
+                    <td>@shipper.Name</td>
+                    <td>@shipper.AddressA<br/>@shipper.AddressB</td>
+                    <td>@shipper.Email</td>
+                    <td>@shipper.PhoneNumber</td>
+                    <td>
+                        <a href="/shippers/view/@shipper.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/shippers/edit/@shipper.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick=@(()=>Delete(@shipper.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
+
+
+
+
+@code {
+
+    private IList<Shipper> Shippers;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Shippers = await _client.GetFromJsonAsync<IList<Shipper>>(Endpoints.ShippersEndpoint);
+    }
+
+    private async Task Delete(int shipperId)
+    {
+        var shipper = Shippers.First(q => q.Id == shipperId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {shipper.Name}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.ShippersEndpoint}{shipperId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    
+
+
+}

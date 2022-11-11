@@ -1,0 +1,192 @@
+﻿@page "/airlines/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject Microsoft.JSInterop.IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">Airlines</h3>
+<hr />
+
+@*<a href="/airlines/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Airline
+</a>
+<br/>
+<br/>
+
+@if(Airlines == null)
+{
+    <div class="alert alert-info">Loading Airlines ...</div>
+}
+else
+{
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Prefix</th>
+                <th>AWB Header Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var airline in Airlines)
+            {
+                <tr>
+                    <td>@airline.Name</td>
+                    <td>@airline.Code</td>
+                    <td>@airline.Prefix</td>
+                    <td>@airline.AwbHeaderA<br/>@airline.AwbHeaderB</td>
+                    <td>
+                        <a href="/airlines/view/@airline.Id" class="btn btn-primary btn-sm">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/airlines/edit/@airline.Id" class="btn btn-warning btn-sm">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger btn-sm" @onclick=@(()=>Delete(@airline.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+  
+}*@
+    
+
+    <SfGrid DataSource="@Airlines" AllowPaging="true" AllowSorting="true" AllowFiltering="true" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Cancel", "Update" })" TValue="Airline">
+     <GridPageSettings PageSize="50"></GridPageSettings>
+     <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"></GridEditSettings>
+     <GridEvents OnActionBegin="ActionBeginHandler" OnActionComplete="ActionCompleteHandler" TValue="Airline"></GridEvents>
+       <GridColumns>
+         <GridColumn Field=@nameof(Airline.Id) 
+                     HeaderText="ID" 
+                     IsPrimaryKey="true"
+                     IsIdentity="true"
+                     Visible="false">
+         </GridColumn>
+         <GridColumn Field=@nameof(Airline.Name) 
+                     HeaderText="Airline Name" 
+                     Width="100">
+         </GridColumn>
+         <GridColumn Field=@nameof(Airline.Code) 
+                     HeaderText="Code" 
+                     Width="50">
+         </GridColumn>
+         <GridColumn Field=@nameof(Airline.Prefix) 
+                     HeaderText=" Prefix" 
+                     Format="d" 
+                     Type="ColumnType.Date" 
+                     Width="50">
+         </GridColumn>
+         <GridColumn Field=@nameof(Airline.AwbHeaderA) 
+                     HeaderText="HQ Address 1st row" 
+                     Format="C2" 
+                     Width="200">
+         </GridColumn>
+         <GridColumn Field=@nameof(Airline.AwbHeaderB) 
+                     HeaderText="HQ Address 2nd row" 
+                     Format="C2" 
+                     Width="200">
+         </GridColumn>
+         <GridColumn Field=@nameof(Airline.BillingDateBasis) 
+                     HeaderText="Billing Date Basis" 
+                     Format="C2" 
+                     Width="200">
+                     <Template>
+                        @{
+                            var val = (context as Airline);
+                            if(val.BillingDateBasis == "issuingdate")
+                            {
+                                <span>MAWB Issuing Date</span>
+                            }
+                            else if(val.BillingDateBasis == "firstflightdate")
+                            {
+                                <span>First Flight Booking Date</span>
+                            }
+                            else if(val.BillingDateBasis == "secondflightdate")
+                            {
+                                <span>Second Flight Booking Date</span>
+                            }
+                        }
+                     </Template>
+                     <EditTemplate> 
+                        <SfDropDownList TValue="string" TItem="BillingOption" Placeholder="Select Billing Date" @bind-Value="@((context as Airline).BillingDateBasis)" DataSource="@BillingDateOptions">
+                            <DropDownListFieldSettings Value="Value" Text="Text"></DropDownListFieldSettings>
+                        </SfDropDownList>
+                    </EditTemplate>
+         </GridColumn>
+       </GridColumns>
+    </SfGrid>
+
+
+
+
+@code {
+
+    private IList<Airline> Airlines;
+
+    public class BillingOption
+    {  
+        public string Value { get; set; }
+        public string Text { get; set; }
+    }
+
+    private List<BillingOption> BillingDateOptions = new List<BillingOption>() {
+        new BillingOption() { Value = "issuingdate", Text = "MAWB Issuing Date"},
+        new BillingOption() { Value = "firstflightdate", Text = "First Flight Booking Date"},
+        new BillingOption() { Value = "secondflightdate", Text = "Second Flight Booking Date"}
+    };
+
+    protected async override Task OnInitializedAsync()
+    {
+        Airlines = await _client.GetFromJsonAsync<IList<Airline>>(Endpoints.AirlinesEndpoint);
+    }
+
+    private async Task Delete(int airlineId)
+    {
+        var airline = Airlines.First(q => q.Id == airlineId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {airline.Name}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.AirlinesEndpoint}{airlineId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    public async Task ActionBeginHandler(ActionEventArgs<Airline> Args)
+    {
+        if (Args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            if (Args.Action == "Add")
+            {
+                await _client.PostAsJsonAsync(Endpoints.AirlinesEndpoint, Args.Data);
+
+            }
+            else
+            {
+                await _client.PutAsJsonAsync($"{Endpoints.AirlinesEndpoint}{Args.Data.Id}", Args.Data);
+            }
+        }
+        if (Args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Delete))
+        {
+            await _client.DeleteAsync($"{Endpoints.AirlinesEndpoint}{Args.Data.Id}");
+        }
+    }
+    public async Task ActionCompleteHandler(ActionEventArgs<Airline> Args)
+    {
+        if (Args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            await OnInitializedAsync();
+        }
+    }
+
+
+    
+}

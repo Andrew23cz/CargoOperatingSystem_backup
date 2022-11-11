@@ -1,0 +1,24 @@
+﻿@page "/suppliers/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Create Supplier</h3>
+<hr />
+<br/>
+
+<FormComponent ButtonText="Create Supplier" OnValidSubmit="@CreateSupplier" supplier="supplier"/> 
+
+
+@code {
+
+    Supplier supplier = new Supplier();
+
+    private async Task CreateSupplier()
+    {
+        await _client.PostAsJsonAsync(Endpoints.SuppliersEndpoint, supplier);
+        _navManager.NavigateTo(Endpoints.SuppliersIndex);
+    }
+
+
+}

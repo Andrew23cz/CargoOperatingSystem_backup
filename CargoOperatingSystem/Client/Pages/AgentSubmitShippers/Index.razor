@@ -1,0 +1,86 @@
+﻿@page "/agentsubmitshippers/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">Shippers</h3>
+<hr />
+
+
+
+<SfGrid DataSource="@AgentSubmitShippers" AllowPaging="true" AllowSorting="true" AllowFiltering="true" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Cancel", "Update" })" TValue="AgentSubmitShipper">
+    <GridPageSettings PageSize="50"></GridPageSettings>
+    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"></GridEditSettings>
+    <GridEvents OnActionBegin="ActionBeginHandler" OnActionComplete="ActionCompleteHandler" TValue="AgentSubmitShipper"></GridEvents>
+    <GridColumns>
+        <GridColumn Field=@nameof(AgentSubmitShipper.Id) 
+                    HeaderText="ID" 
+                    IsPrimaryKey="true"
+                    IsIdentity="true"
+                    Visible="false">
+        </GridColumn>
+        <GridColumn Field=@nameof(AgentSubmitShipper.Name) 
+                    HeaderText="Name" 
+                    Width="200">
+        </GridColumn>
+        <GridColumn Field=@nameof(AgentSubmitShipper.AddressA) 
+                    HeaderText="Addres 1st Row" 
+                    Width="200">
+        </GridColumn>
+        <GridColumn Field=@nameof(AgentSubmitShipper.AddressB) 
+                    HeaderText=" Addres 2nd Row" 
+                    Width="200">
+        </GridColumn>
+        <GridColumn Field=@nameof(AgentSubmitShipper.AddressC) 
+                    HeaderText="Addres 3rd Row" 
+                    Width="200">
+        </GridColumn>
+        <GridColumn Field=@nameof(AgentSubmitShipper.Email) 
+                    HeaderText="Email" 
+                    Width="100">
+        </GridColumn>
+        <GridColumn Field=@nameof(AgentSubmitShipper.PhoneNumber) 
+                    HeaderText="Phone" 
+                    Width="100">
+        </GridColumn>
+    </GridColumns>
+</SfGrid>
+
+
+@code {
+    private IList<AgentSubmitShipper> AgentSubmitShippers;
+
+    protected async override Task OnInitializedAsync()
+    {
+        AgentSubmitShippers = await _client.GetFromJsonAsync<IList<AgentSubmitShipper>>(Endpoints.AgentSubmitShippersEndpoint);
+    }
+
+    public async Task ActionBeginHandler(ActionEventArgs<AgentSubmitShipper> Args)
+    {
+        if (Args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            if (Args.Action == "Add")
+            {
+                await _client.PostAsJsonAsync(Endpoints.AgentSubmitShippersEndpoint, Args.Data);
+
+            }
+            else
+            {
+                await _client.PutAsJsonAsync($"{Endpoints.AgentSubmitShippersEndpoint}{Args.Data.Id}", Args.Data);
+            }
+        }
+        if (Args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Delete))
+        {
+            await _client.DeleteAsync($"{Endpoints.AgentSubmitShippersEndpoint}{Args.Data.Id}");
+        }
+    }
+    public async Task ActionCompleteHandler(ActionEventArgs<AgentSubmitShipper> Args)
+    {
+        if (Args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            await OnInitializedAsync();
+        }
+    }
+
+}

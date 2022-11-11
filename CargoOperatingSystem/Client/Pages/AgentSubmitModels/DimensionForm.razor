@@ -1,0 +1,55 @@
+﻿<EditForm id="DimForm" Model="@agentSubmitDim" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    
+    <div id="DimLabel">
+        <label style="margin:0">Dimensions Input</label>
+    </div>
+              
+    <div id="DimmRow" class="row form-group-sm pl-3">
+        <div class="form-group mt-1 mr-1 mb-3">
+            <label style="margin:0">Pieces</label>
+            <div>
+                <InputNumber @bind-Value="@agentSubmitDim.Pieces" class="form-control-sm col-sm-8"/>
+                <ValidationMessage For="@(()=> agentSubmitDim.Pieces)" />
+            </div>
+        </div>
+        <div class="form-group mt-1 mr-1 mb-3">
+            <label style="margin:0">Length</label>
+            <div>
+                <InputNumber @bind-Value="@agentSubmitDim.Length" class="form-control-sm col-sm-8"/>
+                <ValidationMessage For="@(()=> agentSubmitDim.Length)" />
+            </div>
+        </div>
+        <div class="form-group mt-1 mr-1 mb-3">
+            <label style="margin:0">Width</label>
+            <div>
+                <InputNumber @bind-Value="@agentSubmitDim.Width" class="form-control-sm col-sm-8"/>
+                <ValidationMessage For="@(()=> agentSubmitDim.Width)" />
+            </div>
+        </div>
+        <div class="form-group mt-1 mr-1 mb-3">
+            <label style="margin:0">Height</label>
+            <div>
+                <InputNumber @bind-Value="@agentSubmitDim.Height" class="form-control-sm col-sm-8"/>
+                <ValidationMessage For="@(()=> agentSubmitDim.Height)" />
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" form="DimForm" class="btn btn-info">
+        <span class="oi oi-plus"></span>
+        Add Dimension
+    </button>
+    
+    
+
+</EditForm>
+
+@code {
+
+    [Parameter] public AgentSubmitDim agentSubmitDim { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+}

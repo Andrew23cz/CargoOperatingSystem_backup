@@ -1,0 +1,93 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Security.Claims
+
+@page "/"
+
+<h1>Cargo Point</h1>
+
+<hr />
+
+<h3>Welcome to cargo management system.</h3>
+
+
+<div>
+    <a href="https:\\cargo-point.cz" target="_blank">Click here to open Cargo Point website.</a>
+</div>
+
+<AuthorizeView>
+    <NotAuthorized>
+        The following users and roles are seeded into the database for testing.
+        <ul>
+            <li>admin@cargopoint.com (Administrator)</li>
+            <li>tomas@cargopoint.com (CargopointUser)</li>
+            <li>petr@expeditors.com  (CustomerUser)</li>
+            <li>karel@schenker.com   (CustomerUser)</li>
+            <li>linda@ats.com        (-)</li>
+            
+        </ul>
+        They all share the same password: "Passw0rd!"
+    </NotAuthorized>
+</AuthorizeView>
+
+<AuthorizeView Roles="Administrator">
+    <hr />
+    Only Administrators can see this.<br />
+</AuthorizeView>
+<AuthorizeView Roles="CargopointUser">
+    <hr />
+    Only CargopointUser can see this.<br />
+</AuthorizeView>
+<AuthorizeView Roles="CargopointUser, Administrator">
+    <hr />
+    Administrators and CargopointUser can see this.
+</AuthorizeView>
+<AuthorizeView Roles="CustomerUser">
+    <hr />
+    CustomerUser.
+</AuthorizeView>
+<AuthorizeView Policy="DsvOnlyPolicy">
+    <hr />
+    <strong>Only people from Dsv can see this 👽</strong>
+</AuthorizeView>
+<AuthorizeView Policy="CargopointOnlyPolicy">
+    <hr />
+    <strong>Only people from Cargopoint can see this 👽</strong>
+</AuthorizeView>
+
+
+@code{
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    private string _authMessage;
+    private IEnumerable<Claim> claimCheck;
+    private List<KeyValuePair<string, string>> propList;
+
+    private async Task LogUsername()
+    {
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+
+        var roleCheck = user.IsInRole("admin");
+
+        claimCheck = (user.Claims).ToList();
+
+        foreach (var item in claimCheck)
+        {
+            propList = item.Properties.ToList();
+        }
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _authMessage = $"{user.Identity.Name} is authenticated. Role Check = {roleCheck}";
+
+            
+        }
+        else
+        {
+            _authMessage = "The user is NOT authenticated. Role Check = {roleCheck}";
+        }
+    }
+
+
+}

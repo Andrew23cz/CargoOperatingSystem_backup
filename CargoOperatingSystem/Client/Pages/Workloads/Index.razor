@@ -1,0 +1,108 @@
+﻿@page "/workloads/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card-title">List Of Workloads</h3>
+<hr />
+
+<a href="/workloads/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Workload    
+</a>
+<br/>
+<br/>
+
+@if(Workloads == null)
+{
+    <div class="alert alert-info">Loading Workloads ...</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Total Amount</th>
+                <th>AWB Issuing</th>
+                <th>HAWB Issuing</th>
+                <th>Cargo Labels</th>
+                <th>Accept Assist</th>
+                <th>Doc Correction</th>
+                <th>Import Cgo</th>
+                <th>Print Corr Docs</th>
+                <th>Spc Cargo Labels</th>
+                <th>After Open Hrs Svc</th>
+                <th>Manual Data Insertion</th>
+                <th>Pick-Up Documents</th>
+                <th>Sec-Check Prepare</th>
+                <th>Sec-Check Assist</th>
+                <th>Packing Assist</th>
+                <th>Accept Assist DG</th>
+                <th>Cosulting DG</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var workload in Workloads)
+            {
+                <tr>
+                    <td>@workload.WorkloadAmount</td>
+                    <td>@workload.AwbIssuing</td>
+                    <td>@workload.HawbIssuing</td>
+                    <td>@workload.CargoLabels</td>
+                    <td>@workload.AcceptanceAssist</td>
+                    <td>@workload.DocumentsCorrection</td>
+                    <td>@workload.ImportCgoProcessing</td>
+                    <td>@workload.PrintingCorrectedDocs</td>
+                    <td>@workload.SpecCargoLabels</td>
+                    <td>@workload.AfterOpeningHoursService</td>
+                    <td>@workload.ManualDataInsertion</td>
+                    <td>@workload.PickUpDocuments</td>
+                    <td>@workload.SecurityCheckPrepare</td>
+                    <td>@workload.SecurityCheckAssist</td>
+                    <td>@workload.PackingAssist</td>
+                    <td>@workload.AcceptanceAssistDG</td>
+                    <td>@workload.CosultingDG</td>
+                    
+                    <td>
+                        <a href="/workloads/view/@workload.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/workloads/edit/@workload.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick=@(()=>Delete(@workload.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
+
+
+@code {
+    private IList<Workload> Workloads;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Workloads = await _client.GetFromJsonAsync<IList<Workload>>(Endpoints.WorkloadsEndpoint);
+    }
+
+    private async Task Delete(int workloadId)
+    {
+        var workload = Workloads.First(q => q.Id == workloadId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete ID: {workload.Id}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.WorkloadsEndpoint}{workloadId}");
+            await OnInitializedAsync();
+        }
+    }
+
+}

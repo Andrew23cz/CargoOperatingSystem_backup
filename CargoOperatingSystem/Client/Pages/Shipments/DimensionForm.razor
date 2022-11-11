@@ -1,0 +1,56 @@
+﻿<EditForm id="DimForm" Model="@dimension" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    
+    <div id="DimLabel" class="row">
+        <label style="margin:0">Dimensions Input</label>
+    </div>
+              
+    <div id="DimmRow" class="row form-group-sm pl-3">
+        <div class="mt-1 mr-1 mb-3">
+            <label style="margin:0">Pieces</label>
+            <div>
+                <InputNumber @bind-Value="@dimension.Pieces" class="form-control-sm col-sm-8"/>
+                <ValidationMessage For="@(()=> dimension.Pieces)" />
+            </div>
+        </div>
+        <div class="mt-1 mr-1 mb-3">
+            <label style="margin:0">Length</label>
+            <div>
+                <InputNumber @bind-Value="@dimension.Length" class="form-control-sm col-sm-8"/>
+                <ValidationMessage For="@(()=> dimension.Length)" />
+            </div>
+        </div>
+        <div class="mt-1 mr-1 mb-3">
+            <label style="margin:0">Width</label>
+            <div>
+                <InputNumber @bind-Value="@dimension.Width" class="form-control-sm col-sm-8"/>
+                <ValidationMessage For="@(()=> dimension.Width)" />
+            </div>
+        </div>
+        <div class="mt-1 mr-1 mb-3">
+            <label style="margin:0">Height</label>
+            <div>
+                <InputNumber @bind-Value="@dimension.Height" class="form-control-sm col-sm-8"/>
+                <ValidationMessage For="@(()=> dimension.Height)" />
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" form="DimForm" class="btn btn-info">
+        <span class="oi oi-plus"></span>
+        Add Dimension
+    </button>
+    
+    
+
+</EditForm>
+
+@code {
+
+    [Parameter] public Dimmension dimension { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+}
+

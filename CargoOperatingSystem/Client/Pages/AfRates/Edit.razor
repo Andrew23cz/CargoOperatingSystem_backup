@@ -1,0 +1,28 @@
+﻿@page "/afrates/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Edit Rates</h3>
+<hr />
+<br/>
+<FormComponent ButtonText="Update" OnValidSubmit="@EditAfRate" afrate="afrate"/> 
+
+@code {
+
+    [Parameter] public int id { get; set; }
+
+    AfRates afrate = new AfRates();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        afrate = await _client.GetFromJsonAsync<AfRates>($"{Endpoints.AfRatesEndpoint}{id}");
+    }
+
+    private async Task EditAfRate()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.AfRatesEndpoint}{id}", afrate);
+        _navManager.NavigateTo(Endpoints.AfRatesIndex);
+    }
+    
+}

@@ -1,0 +1,710 @@
+﻿@inject HttpClient _client
+
+<EditForm Model="@agentSubmitHawb" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="row mb-3" style="font-family:Calibri">
+    <button type="submit" class="btn btn-success">
+        @ButtonText
+    </button>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-3 mr-2"  style="background-color: darkgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; border-top:1px solid; font-family:Calibri">
+                <div class="row">
+                    <div class="form-group mx-3 pt-4">
+                        <label style="font-weight:bold; font-size:24px">AWB Number: @agentSubmitHawb.AwbNumber </label>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>HAWB Number:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.HawbNumber" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.HawbNumber)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Shipper:</label>
+                        <div>
+                            <InputSelect @bind-Value="agentSubmitHawb.AgentSubmitShipperId" @oninput="PopulateShipper" class="form-control">
+                                <option value="">-- Select Shipper --</option>
+                                @if (AgentSubmitShippers != null)
+                                {
+                                    foreach (var agentSubmitShipper in AgentSubmitShippers)
+                                    {
+                                        <option value="@agentSubmitShipper.Id">@agentSubmitShipper.Name</option>
+                                    }
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => agentSubmitHawb.AgentSubmitShipperId)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Consignee:</label>
+                        <div>
+                            <InputSelect @bind-Value="agentSubmitHawb.AgentSubmitConsigneeId" @oninput="PopulateConsignee" class="form-control">
+                                <option value="">-- Select Consignee --</option>
+                                @if (AgentSubmitConsignees != null)
+                                {
+                                    foreach (var agentSubmitConsignee in AgentSubmitConsignees)
+                                    {
+                                        <option value="@agentSubmitConsignee.Id">@agentSubmitConsignee.Name</option>
+                                    }
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => agentSubmitHawb.AgentSubmitConsigneeId)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-3 mr-2"  style="background-color: lightgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Origin:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.Origin" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.Origin)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Destination:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.Destination" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.Destination)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Issuing Carrier's Agent Name and City':</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.IssuingAgent" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.IssuingAgent)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Agent's IATA Code':</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.AgentIataCode" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.AgentIataCode)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-3 mr-2"  style="background-color: darkgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Accounting Information 1):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.AccountingInfoA" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.AccountingInfoA)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Accounting Information 2):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.AccountingInfoB" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.AccountingInfoB)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Accounting Information 3):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.AccountingInfoC" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.AccountingInfoC)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-3 mr-2"  style="background-color: lightgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Pieces:</label>
+                        <div>
+                            <InputNumber @bind-Value="@agentSubmitHawb.Pieces" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.Pieces)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>GW:</label>
+                        <div>
+                            <InputNumber @bind-Value="@agentSubmitHawb.GrossWeight" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.GrossWeight)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>ChW:</label>
+                        <div>
+                            <InputNumber @bind-Value="@agentSubmitHawb.ChargeableWeight" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.ChargeableWeight)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Rate Class:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.RateClass" @onfocusout="CalculateAndPopulateCharges" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.RateClass)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Rate/Charge:</label>
+                        <div>
+                            <InputNumber @bind-Value="@agentSubmitHawb.RateCharge" @onfocusout="CalculateAndPopulateCharges" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.RateCharge)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Total:</label>
+                        <div>
+                            <InputNumber @bind-Value="@agentSubmitHawb.TotalCharge" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.TotalCharge)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-3 mr-2"  style="background-color: darkgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>First Carrier Code:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.FirstCarrierCode" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.FirstCarrierCode)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>First Flight Destination:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.FirstFlightDest" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.FirstFlightDest)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>First Flight Number and Date:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.FirstFlightNoAndDate" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.FirstFlightNoAndDate)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Second Carrier Code:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.SecondCarrierCode" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.SecondCarrierCode)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Second Flight Destination:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.SecondFlightDest" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.SecondFlightDest)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Second Flight Number and Date:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.SecondFlightNoAndDate" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.SecondFlightNoAndDate)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-3 mr-2"  style="background-color: lightgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Handling Information 1):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.HandlingInfoA" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.HandlingInfoA)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Handling Information 2):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.HandlingInfoB" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.HandlingInfoB)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Handling Information 3):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.HandlingInfoC" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.HandlingInfoC)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>SCI:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.Sci" class="form-control w-50"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.Sci)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-3 mr-2"  style="background-color: darkgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Reference Number:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.ReferenceNo" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.ReferenceNo)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Optional Shipping Info 1):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.OptionalShippingInfoA" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.OptionalShippingInfoA)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Optional Shipping Info 2):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.OptionalShippingInfoB" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.OptionalShippingInfoB)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-3 mr-2"  style="background-color: lightgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Currency:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.Currency" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.Currency)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>CHGS Code:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.ChgsCode" @onfocusout="ChangePrepaidAndCollect" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.ChgsCode)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Declared Value For Carriage:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.DeclaredValueCarriage" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.DeclaredValueCarriage)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Declared Value For Customs:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.DeclaredValueCustoms" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.DeclaredValueCustoms)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Amount of Insurance:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.AmountOfInsurance" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.AmountOfInsurance)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+     <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-3 mr-2"  style="background-color: darkgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 1):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.NatureAndQttyGoodsA" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.NatureAndQttyGoodsA)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 2):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.NatureAndQttyGoodsB" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.NatureAndQttyGoodsB)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 3):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.NatureAndQttyGoodsC" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.NatureAndQttyGoodsC)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 4):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.NatureAndQttyGoodsD" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.NatureAndQttyGoodsD)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 5):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.NatureAndQttyGoodsE" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.NatureAndQttyGoodsE)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 6):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.NatureAndQttyGoodsF" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.NatureAndQttyGoodsF)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 7):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.NatureAndQttyGoodsG" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.NatureAndQttyGoodsG)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 8):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.NatureAndQttyGoodsH" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.NatureAndQttyGoodsH)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 9):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.NatureAndQttyGoodsI" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.NatureAndQttyGoodsI)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 10):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.NatureAndQttyGoodsJ" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.NatureAndQttyGoodsJ)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-3 mr-2"  style="background-color: lightgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Other Charge 1):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.OtherChargeA" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.OtherChargeA)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Other Charge 2):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.OtherChargeB" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.OtherChargeB)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Other Charge 3):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.OtherChargeC" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.OtherChargeC)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Other Charge 4):</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.OtherChargeD" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.OtherChargeD)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-5 pb-2 pt-3"  style="background-color: lightgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri">
+                <div class="form-group mx-3">
+                    <label>Weight Charge Prepaid:</label>
+                    <div>
+                        <InputNumber @bind-Value="@agentSubmitHawb.WeightChargePP" class="form-control"/>
+                        <ValidationMessage For="@(()=> agentSubmitHawb.WeightChargePP)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Valuation Charge Prepaid:</label>
+                    <div>
+                        <InputNumber @bind-Value="@agentSubmitHawb.ValuationChargePP" class="form-control"/>
+                        <ValidationMessage For="@(()=> agentSubmitHawb.ValuationChargePP)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Tax Prepaid:</label>
+                    <div>
+                        <InputNumber @bind-Value="@agentSubmitHawb.TaxPP" class="form-control"/>
+                        <ValidationMessage For="@(()=> agentSubmitHawb.TaxPP)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Total Other Charges Due Agent Prepaid:</label>
+                    <div>
+                        <InputNumber @bind-Value="@agentSubmitHawb.TotalOtherChargesDueAgentPP" class="form-control"/>
+                        <ValidationMessage For="@(()=> agentSubmitHawb.TotalOtherChargesDueAgentPP)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Total Other Charges Due Carrier Prepaid:</label>
+                    <div>
+                        <InputNumber @bind-Value="@agentSubmitHawb.TotalOtherChargesDueCarrierPP" class="form-control"/>
+                        <ValidationMessage For="@(()=> agentSubmitHawb.TotalOtherChargesDueCarrierPP)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Total Prepaid:</label>
+                    <div>
+                        <InputNumber @bind-Value="@agentSubmitHawb.TotalPrepaid" class="form-control"/>
+                        <ValidationMessage For="@(()=> agentSubmitHawb.TotalPrepaid)" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-5 pb-2 pt-3"  style="background-color: lightgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri">
+                <div class="form-group mx-3">
+                    <label>Weight Charge Collect:</label>
+                    <div>
+                        <InputNumber @bind-Value="@agentSubmitHawb.WeightChargeCC" class="form-control"/>
+                        <ValidationMessage For="@(()=> agentSubmitHawb.WeightChargeCC)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Valuation Charge Collect:</label>
+                    <div>
+                        <InputNumber @bind-Value="@agentSubmitHawb.ValuationChargeCC" class="form-control"/>
+                        <ValidationMessage For="@(()=> agentSubmitHawb.ValuationChargeCC)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Tax Collect:</label>
+                    <div>
+                        <InputNumber @bind-Value="@agentSubmitHawb.TaxCC" class="form-control"/>
+                        <ValidationMessage For="@(()=> agentSubmitHawb.TaxCC)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Total Other Charges Due Agent Collect:</label>
+                    <div>
+                        <InputNumber @bind-Value="@agentSubmitHawb.TotalOtherChargesDueAgentCC" class="form-control"/>
+                        <ValidationMessage For="@(()=> agentSubmitHawb.TotalOtherChargesDueAgentCC)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Total Other Charges Due Carrier Collect:</label>
+                    <div>
+                        <InputNumber @bind-Value="@agentSubmitHawb.TotalOtherChargesDueCarrierCC" class="form-control"/>
+                        <ValidationMessage For="@(()=> agentSubmitHawb.TotalOtherChargesDueCarrierCC)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Total Collect:</label>
+                    <div>
+                        <InputNumber @bind-Value="@agentSubmitHawb.TotalCollect" class="form-control"/>
+                        <ValidationMessage For="@(()=> agentSubmitHawb.TotalCollect)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-3 mr-2"  style="background-color: lightgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Issuing Date:</label>
+                        <div>
+                            <InputDate @bind-Value="@agentSubmitHawb.IssuingDate" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.IssuingDate)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Issuing Place:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.IssuingPlace" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.IssuingPlace)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Issuing Person Full Name:</label>
+                        <div>
+                            <InputText @bind-Value="@agentSubmitHawb.IssuingPersonFullName" class="form-control"/>
+                            <ValidationMessage For="@(()=> agentSubmitHawb.IssuingPersonFullName)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-3 mb-3" style="font-family:Calibri">
+    <button type="submit" class="btn btn-success">
+        @ButtonText
+    </button>
+    </div>
+
+</EditForm>
+
+@code {
+    
+    [Parameter] public AgentSubmitHawb agentSubmitHawb { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    
+    private IList<AgentSubmitShipper> AgentSubmitShippers;
+    private IList<AgentSubmitConsignee> AgentSubmitConsignees;
+
+    protected async override Task OnInitializedAsync()
+    {
+        
+        AgentSubmitShippers = await _client.GetFromJsonAsync<IList<AgentSubmitShipper>>(Endpoints.AgentSubmitShippersEndpoint);
+        AgentSubmitConsignees = await _client.GetFromJsonAsync<IList<AgentSubmitConsignee>>(Endpoints.AgentSubmitConsigneesEndpoint);
+    }
+
+    private async Task PopulateShipper()
+    {
+        await OnInitializedAsync();
+        var thisHawbShipper = AgentSubmitShippers.FirstOrDefault(q => q.Id == agentSubmitHawb.AgentSubmitShipperId);
+
+        if(thisHawbShipper != null)
+        {
+            agentSubmitHawb.ShipperName = thisHawbShipper.Name;
+            agentSubmitHawb.ShipperAddressA = thisHawbShipper.AddressA;
+            agentSubmitHawb.ShipperAddressB = thisHawbShipper.AddressB;
+            agentSubmitHawb.ShipperEmail = thisHawbShipper.Email;
+            agentSubmitHawb.ShipperPhoneNumber = thisHawbShipper.PhoneNumber;
+        }
+
+    }
+
+    private async Task PopulateConsignee()
+    {
+        await OnInitializedAsync();
+        var thisHawbConsignee = AgentSubmitConsignees.FirstOrDefault(q => q.Id == agentSubmitHawb.AgentSubmitConsigneeId);
+
+        if(thisHawbConsignee != null)
+        {
+            agentSubmitHawb.ConsigneeName = thisHawbConsignee.Name;
+            agentSubmitHawb.ConsigneeAddressA = thisHawbConsignee.AddressA;
+            agentSubmitHawb.ConsigneeAddressB = thisHawbConsignee.AddressB;
+            agentSubmitHawb.ConsigneeEmail = thisHawbConsignee.Email;
+            agentSubmitHawb.ConsigneePhoneNumber = thisHawbConsignee.PhoneNumber;
+        }
+        
+    }
+
+    private async Task CalculateAndPopulateCharges()
+    {
+        if(agentSubmitHawb.ChgsCode.ToUpper() == "PP")
+        {
+            if(agentSubmitHawb.RateClass.ToUpper() == "M" || agentSubmitHawb.RateClass.ToUpper() == "MIN")
+            {
+                agentSubmitHawb.TotalCharge = agentSubmitHawb.RateCharge;
+                agentSubmitHawb.WeightChargePP = agentSubmitHawb.TotalCharge;
+
+            }
+            else
+            {
+                agentSubmitHawb.TotalCharge = Math.Round((agentSubmitHawb.RateCharge * agentSubmitHawb.ChargeableWeight), 2);
+                agentSubmitHawb.WeightChargePP = Math.Round(agentSubmitHawb.TotalCharge, 2);
+            }
+
+            agentSubmitHawb.TotalPrepaid = Math.Round((agentSubmitHawb.WeightChargePP + agentSubmitHawb.ValuationChargePP + agentSubmitHawb.TaxPP + agentSubmitHawb.TotalOtherChargesDueAgentPP + agentSubmitHawb.TotalOtherChargesDueCarrierPP), 2);
+            await OnInitializedAsync();
+        }
+
+        if(agentSubmitHawb.ChgsCode.ToUpper() == "CC")
+        {
+            if(agentSubmitHawb.RateClass.ToUpper() == "M" || agentSubmitHawb.RateClass.ToUpper() == "MIN")
+            {
+                agentSubmitHawb.TotalCharge = agentSubmitHawb.RateCharge;
+                agentSubmitHawb.WeightChargeCC = agentSubmitHawb.TotalCharge;
+            }
+            else
+            {
+                agentSubmitHawb.TotalCharge = Math.Round((agentSubmitHawb.RateCharge * agentSubmitHawb.ChargeableWeight), 2);
+                agentSubmitHawb.WeightChargeCC = Math.Round(agentSubmitHawb.TotalCharge, 2);
+            }
+
+            agentSubmitHawb.TotalCollect = Math.Round((agentSubmitHawb.WeightChargeCC + agentSubmitHawb.ValuationChargeCC + agentSubmitHawb.TaxCC + agentSubmitHawb.TotalOtherChargesDueAgentCC + agentSubmitHawb.TotalOtherChargesDueCarrierCC), 2);
+            await OnInitializedAsync();
+        }
+    }
+
+    private async Task ChangePrepaidAndCollect()
+        {
+            agentSubmitHawb.WeightChargeCC = agentSubmitHawb.ValuationChargeCC = agentSubmitHawb.TaxCC = agentSubmitHawb.TotalOtherChargesDueAgentCC = agentSubmitHawb.TotalOtherChargesDueCarrierCC = 0;
+            agentSubmitHawb.WeightChargePP = agentSubmitHawb.ValuationChargePP = agentSubmitHawb.TaxPP = agentSubmitHawb.TotalOtherChargesDueAgentPP = agentSubmitHawb.TotalOtherChargesDueCarrierPP = 0;
+            await CalculateAndPopulateCharges();
+            await OnInitializedAsync();
+        }
+
+    
+
+}

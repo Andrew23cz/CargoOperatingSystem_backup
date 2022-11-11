@@ -1,0 +1,29 @@
+﻿@layout EmptyLayout
+@page "/mawbs/printview/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+@if(mawb == null)
+{
+    <div>Waiting ...</div>
+}
+else
+{
+    <MawbPrintViewNew mawb="mawb"/>
+}
+
+        
+
+@code {
+    [Parameter] public int id { get; set; }
+    Mawb mawb = new Mawb();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        mawb = await _client.GetFromJsonAsync<Mawb>($"{Endpoints.MawbsEndpoint}{id}");
+    }
+
+    
+}

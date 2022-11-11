@@ -1,0 +1,146 @@
+﻿@page "/awbstocks/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card-title">Create AWB Stock</h3>
+<hr />
+<br/>
+
+<EditForm Model="@awbstock" OnValidSubmit="CreateAwbStock">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group">
+        <label>Airline: </label>
+        <div>
+            <InputSelect @bind-Value="awbstock.AirlineId" @oninput="@PopulatePrefix" class="form-control">
+                <option value="">-- Select Airline --</option>
+                @if (Airlines != null)
+                {
+                    foreach (var airline in Airlines)
+                    {
+                        <option value="@airline.Id">@airline.Name</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => awbstock.AirlineId)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div>
+                <label>AWB Number:</label>
+                <label> @prefix</label>
+            </div>
+        </div>
+        <div>
+            <InputText @bind-Value="@awbstock.AwbNumber" class="form-control"/>
+            <ValidationMessage For="@(()=> awbstock.AwbNumber)" />
+        </div>
+    </div>
+            
+    <div class="form-group">
+        <label>Customer Assign (optional): </label>
+        <div>
+            <InputSelect @bind-Value="awbstock.CustomerId" class="form-control">
+                <option value="">-- Select Customer --</option>
+                @if (Customers != null)
+                {
+                    foreach (var customer in Customers)
+                    {
+                        <option value="@customer.Id">@customer.CompanyName</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => awbstock.AirlineId)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Count of AWB numbers:</label>
+        <div>
+            <InputNumber @bind-Value="@awbStockCount" class="form-control"/>
+            <ValidationMessage For="@(()=> awbStockCount)" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success btn-block">
+        Create AWB Stock
+    </button>
+
+</EditForm> 
+
+
+@code {
+
+    AwbStock awbstock = new AwbStock();
+    Shipment shipment = new Shipment();
+    private IList<Airline> Airlines;
+    private IList<Customer> Customers;
+    private IList<AwbStock> AwbStocks;
+    private string prefix = "";
+    int awbStockCount { get; set; } = 1;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+
+        Airlines = await _client.GetFromJsonAsync<IList<Airline>>(Endpoints.AirlinesEndpoint);
+        Customers = await _client.GetFromJsonAsync<IList<Customer>>(Endpoints.CustomersEndpoint);
+        AwbStocks = await _client.GetFromJsonAsync<IList<AwbStock>>(Endpoints.AwbStocksEndpoint);
+    }
+
+    private async Task PopulatePrefix()
+    {
+        var AirlinesForPrefix = await _client.GetFromJsonAsync<IList<Airline>>(Endpoints.AirlinesEndpoint);
+        var airline = AirlinesForPrefix.First(q => q.Id == awbstock.AirlineId);
+        prefix = airline.Prefix;
+        await OnInitializedAsync();
+    }
+
+    private async Task CreateAwbStock()
+    {
+        var listOfNumbers = AwbStockGenerator.Generator(awbStockCount, awbstock.AwbNumber);
+        bool awbExistAlert = false;
+
+
+        foreach (string awbNumber in listOfNumbers)
+        {
+            var existingAwb = AwbStocks.FirstOrDefault(q => q.AwbNumber == awbNumber);
+                
+            if(existingAwb != null)
+            {
+                if(existingAwb.AirlineId == awbstock.AirlineId)
+                {
+                    awbExistAlert = true;
+                }
+            }
+        }
+
+        if (!awbExistAlert)
+        {
+
+            foreach (string awbNumber in listOfNumbers)
+            {
+                    
+                awbstock.AwbNumber = awbNumber;
+                awbstock.AwbStatus = "Available";
+
+                //CREATE AWBSTOCK
+                await _client.PostAsJsonAsync(Endpoints.AwbStocksEndpoint, awbstock);
+           
+            }
+                
+            //NAVIGATE BACK TO AWBSTOCK INDEX
+            _navManager.NavigateTo(Endpoints.AwbStocksIndex);
+
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "AWB Number already existing!");
+        }
+    }
+}

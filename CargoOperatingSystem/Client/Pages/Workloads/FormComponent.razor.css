@@ -1,0 +1,24 @@
+﻿.e-checkbox-wrapper.e-info:hover .e-frame.e-check { /* csslint allow: adjoining-classes */
+    background-color: #0b7dda;
+}
+
+
+.e-input-group-icon:before {
+    font-family: e-icons;
+}
+
+.e-input-group .e-input-group-icon.e-input-calendar {
+    font-size: 16px;
+}
+
+.e-input-group-icon.e-input-calendar:before {
+    content: "";
+}
+
+#ShpmtSpecAndFlts {
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}

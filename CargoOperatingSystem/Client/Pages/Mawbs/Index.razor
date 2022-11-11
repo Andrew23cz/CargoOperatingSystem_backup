@@ -1,0 +1,94 @@
+﻿@page "/mawbs/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">List Of MAWBs</h3>
+<hr />
+<br/>
+@if(Mawbs == null)
+{
+    <div class="alert alert-info">Loading MAWBs ...</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>MAWB Number</th>
+                <th>Issuing Agent</th>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Pieces</th>
+                <th>GW</th>
+                <th>Vol</th>
+                <th>ChW</th>
+                <th>Shipper</th>
+                <th>Consignee</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var mawb in Mawbs)
+            {
+                <tr>
+                    <td>@mawb.AwbNumber</td>
+                    <td>@mawb.IssuingAgent</td>
+                    <td>@mawb.Origin</td>
+                    <td>@mawb.Destination</td>
+                    <td>@mawb.Pieces</td>
+                    <td>@mawb.GrossWeight</td>
+                    <td>@mawb.Volume</td>
+                    <td>@mawb.ChargeableWeight</td>
+                    <td>@mawb.ShipperName</td>
+                    <td>@mawb.ConsigneeName</td>
+                    <td>
+                        <a href="/mawbs/view/@mawb.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/mawbs/consolmanifestview/@mawb.Id" class="btn btn-secondary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/mawbs/cargolabelview/@mawb.Id" class="btn btn-info">
+                            <span class="oi oi-list"></span>
+                        </a>
+                        <a href="/mawbs/edit/@mawb.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick=@(()=>Delete(@mawb.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
+
+
+
+
+@code {
+
+    private IList<Mawb> Mawbs;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Mawbs = await _client.GetFromJsonAsync<IList<Mawb>>(Endpoints.MawbsEndpoint);
+    }
+
+    private async Task Delete(int mawbId)
+    {
+        var mawb = Mawbs.First(q => q.Id == mawbId); 
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete this MAWB: {mawb.AwbNumber}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.MawbsEndpoint}{mawbId}");
+            await OnInitializedAsync();
+        }
+    }
+}

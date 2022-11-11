@@ -1,0 +1,670 @@
+﻿<div class="hideWhenPrint">
+    <button class="btn-danger" @onclick="Print" style="margin-bottom: 10px;">Print HAWB</button>
+</div>
+
+<div id="hawbgrid01">
+
+    <div id="awbno01">
+        <div>@hawb.AwbNumber</div>
+    </div>
+    <div id="awbno02">
+        <div>HAWB No: @hawb.HawbNumber</div>
+    </div>
+    <div id="shipperaccountno">
+        <div>Shipper's Account Number</div>
+        <div style="font-size: 14px">dummy number</div>
+    </div>
+    <div id="airlinenote">
+        <div>Copies 1,2 and 3 of this Air Waybill are originals and have the same validity.</div>
+    </div>
+
+    <div id="shipperlabel">
+        <div>Shipper's Name and Adress</div>
+    </div>
+
+    <div id="shipper">
+        <div>@if (hawb.ShipperName == null){<text>&nbsp;</text>}else{@hawb.ShipperName}</div>
+        <div>@if (hawb.ShipperAddressA == null){<text>&nbsp;</text>}else{@hawb.ShipperAddressA}</div>
+        <div>@if (hawb.ShipperAddressB == null){<text>&nbsp;</text>}else{@hawb.ShipperAddressB}</div>
+        <div>@if (hawb.ShipperAddressC == null){<text>&nbsp;</text>}else{@hawb.ShipperAddressC}</div>
+    </div>
+
+    <div id="airline">
+        <div>@if (hawb.AirlineName == null){<text>&nbsp;</text>}else{@hawb.AirlineName}</div>
+        <div>@if (hawb.AirlineAddressA == null){<text>&nbsp;</text>}else{@hawb.AirlineAddressA}</div>
+        <div>@if (hawb.AirlineAddressB == null){<text>&nbsp;</text>}else{@hawb.AirlineAddressB}</div>
+    </div>
+
+    <div id="airlinelabels">
+        <div style="font-size: 10px;">Not Negotiable</div>
+        <div>Air Waybill</div>
+        <div style="font-size: 10px;">Issued by</div>
+
+    </div>
+
+    <div id="consigneeaccountno">
+        <div>Consignee's Account Number</div>
+        <div style="font-size: 14px">dummy number</div>
+    </div>
+    
+    <div id="consigneelabel">
+        <div>Consignee's Name and Adress</div>
+    </div>
+    
+    <div id="consignee">
+        <div>@if (hawb.ConsigneeName == null){<text>&nbsp;</text>}else{@hawb.ConsigneeName}</div>
+        <div>@if (hawb.ConsigneeAddressA == null){<text>&nbsp;</text>}else{@hawb.ConsigneeAddressA}</div>
+        <div>@if (hawb.ConsigneeAddressB == null){<text>&nbsp;</text>}else{@hawb.ConsigneeAddressB}</div>
+        <div>@if (hawb.ConsigneeAddressC == null){<text>&nbsp;</text>}else{@hawb.ConsigneeAddressC}</div>
+    </div>
+    
+    <div id="conditions01">
+        It is agreed that the goods described herein are accepted om apparent good order and
+        condition(except as noted) for carriage SUBJECT TO THE CONDITIONS OF CONTRACT ON THE
+        REVERSE HEREOF.ALL GOOGDS MAY BE CARRIED BY ANY OTHERMEANS INCLUDING ROAD OR ANY
+        OTHER CARRIER UNLESS SPECIFIC CONTRARY INSTRUCTIONS ARE GIVEN HEREON BY THE SHIPPER,
+        AND SHIPPER AGREESTHAT THE SHIPMENT MAY BE CARRIED VIA INTERMEDIATE STOPPING PLACE
+        WHICH THE CARRIER DEEMSAPPROPRIATE.THE SHIPPER'S ATTENTION IS DRAWNTO THE NOTICE
+        CONCERNING CARRIER'S LIMITATION OF LIABILITY.Shipper may increase such limitation of liability by
+        declaring a higervalue for carriage and paying a supplemental charge if required.
+    </div>
+
+    <div id="issuingagentlabel">
+        <div>Issuing Carrier's Agent and City</div>
+    </div>
+
+    <div id="issuingagent">
+        <div>@hawb.IssuingAgent</div>
+        <div>Dummy City</div>
+    </div>
+
+    <div id="agentiatacodelabel">
+        <div>Agent's IATA Code</div>
+    </div>
+
+    <div id="agentiatacode">
+        <div>@if (hawb.AgentIataCode == null){<text>&nbsp;</text>}else{@hawb.AgentIataCode}</div>
+    </div>
+
+    <div id="agentaccountnolabel">
+        <div>Account No.</div>
+    </div>
+
+    <div id="agentaccountno">
+        <div>@hawb.AgentAccountNumber</div>
+    </div>
+
+    <div id="accountinginfolabel">
+        <div>Accounting Information</div>
+    </div>
+
+    <div id="accountinginfo">
+        <div>@hawb.AccountingInfoA</div>
+        <div>@hawb.AccountingInfoB</div>
+        <div>@hawb.AccountingInfoC</div>
+    </div>
+
+    
+
+</div>
+
+
+<div id="hawbgrid02">
+    <div id="airportdeparturelabel">
+        <div>Airport of Departure (Addr. of First Carrier) and Requested Routing</div>
+    </div>
+
+    <div id="airportdeparture">
+         <div>@hawb.Origin</div>
+    </div>
+
+    <div id="refnumberlabel">
+        <div>Reference Number</div>
+    </div>
+
+    <div id="refnumber">
+        <div>@hawb.ReferenceNo</div>
+    </div>
+
+    <div id="optionalshipinfolabel">
+        <div>Optional Shipping Information</div>
+    </div>
+
+    <div id="optionalshipinfo01">
+        <div>@hawb.OptionalShippingInfoA</div>
+    </div>
+
+    <div id="optionalshipinfo02">
+        <div>@hawb.OptionalShippingInfoB</div>
+    </div>
+</div>
+
+<div id="hawbgrid03">
+    <div id="to01-lbl">
+        <div>To</div>
+    </div>
+
+    <div id="to01">
+        <div>@hawb.FirstFlightDest</div>
+    </div>
+
+    <div id="to02-lbl">
+         <div>to</div>
+    </div>
+
+    <div id="to02">
+        <div>@hawb.SecondFlightDest</div>
+    </div>
+
+    <div id="to03-lbl">
+        <div>to</div>
+    </div>
+
+    <div id="to03">
+        <div>@hawb.ThirdFlightDest</div>
+    </div>
+
+    <div id="by01-lbl">
+        <div>by</div>
+    </div>
+
+    <div id="by01">
+        <div>@hawb.FirstCarrierCode</div>
+    </div>
+
+    <div id="by02-lbl">
+        <div>by</div>
+    </div>
+
+    <div id="by02">
+        <div>@hawb.SecondCarrierCode</div>
+    </div>
+
+    <div id="firstcarrier-lbl">
+        <div>By First Carrier</div>
+    </div>
+
+    <div id="firstcarrier">
+        <div>@hawb.FirstCarrierCode</div>
+    </div>
+
+    <div id="routingdest-lbl">
+        <div>Routing and Destination</div>
+    </div>
+
+    <div id="currency-lbl">
+        <div>Currency</div>
+    </div>
+
+    <div id="currency">
+        <div>@hawb.Currency</div>
+    </div>
+
+    <div id="chgs-lbl">
+        <div>CHGS</div>
+        <div>Code</div>
+    </div>
+
+    <div id="chgs">
+        <div>@hawb.ChgsCode</div>
+    </div>
+
+    <div id="wtval-lbl">
+        <div>WT/VAL</div>
+    </div>
+
+    <div id="wtvalPP-lbl">
+        <div>PPD</div>
+    </div>
+
+    <div id="wtvalPP">
+        <div>@hawb.WtValPP</div>
+    </div>
+
+    <div id="wtvalCOL-lbl">
+        <div>COLL</div>
+    </div>
+
+    <div id="wtvalCOL">
+        <div>@hawb.WtValCOL</div>
+    </div>
+
+    <div id="other-lbl">
+        <div>Other</div>
+    </div>
+
+    <div id="otherPP-lbl">
+        <div>PPD</div>
+    </div>
+
+    <div id="otherCOL-lbl">
+        <div>COLL</div>
+    </div>
+
+    <div id="otherPP">
+        <div>@hawb.OtherChgsCodePP</div>
+    </div>
+
+    <div id="otherCOL">
+        <div>@hawb.OtherChgsCodeCOL</div>
+    </div>
+
+    <div id="decval-lbl">
+        <div>Declared Value for Carriage</div>
+    </div>
+
+    <div id="decval">
+        <div>@hawb.DeclaredValueCarriage</div>
+    </div>
+
+    <div id="decvalcust-lbl">
+        <div>Declared Value for Customs</div>
+    </div>
+
+    <div id="decvalcust">
+        <div>@hawb.DeclaredValueCustoms</div>
+    </div>
+</div>
+
+<div id="hawbgrid04">
+    
+    <div id="fltdate_lbl">
+         <div>Requested Flight / Date</div>
+    </div>
+
+    <div id="airportdest_lbl">
+        <div>Airport Destination</div>
+   </div>
+
+    <div id="insurance_lbl">
+        <div>Amount of Insurance</div>
+    </div>
+
+    <div id="handling_lbl">
+        <div>Handling Information</div>
+    </div>
+
+    <div id="sci_lbl">
+        <div>SCI</div>
+    </div>
+
+    <div id="insurancenote">
+        <div>INSURANCE - If carrier offers insurance, and such insurance is
+            requested on accordance with the conditions thereof, indicate amount
+            XXX to be insured in figured in figures in box marked "Amount of Insurance"</div>
+    </div>
+
+    <div id="fltdate01">
+        <div>@hawb.FirstFlightNoAndDate</div>
+    </div>
+
+    <div id="fltdate02">
+        <div>@hawb.SecondFlightNoAndDate</div>
+    </div>
+
+   <div id="airportdest">
+       <div>@hawb.Destination</div>
+  </div>
+
+   <div id="insurance">
+       <div>@hawb.AmountOfInsurance</div>
+   </div>
+
+   <div id="handlinginfo">
+       <div>@hawb.HandlingInfoA</div>
+       <div>@hawb.HandlingInfoB</div>
+       <div>@hawb.HandlingInfoC</div>
+   </div>
+
+   <div id="sci">
+       <div>@hawb.Sci</div>
+   </div>
+</div>
+
+<div id="hawbgrid05">
+    
+    <div id="pcs_lbl">
+         <div>No. of</div>
+         <div>Pieces</div>
+         <div>RCP</div>
+    </div>
+
+    <div id="grosswt__lbl">
+        <div>Gross</div>
+        <div>Weight</div>
+   </div>
+
+    <div id="kglb_lbl">
+        <div>kg</div>
+        <div>lb</div>
+    </div>
+
+    <div id="rateclass_lbl">
+        <div>Rate Class</div>
+    </div>
+
+    <div id="commitem_lbl">
+        <div>Commodity</div>
+        <div>Item No.</div>
+    </div>
+
+    <div id="chweight_lbl">
+        <div>Chargeable</div>
+        <div>Weight</div>
+    </div>
+
+    <div id="ratecharge_lbl">
+        <div>Rate / Charge</div>
+    </div>
+
+    <div id="total_lbl">
+        <div>Total</div>
+    </div>
+
+    <div id="goods_lbl">
+       <div>Nature and Quantity of Goods</div>
+       <div>(Incl. Dimennsions of Volume)</div>
+    </div>
+
+    <div id="pcs">
+        <div>@hawb.Pieces</div>
+    </div>
+
+    <div id="grosswt">
+        <div>@hawb.GrossWeight</div>
+    </div>
+
+    <div id="kglb">
+        <div>k</div>
+    </div>
+
+    <div id="rateclass">
+        <div>@hawb.RateClass</div>
+    </div>
+
+    <div id="commitem">
+        <div>@hawb.CommodityItemNo</div>
+    </div>
+
+    <div id="chweight">
+        <div>@hawb.ChargeableWeight</div>
+    </div>
+
+    <div id="ratecharge">
+        <div>@hawb.RateCharge</div>
+    </div>
+
+    <div id="total">
+        <div>@hawb.TotalCharge</div>
+    </div>
+
+    <div id="goods">
+        <div>@hawb.NatureAndQttyGoodsA</div>
+        <div>@hawb.NatureAndQttyGoodsB</div>
+        <div>@hawb.NatureAndQttyGoodsC</div>
+        <div>@hawb.NatureAndQttyGoodsD</div>
+        <div>@hawb.NatureAndQttyGoodsE</div>
+        <div>@hawb.NatureAndQttyGoodsF</div>
+        <div>@hawb.NatureAndQttyGoodsG</div>
+        <div>@hawb.NatureAndQttyGoodsH</div>
+        <div>@hawb.NatureAndQttyGoodsI</div>
+        <div>@hawb.NatureAndQttyGoodsJ</div>
+    </div>
+
+    <div id="pcsttl">
+        <div>@hawb.Pieces</div>
+    </div>
+
+    <div id="grosswtttl">
+        <div>@hawb.GrossWeight</div>
+    </div>
+
+    <div id="totalttl">
+        <div>@hawb.TotalCharge</div>
+    </div>
+</div>
+
+<div id="hawbgrid06">
+    <div id="prepaid_lbl">
+         <div>Prepaid</div>
+    </div>
+
+    <div id="prepaid01_lbl">
+         <div>&nbsp;</div>
+    </div>
+
+    <div id="prepaid02_lbl">
+         <div>&nbsp;</div>
+    </div>
+
+    <div id="wtcharge_lbl">
+        <div>Weight Charge</div>
+    </div>
+
+    <div id="collect_lbl">
+        <div>Collect</div>
+    </div>
+
+    <div id="collect01_lbl">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="collect02_lbl">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="wtchargePP">
+        <div>@hawb.WeightChargePP</div>
+    </div>
+
+    <div id="wtchargeCOL">
+        <div>@hawb.WeightChargeCC</div>
+    </div>
+
+    <div id="valcharge_lbl">
+        <div>Valuation Charge</div>
+    </div>
+
+    <div id="valchargePP">
+        <div>@hawb.ValuationChargePP</div>
+    </div>
+
+    <div id="valchargeCOL">
+        <div>@hawb.ValuationChargeCC</div>
+    </div>
+
+    <div id="tax_lbl">
+       <div>Tax</div>
+    </div>
+
+    <div id="taxPP">
+        <div>@hawb.TaxPP</div>
+    </div>
+
+    <div id="taxCOL">
+        <div>@hawb.TaxCC</div>
+    </div>
+
+    <div id="othcharges_lbl">
+        <div>Other Charges</div>
+    </div>
+
+    <div id="othcharges">
+        <div>@hawb.OtherChargeA</div>
+        <div>@hawb.OtherChargeB</div>
+        <div>@hawb.OtherChargeC</div>
+        <div>@hawb.OtherChargeD</div>
+    </div>
+</div>
+
+
+
+<div id="hawbgrid07">
+
+    <div id="prepaid03_lbl">
+         <div>&nbsp;</div>
+    </div>
+
+    <div id="prepaid04_lbl">
+         <div>&nbsp;</div>
+    </div>
+
+    <div id="collect03_lbl">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="collect04_lbl">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="tocda_lbl">
+        <div>Total Other Charges Due Agent</div>
+    </div>
+
+    <div id="tocdaPP">
+        <div>@hawb.TotalOtherChargesDueAgentPP</div>
+    </div>
+
+    <div id="tocdaCOL">
+        <div>@hawb.TotalOtherChargesDueAgentCC</div>
+    </div>
+
+    <div id="tocdc_lbl">
+        <div>Total Other Charges Due Carrier</div>
+        </div>
+
+    <div id="tocdcPP">
+        <div>@hawb.TotalOtherChargesDueCarrierPP</div>
+    </div>
+
+    <div id="tocdcCOL">
+        <div>@hawb.TotalOtherChargesDueCarrierCC</div>
+    </div>
+
+    <div id="emptyA">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="emptyB">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="empty01">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="empty02">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="shippernote">
+        <div>Shipper certifies that the particulars on the face hereof are correct and thant isofar as any part of the consignment contains dangerous
+            goods, such part is properly described by name and is in proper condition for carriage by air according to the applicable Dangerous
+            Goods Regulations</div>
+    </div>
+
+    <div id="shipper_lbl">
+        <div>-----------------------------------------------------------------------------------------------------------------------------------</div>
+        <div>Signature of Shipper or his Agent</div>
+    </div>
+
+
+
+
+
+    <div id="carriersign">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="carriersigndate">
+        <div>@hawb.IssuingDate.ToShortDateString()</div>
+    </div>
+
+    <div id="carriersignplace">
+        <div>@hawb.IssuingPlace</div>
+    </div>
+
+    <div id="carriersignname">
+        <div>@hawb.IssuingPersonFullName</div>
+    </div>
+
+    <div id="carrier_lbl_01">
+        <div>-----------------------------------------------------------------------------------------------------------------------------------</div>
+    </div>
+
+    <div id="carrier_lbl_02">
+        <div>Executed on (date)</div>
+    </div>
+
+    <div id="carrier_lbl_03">
+        <div>at (place)</div>
+    </div>
+
+    <div id="carrier_lbl_04">
+        <div>Signature of Issuing Carrier or its Agent</div>
+    </div>
+
+    <div id="ttlPP_lbl">
+        <div>Total Prepaid</div>
+    </div>
+
+    <div id="ttlCOL_lbl">
+        <div>Total Collect</div>
+    </div>
+
+    <div id="ttlPP">
+        <div>@hawb.TotalPrepaid</div>
+    </div>
+
+    <div id="ttlCOL">
+        <div>@hawb.TotalCollect</div>
+    </div>
+
+    <div id="cucorates_lbl">
+        <div>Currency Conversion Rates</div>
+    </div>
+
+    <div id="cccharindst_lbl">
+        <div>CC Charges in Dest. Currency</div>
+    </div>
+
+    <div id="cucorates">
+        <div>@hawb.CuCoRates</div>
+    </div>
+
+    <div id="cccharindst">
+        <div>@hawb.CcChgsInDestCurrency</div>
+    </div>
+
+    <div id="carrieruse">
+        <div>For Carrier's Use only</div>
+        <div>at Destination</div>
+    </div>
+
+    <div id="chgsdest_lbl">
+        <div>Charges at Destination</div>
+    </div>
+
+    <div id="chgsdest">
+        <div>@if (@hawb.ChgsAtDest == null){<text>&nbsp;</text>}else{@hawb.ChgsAtDest}</div>
+    </div>
+
+    <div id="ttlcolchgs_lbl">
+        <div>Total Collect Charges</div>
+    </div>
+
+    <div id="ttlcolchgs">
+        <div>@hawb.TotalCcChgs</div>
+    </div>
+
+    <div id="awbno03">
+        <div>HAWB No: @hawb.HawbNumber</div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Hawb hawb { get; set; }
+    [Parameter] public EventCallback Print { get; set; }
+
+}
+

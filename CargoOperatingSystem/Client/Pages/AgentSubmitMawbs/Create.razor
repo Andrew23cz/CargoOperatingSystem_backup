@@ -1,0 +1,171 @@
+﻿@page "/agentsubmitmawbs/create/{id:int}"
+@using System.Text.Json
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card-title">Create MAWB</h3>
+<hr />
+
+<FormComponent ButtonText="Create MAWB" OnValidSubmit="@CreateAgentSubmitMawb" agentSubmitMawb="agentSubmitMawb"/>
+
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    string userId;
+
+    [Parameter]public int id { get; set; }
+    AgentSubmitMawb agentSubmitMawb = new AgentSubmitMawb();
+    AgentSubmitModel agentSubmitModel = new AgentSubmitModel();
+    IList<Airline> Airlines;
+    IList<Customer> Customers;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = (await authenticationStateTask).User;
+        userId = user.FindFirst(CustomClaimTypes.Company).Value;
+        agentSubmitModel = await _client.GetFromJsonAsync<AgentSubmitModel>($"{Endpoints.AgentSubmitModelsEndpoint}{id}");
+        Airlines = await _client.GetFromJsonAsync<IList<Airline>>($"{Endpoints.AirlinesEndpoint}");
+        Customers = await _client.GetFromJsonAsync<IList<Customer>>($"{Endpoints.CustomersEndpoint}");
+        var thisModelAirline = Airlines.FirstOrDefault(q => q.Prefix == (agentSubmitModel.AwbNumber).Substring(0,3));
+        var thisModelCustomer = Customers.FirstOrDefault(q => q.CompanyName == userId);
+
+        agentSubmitMawb.AwbNumber = agentSubmitModel.AwbNumber;
+        agentSubmitMawb.Origin = agentSubmitModel.Origin;
+        agentSubmitMawb.Destination = agentSubmitModel.Destination;
+        agentSubmitMawb.Pieces = agentSubmitModel.Pieces;
+        agentSubmitMawb.GrossWeight = agentSubmitModel.GrossWeight;
+        agentSubmitMawb.Volume = agentSubmitModel.Volume;
+        agentSubmitMawb.ChargeableWeight = agentSubmitModel.ChargeableWeight;
+        agentSubmitMawb.Commodity = agentSubmitModel.Commodity;
+        agentSubmitMawb.FirstFlightNoAndDate = $"{agentSubmitModel.FirstFlightNumber}/{agentSubmitModel.FirstFlightDate.ToShortDateString()}";
+        agentSubmitMawb.FirstFlightDest = agentSubmitModel.FirstFlightDest;
+        agentSubmitMawb.SecondFlightNoAndDate = $"{agentSubmitModel.SecondFlightNumber}/{agentSubmitModel.SecondFlightDate.ToShortDateString()}";
+        agentSubmitMawb.SecondFlightDest = agentSubmitModel.SecondFlightDest;
+        agentSubmitMawb.ThirdFlightNoAndDate = $"{agentSubmitModel.ThirdFlightNumber}/{agentSubmitModel.ThirdFlightDate.ToShortDateString()}";
+        agentSubmitMawb.ThirdFlightDest = agentSubmitModel.ThirdFlightDest;
+        agentSubmitMawb.OtherChargeA = agentSubmitModel.ShcA;
+        agentSubmitMawb.OtherChargeB = agentSubmitModel.ShcB;
+        agentSubmitMawb.OtherChargeC = agentSubmitModel.ShcC;
+
+        if(thisModelCustomer != null)
+        {
+            agentSubmitMawb.IssuingAgent = thisModelCustomer.CompanyName;
+            agentSubmitMawb.IssuingAgentAddressA = thisModelCustomer.HqAddressA;
+            agentSubmitMawb.IssuingAgentAddressA = thisModelCustomer.HqAddressB;
+            agentSubmitMawb.IssuingAgentAddressA = thisModelCustomer.HqAddressC;
+            agentSubmitMawb.AgentIataCode = thisModelCustomer.IataCode;
+        }
+
+        if(thisModelAirline != null)
+        {
+            agentSubmitMawb.AirlineName = thisModelAirline.Name;
+            agentSubmitMawb.AirlineAddressA = thisModelAirline.AwbHeaderA;
+            agentSubmitMawb.AirlineAddressB = thisModelAirline.AwbHeaderB;
+            agentSubmitMawb.AirlineName = thisModelAirline.Name;
+            agentSubmitMawb.AirlineAddressA = thisModelAirline.AwbHeaderA;
+            agentSubmitMawb.AirlineAddressB = thisModelAirline.AwbHeaderB;
+            agentSubmitMawb.FirstCarrierCode = thisModelAirline.Code;
+            agentSubmitMawb.SecondCarrierCode = thisModelAirline.Code;
+            agentSubmitMawb.ThirdCarrierCode = thisModelAirline.Code;
+        }
+
+
+        if(agentSubmitModel.AgentSubmitDims.Count() != 0)
+        {
+            List<string> dims = new List<string>();
+            int dimcount = 0;
+
+            for (int i = 0; i < agentSubmitModel.AgentSubmitDims.Count(); i++)
+            {
+                string currentDim = $"{agentSubmitModel.AgentSubmitDims[i].Pieces}pcs-{agentSubmitModel.AgentSubmitDims[i].Length}x{agentSubmitModel.AgentSubmitDims[i].Width}x{agentSubmitModel.AgentSubmitDims[i].Height}cm";
+                dims.Add(currentDim);
+                dimcount++;
+            }
+
+            agentSubmitMawb.NatureAndQttyGoodsA = dims[0];
+            dimcount--;
+
+            if(dimcount > 0)
+            {
+                agentSubmitMawb.NatureAndQttyGoodsB = dims[1];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                agentSubmitMawb.NatureAndQttyGoodsC = dims[2];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                agentSubmitMawb.NatureAndQttyGoodsD = dims[3];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                agentSubmitMawb.NatureAndQttyGoodsE = dims[4];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                agentSubmitMawb.NatureAndQttyGoodsF = dims[5];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                agentSubmitMawb.NatureAndQttyGoodsG = dims[6];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                agentSubmitMawb.NatureAndQttyGoodsH = dims[7];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                agentSubmitMawb.NatureAndQttyGoodsI = dims[8];
+                dimcount--;
+            }
+
+
+        }
+
+        agentSubmitMawb.NatureAndQttyGoodsJ = $"Volume: {agentSubmitModel.Volume}";
+
+
+
+        
+    }
+
+    private async Task CreateAgentSubmitMawb()
+    {
+        if(agentSubmitMawb.AgentSubmitShipperId != null && agentSubmitMawb.AgentSubmitConsigneeId != null)
+        {
+            var success = await _client.PostAsJsonAsync(Endpoints.AgentSubmitMawbsEndpoint, agentSubmitMawb);
+
+            if (success.IsSuccessStatusCode)
+            {
+                await js.InvokeVoidAsync("alert", "MAWB Created!");
+                _navManager.NavigateTo($"{Endpoints.AgentSubmitMawbsIndex}");
+            }
+            else
+            {
+                await js.InvokeVoidAsync("alert", "ERROR !!!");
+            }
+
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "Please select both shipper and consignee!");
+        }
+    }
+}

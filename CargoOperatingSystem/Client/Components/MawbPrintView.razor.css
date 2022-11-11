@@ -1,0 +1,36 @@
+﻿
+.mainDiv {
+    width: 50%;
+}
+
+table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+
+th,
+td {
+    vertical-align: top;
+    text-align: left;
+}
+
+    td[rowspan] {
+        vertical-align: top;
+        text-align: left;
+    }
+
+shipperBox {
+    width: 10.5cm;
+}
+
+@media print {
+
+    .mainDiv {
+        width: calc(210mm * 1.20);
+        height: calc(297mm * 1.20);
+    }
+}
+
+
+

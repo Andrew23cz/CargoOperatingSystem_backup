@@ -1,0 +1,445 @@
+﻿@media (orientation: portrait) {
+    #invoicegrid01 {
+        display: grid;
+        grid-template-areas:    "logoheader             logoheader             invoicenumber01          invoicenumber01"
+                                "supplier_label         supplier_label         supplier_label           supplier_label"
+                                "suppliername           supplierid             supplierbankname         supplierbankname "
+                                "invoiceaddress_label   invoiceaddress_label   invoiceresidency_label   invoiceresidency_label"
+                                "customerinvoiceaddress customerinvoiceaddress customerresidencyaddress customerresidencyaddress"
+                                "invoicedates_label     invoicedates_label     invoicedates_label       invoicedates_label"
+                                "invoicedatelabels      invoicedatevalues      invoicenumber            invoicenumber"
+                                "invoicerates_label     invoicerates_label     invoicerates_label       invoicerates_label"
+                                "taxratelabel           taxbaselabel           taxamountlabel           taxamountlabel"
+                                "taxrate0label          taxbaseamount0         taxamount0               taxamount0"
+                                "taxrate15label         taxbaseamount15        taxamount15              taxamount15"
+                                "taxrate21label         taxbaseamount21        taxamount21              taxamount21"
+                                "invoicetotal_label     invoicetotal_label     invoicetotal_label       invoicetotal_label"
+                                "totalwithouttaxlabel   totalwithouttaxlabel   totalwithouttaxamount    totalwithouttaxamount"
+                                "totaltaxlabel          totaltaxlabel          totaltaxamount           totaltaxamount"
+                                "totalwithtaxlabel      totalwithtaxlabel      totalwithtaxamount       totalwithtaxamount"
+                                "note_label             note_label             note_label               note_label"
+                                "note01                 note01                 note01                   note01"
+                                "note02                 note02                 note02                   note02";
+
+        grid-template-columns: 1.1fr 1fr 1fr 0.9fr;
+        grid-template-rows: auto auto auto auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #invoicegrid01 {
+        display: grid;
+        width: 50%;
+        grid-template-areas:    "logoheader             logoheader             invoicenumber01          invoicenumber01"
+                                "supplier_label         supplier_label         supplier_label           supplier_label"
+                                "suppliername           supplierid             supplierbankname         supplierbankname "
+                                "invoiceaddress_label   invoiceaddress_label   invoiceresidency_label   invoiceresidency_label"
+                                "customerinvoiceaddress customerinvoiceaddress customerresidencyaddress customerresidencyaddress"
+                                "invoicedates_label     invoicedates_label     invoicedates_label       invoicedates_label"
+                                "invoicedatelabels      invoicedatevalues      invoicenumber            invoicenumber"
+                                "invoicerates_label     invoicerates_label     invoicerates_label       invoicerates_label"
+                                "taxratelabel           taxbaselabel           taxamountlabel           taxamountlabel"
+                                "taxrate0label          taxbaseamount0         taxamount0               taxamount0"
+                                "taxrate15label         taxbaseamount15        taxamount15              taxamount15"
+                                "taxrate21label         taxbaseamount21        taxamount21              taxamount21"
+                                "invoicetotal_label     invoicetotal_label     invoicetotal_label       invoicetotal_label"
+                                "totalwithouttaxlabel   totalwithouttaxlabel   totalwithouttaxamount    totalwithouttaxamount"
+                                "totaltaxlabel          totaltaxlabel          totaltaxamount           totaltaxamount"
+                                "totalwithtaxlabel      totalwithtaxlabel      totalwithtaxamount       totalwithtaxamount"
+                                "note_label             note_label             note_label               note_label"
+                                "note01                 note01                 note01                   note01"
+                                "note02                 note02                 note02                   note02";
+
+        grid-template-columns: 1.1fr 1fr 1fr 0.9fr;
+        grid-template-rows: auto auto auto auto;
+    }
+}
+
+#logoheader {
+    grid-area: logoheader;
+    font-size: 14px;
+    padding-bottom: 10px;
+    border-color: black;
+}
+
+#supplier_label {
+    grid-area: supplier_label;
+    font-size: 12px;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    border-color: black;
+}
+
+#suppliername {
+    grid-area: suppliername;
+    font-size: 14px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    border-color: black;
+}
+
+#supplierid {
+    grid-area: supplierid;
+    font-size: 14px;
+    padding-top: 10px;
+    margin-bottom: 10px;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#supplierbankname {
+    grid-area: supplierbankname;
+    font-size: 14px;
+    text-align: right;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+    border-top: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    border-color: black;
+}
+
+#empty {
+    grid-area: empty;
+    font-size: 14px;
+    border-color: black;
+}
+
+#invoiceaddress_label {
+    grid-area: invoiceaddress_label;
+    font-size: 12px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    border-color: black;
+}
+
+#invoiceresidency_label {
+    grid-area: invoiceresidency_label;
+    font-size: 12px;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    padding-left: 20px;
+    border-color: black;
+}
+
+#customerinvoiceaddress {
+    grid-area: customerinvoiceaddress;
+    font-size: 14px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 1px solid;
+    border-radius: 10px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    border-color: black;
+}
+
+#customerresidencyaddress {
+    grid-area: customerresidencyaddress;
+    font-size: 14px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 1px solid;
+    border-radius: 10px;
+    margin-left: 10px;
+    margin-bottom: 15px;
+    border-color: black;
+}
+
+#invoicedates_label {
+    grid-area: invoicedates_label;
+    font-size: 12px;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    border-color: black;
+}
+
+#invoicedatelabels {
+    grid-area: invoicedatelabels;
+    font-size: 14px;
+    margin-bottom: 15px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    border-left: 1px solid;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    border-color: black;
+}
+
+#invoicedatevalues {
+    grid-area: invoicedatevalues;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#invoicerates_label {
+    grid-area: invoicerates_label;
+    font-size: 12px;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    border-color: black;
+}
+
+#invoicenumber {
+    grid-area: invoicenumber;
+    font-size: 14px;
+    text-align: right;
+    margin-bottom: 15px;
+    padding-top: 10px;
+    padding-right: 10px;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    border-color: black;
+}
+
+#invoicenumber01 {
+    grid-area: invoicenumber01;
+    font-size: 14px;
+    text-align: right;
+    padding-right: 10px;
+    border-color: black;
+}
+
+#taxratelabel {
+    grid-area: taxratelabel;
+    font-size: 14px;
+    padding-top: 10px;
+    padding-left: 10px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-top-left-radius: 10px;
+    border-color: black;
+}
+
+#taxbaselabel {
+    grid-area: taxbaselabel;
+    font-size: 14px;
+    padding-top: 10px;
+    border-top: 1px solid;
+    border-color: black;
+}
+
+#taxamountlabel {
+    grid-area: taxamountlabel;
+    font-size: 14px;
+    padding-top: 10px;
+    padding-left: 20px;
+    border-top: 1px solid;
+    border-right: 1px solid;
+    border-top-right-radius: 10px;
+    border-color: black;
+}
+
+#taxrate0label {
+    grid-area: taxrate0label;
+    font-size: 14px;
+    padding-top: 5px;
+    padding-left: 10px;
+    border-left: 1px solid;
+    border-color: black;
+}
+
+#taxrate15label {
+    grid-area: taxrate15label;
+    font-size: 14px;
+    padding-left: 10px;
+    border-left: 1px solid;
+    border-color: black;
+}
+
+#taxrate21label {
+    grid-area: taxrate21label;
+    font-size: 14px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    border-bottom-left-radius: 10px;
+    border-color: black;
+}
+
+#taxbaseamount0 {
+    grid-area: taxbaseamount0;
+    font-size: 14px;
+    padding-top: 5px;
+    border-color: black;
+}
+
+#taxbaseamount15 {
+    grid-area: taxbaseamount15;
+    font-size: 14px;
+    border-color: black;
+}
+
+#taxbaseamount21 {
+    grid-area: taxbaseamount21;
+    font-size: 14px;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#taxamount0 {
+    grid-area: taxamount0;
+    font-size: 14px;
+    padding-top: 5px;
+    padding-left: 20px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#taxamount15 {
+    grid-area: taxamount15;
+    font-size: 14px;
+    padding-left: 20px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#taxamount21 {
+    grid-area: taxamount21;
+    font-size: 14px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-bottom-right-radius: 10px;
+    border-color: black;
+}
+
+#invoicetotal_label {
+    grid-area: invoicetotal_label;
+    font-size: 12px;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    border-color: black;
+}
+
+#totalwithouttaxlabel {
+    grid-area: totalwithouttaxlabel;
+    font-size: 14px;
+    padding-top: 10px;
+    padding-left: 10px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-top-left-radius: 10px;
+    border-color: black;
+}
+
+#totaltaxlabel {
+    grid-area: totaltaxlabel;
+    font-size: 14px;
+    padding-left: 10px;
+    border-left: 1px solid;
+    border-color: black;
+}
+
+#totalwithtaxlabel {
+    grid-area: totalwithtaxlabel;
+    font-size: 14px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+    border-bottom-left-radius: 10px;
+    border-color: black;
+}
+
+#totalwithouttaxamount {
+    grid-area: totalwithouttaxamount;
+    font-size: 14px;
+    padding-top: 10px;
+    border-top: 1px solid;
+    border-right: 1px solid;
+    border-top-right-radius: 10px;
+    border-color: black;
+}
+
+#totaltaxamount {
+    grid-area: totaltaxamount;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#totalwithtaxamount {
+    grid-area: totalwithtaxamount;
+    font-size: 14px;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-bottom-right-radius: 10px;
+    border-color: black;
+}
+
+#note_label {
+    grid-area: note_label;
+    font-size: 12px;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    border-color: black;
+}
+
+#note01 {
+    grid-area: note01;
+    font-size: 14px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-color: black;
+}
+
+#note02 {
+    grid-area: note02;
+    font-size: 14px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-color: black;
+}

@@ -1,0 +1,694 @@
+﻿<div class="hideWhenPrint">
+    <button class="btn-danger" @onclick="Print" style="margin-bottom: 10px;">Print MAWB</button>
+</div>
+
+
+    
+
+
+<div id="mawbgrid01">
+
+    <div id="barcode">
+        <div>@barcode</div>
+    </div>
+
+@*    <div id="barcode_text">
+        <div>@mawb.AwbNumber</div>
+    </div>*@
+
+    <div id="barcode01">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="barcode02">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="awbno01">
+        <div>@mawb.AwbNumber</div>
+    </div>
+    <div id="awbno02">
+        <div>@mawb.AwbNumber</div>
+    </div>
+    <div id="shipperaccountno">
+        <div>Shipper's Account Number</div>
+        <div style="font-size: 14px">dummy number</div>
+    </div>
+    <div id="airlinenote">
+        <div>Copies 1,2 and 3 of this Air Waybill are originals and have the same validity.</div>
+    </div>
+
+    <div id="shipperlabel">
+        <div>Shipper's Name and Adress</div>
+    </div>
+
+    <div id="shipper">
+        <div>@if (mawb.ShipperName == null){<text>&nbsp;</text>}else{@mawb.ShipperName}</div>
+        <div>@if (mawb.ShipperAddressA == null){<text>&nbsp;</text>}else{@mawb.ShipperAddressA}</div>
+        <div>@if (mawb.ShipperAddressB == null){<text>&nbsp;</text>}else{@mawb.ShipperAddressB}</div>
+        <div>@if (mawb.ShipperAddressC == null){<text>&nbsp;</text>}else{@mawb.ShipperAddressC}</div>
+    </div>
+
+    <div id="airline">
+        <div>@if (mawb.AirlineName == null){<text>&nbsp;</text>}else{@mawb.AirlineName}</div>
+        <div>@if (mawb.AirlineAddressA == null){<text>&nbsp;</text>}else{@mawb.AirlineAddressA}</div>
+        <div>@if (mawb.AirlineAddressB == null){<text>&nbsp;</text>}else{@mawb.AirlineAddressB}</div>
+    </div>
+
+    <div id="airlinelabels">
+        <div style="font-size: 10px;">Not Negotiable</div>
+        <div>Air Waybill</div>
+        <div style="font-size: 10px;">Issued by</div>
+
+    </div>
+
+    <div id="consigneeaccountno">
+        <div>Consignee's Account Number</div>
+        <div style="font-size: 14px">dummy number</div>
+    </div>
+    
+    <div id="consigneelabel">
+        <div>Consignee's Name and Adress</div>
+    </div>
+    
+    <div id="consignee">
+        <div>@if (mawb.ConsigneeName == null){<text>&nbsp;</text>}else{@mawb.ConsigneeName}</div>
+        <div>@if (mawb.ConsigneeAddressA == null){<text>&nbsp;</text>}else{@mawb.ConsigneeAddressA}</div>
+        <div>@if (mawb.ConsigneeAddressB == null){<text>&nbsp;</text>}else{@mawb.ConsigneeAddressB}</div>
+        <div>@if (mawb.ConsigneeAddressC == null){<text>&nbsp;</text>}else{@mawb.ConsigneeAddressC}</div>
+    </div>
+    
+    <div id="conditions01">
+        It is agreed that the goods described herein are accepted om apparent good order and
+        condition(except as noted) for carriage SUBJECT TO THE CONDITIONS OF CONTRACT ON THE
+        REVERSE HEREOF.ALL GOOGDS MAY BE CARRIED BY ANY OTHERMEANS INCLUDING ROAD OR ANY
+        OTHER CARRIER UNLESS SPECIFIC CONTRARY INSTRUCTIONS ARE GIVEN HEREON BY THE SHIPPER,
+        AND SHIPPER AGREESTHAT THE SHIPMENT MAY BE CARRIED VIA INTERMEDIATE STOPPING PLACE
+        WHICH THE CARRIER DEEMSAPPROPRIATE.THE SHIPPER'S ATTENTION IS DRAWNTO THE NOTICE
+        CONCERNING CARRIER'S LIMITATION OF LIABILITY.Shipper may increase such limitation of liability by
+        declaring a higervalue for carriage and paying a supplemental charge if required.
+    </div>
+
+    <div id="issuingagentlabel">
+        <div>Issuing Carrier's Agent and City</div>
+    </div>
+
+    <div id="issuingagent">
+        <div>@mawb.IssuingAgent</div>
+        <div>Dummy City</div>
+    </div>
+
+    <div id="agentiatacodelabel">
+        <div>Agent's IATA Code</div>
+    </div>
+
+    <div id="agentiatacode">
+        <div>@if (mawb.AgentIataCode == null){<text>&nbsp;</text>}else{@mawb.AgentIataCode}</div>
+    </div>
+
+    <div id="agentaccountnolabel">
+        <div>Account No.</div>
+    </div>
+
+    <div id="agentaccountno">
+        <div>@mawb.AgentAccountNumber</div>
+    </div>
+
+    <div id="accountinginfolabel">
+        <div>Accounting Information</div>
+    </div>
+
+    <div id="accountinginfo">
+        <div>@mawb.AccountingInfoA</div>
+        <div>@mawb.AccountingInfoB</div>
+        <div>@mawb.AccountingInfoC</div>
+    </div>
+
+    
+
+</div>
+
+
+<div id="mawbgrid02">
+    <div id="airportdeparturelabel">
+        <div>Airport of Departure (Addr. of First Carrier) and Requested Routing</div>
+    </div>
+
+    <div id="airportdeparture">
+         <div>@mawb.Origin</div>
+    </div>
+
+    <div id="refnumberlabel">
+        <div>Reference Number</div>
+    </div>
+
+    <div id="refnumber">
+        <div>@mawb.ReferenceNo</div>
+    </div>
+
+    <div id="optionalshipinfolabel">
+        <div>Optional Shipping Information</div>
+    </div>
+
+    <div id="optionalshipinfo01">
+        <div>@mawb.OptionalShippingInfoA</div>
+    </div>
+
+    <div id="optionalshipinfo02">
+        <div>@mawb.OptionalShippingInfoB</div>
+    </div>
+</div>
+
+<div id="mawbgrid03">
+    <div id="to01-lbl">
+        <div>To</div>
+    </div>
+
+    <div id="to01">
+        <div>@mawb.FirstFlightDest</div>
+    </div>
+
+    <div id="to02-lbl">
+         <div>to</div>
+    </div>
+
+    <div id="to02">
+        <div>@mawb.SecondFlightDest</div>
+    </div>
+
+    <div id="to03-lbl">
+        <div>to</div>
+    </div>
+
+    <div id="to03">
+        <div>@mawb.ThirdFlightDest</div>
+    </div>
+
+    <div id="by01-lbl">
+        <div>by</div>
+    </div>
+
+    <div id="by01">
+        <div>@mawb.FirstCarrierCode</div>
+    </div>
+
+    <div id="by02-lbl">
+        <div>by</div>
+    </div>
+
+    <div id="by02">
+        <div>@mawb.SecondCarrierCode</div>
+    </div>
+
+    <div id="firstcarrier-lbl">
+        <div>By First Carrier</div>
+    </div>
+
+    <div id="firstcarrier">
+        <div>@mawb.FirstCarrierCode</div>
+    </div>
+
+    <div id="routingdest-lbl">
+        <div>Routing and Destination</div>
+    </div>
+
+    <div id="currency-lbl">
+        <div>Currency</div>
+    </div>
+
+    <div id="currency">
+        <div>@mawb.Currency</div>
+    </div>
+
+    <div id="chgs-lbl">
+        <div>CHGS</div>
+        <div>Code</div>
+    </div>
+
+    <div id="chgs">
+        <div>@mawb.ChgsCode</div>
+    </div>
+
+    <div id="wtval-lbl">
+        <div>WT/VAL</div>
+    </div>
+
+    <div id="wtvalPP-lbl">
+        <div>PPD</div>
+    </div>
+
+    <div id="wtvalPP">
+        <div>@mawb.WtValPP</div>
+    </div>
+
+    <div id="wtvalCOL-lbl">
+        <div>COLL</div>
+    </div>
+
+    <div id="wtvalCOL">
+        <div>@mawb.WtValCOL</div>
+    </div>
+
+    <div id="other-lbl">
+        <div>Other</div>
+    </div>
+
+    <div id="otherPP-lbl">
+        <div>PPD</div>
+    </div>
+
+    <div id="otherCOL-lbl">
+        <div>COLL</div>
+    </div>
+
+    <div id="otherPP">
+        <div>@mawb.OtherChgsCodePP</div>
+    </div>
+
+    <div id="otherCOL">
+        <div>@mawb.OtherChgsCodeCOL</div>
+    </div>
+
+    <div id="decval-lbl">
+        <div>Declared Value for Carriage</div>
+    </div>
+
+    <div id="decval">
+        <div>@mawb.DeclaredValueCarriage</div>
+    </div>
+
+    <div id="decvalcust-lbl">
+        <div>Declared Value for Customs</div>
+    </div>
+
+    <div id="decvalcust">
+        <div>@mawb.DeclaredValueCustoms</div>
+    </div>
+</div>
+
+<div id="mawbgrid04">
+    
+    <div id="fltdate_lbl">
+         <div>Requested Flight / Date</div>
+    </div>
+
+    <div id="airportdest_lbl">
+        <div>Airport Destination</div>
+   </div>
+
+    <div id="insurance_lbl">
+        <div>Amount of Insurance</div>
+    </div>
+
+    <div id="handling_lbl">
+        <div>Handling Information</div>
+    </div>
+
+    <div id="sci_lbl">
+        <div>SCI</div>
+    </div>
+
+    <div id="insurancenote">
+        <div>INSURANCE - If carrier offers insurance, and such insurance is
+            requested on accordance with the conditions thereof, indicate amount
+            XXX to be insured in figured in figures in box marked "Amount of Insurance"</div>
+    </div>
+
+    <div id="fltdate01">
+        <div>@mawb.FirstFlightNoAndDate</div>
+    </div>
+
+    <div id="fltdate02">
+        <div>@mawb.SecondFlightNoAndDate</div>
+    </div>
+
+   <div id="airportdest">
+       <div>@mawb.Destination</div>
+  </div>
+
+   <div id="insurance">
+       <div>@mawb.AmountOfInsurance</div>
+   </div>
+
+   <div id="handlinginfo">
+       <div>@mawb.HandlingInfoA</div>
+       <div>@mawb.HandlingInfoB</div>
+       <div>@mawb.HandlingInfoC</div>
+   </div>
+
+   <div id="sci">
+       <div>@mawb.Sci</div>
+   </div>
+</div>
+
+<div id="mawbgrid05">
+    
+    <div id="pcs_lbl">
+         <div>No. of</div>
+         <div>Pieces</div>
+         <div>RCP</div>
+    </div>
+
+    <div id="grosswt__lbl">
+        <div>Gross</div>
+        <div>Weight</div>
+   </div>
+
+    <div id="kglb_lbl">
+        <div>kg</div>
+        <div>lb</div>
+    </div>
+
+    <div id="rateclass_lbl">
+        <div>Rate Class</div>
+    </div>
+
+    <div id="commitem_lbl">
+        <div>Commodity</div>
+        <div>Item No.</div>
+    </div>
+
+    <div id="chweight_lbl">
+        <div>Chargeable</div>
+        <div>Weight</div>
+    </div>
+
+    <div id="ratecharge_lbl">
+        <div>Rate / Charge</div>
+    </div>
+
+    <div id="total_lbl">
+        <div>Total</div>
+    </div>
+
+    <div id="goods_lbl">
+       <div>Nature and Quantity of Goods</div>
+       <div>(Incl. Dimensions of Volume)</div>
+    </div>
+
+    <div id="pcs">
+        <div>@mawb.Pieces</div>
+    </div>
+
+    <div id="grosswt">
+        <div>@mawb.GrossWeight</div>
+    </div>
+
+    <div id="kglb">
+        <div>k</div>
+    </div>
+
+    <div id="rateclass">
+        <div>@mawb.RateClass</div>
+    </div>
+
+    <div id="commitem">
+        <div>@mawb.CommodityItemNo</div>
+    </div>
+
+    <div id="chweight">
+        <div>@mawb.ChargeableWeight</div>
+    </div>
+
+    <div id="ratecharge">
+        <div>@mawb.RateCharge</div>
+    </div>
+
+    <div id="total">
+        <div>@mawb.TotalCharge</div>
+    </div>
+
+    <div id="goods">
+        <div>@mawb.NatureAndQttyGoodsA</div>
+        <div>@mawb.NatureAndQttyGoodsB</div>
+        <div>@mawb.NatureAndQttyGoodsC</div>
+        <div>@mawb.NatureAndQttyGoodsD</div>
+        <div>@mawb.NatureAndQttyGoodsE</div>
+        <div>@mawb.NatureAndQttyGoodsF</div>
+        <div>@mawb.NatureAndQttyGoodsG</div>
+        <div>@mawb.NatureAndQttyGoodsH</div>
+        <div>@mawb.NatureAndQttyGoodsI</div>
+        <div>@mawb.NatureAndQttyGoodsJ</div>
+    </div>
+
+    <div id="pcsttl">
+        <div>@mawb.Pieces</div>
+    </div>
+
+    <div id="grosswtttl">
+        <div>@mawb.GrossWeight</div>
+    </div>
+
+    <div id="totalttl">
+        <div>@mawb.TotalCharge</div>
+    </div>
+</div>
+
+<div id="mawbgrid06">
+
+    <div id="prepaid_lbl">
+         <div>Prepaid</div>
+    </div>
+
+    <div id="prepaid01_lbl">
+         <div>&nbsp;</div>
+    </div>
+
+    <div id="prepaid02_lbl">
+         <div>&nbsp;</div>
+    </div>
+
+    <div id="wtcharge_lbl">
+        <div>Weight Charge</div>
+    </div>
+
+    <div id="collect_lbl">
+        <div>Collect</div>
+    </div>
+
+    <div id="collect01_lbl">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="collect02_lbl">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="wtchargePP">
+        <div>@mawb.WeightChargePP</div>
+    </div>
+
+    <div id="wtchargeCOL">
+        <div>@mawb.WeightChargeCC</div>
+    </div>
+
+    <div id="valcharge_lbl">
+        <div>Valuation Charge</div>
+    </div>
+
+    <div id="valchargePP">
+        <div>@mawb.ValuationChargePP</div>
+    </div>
+
+    <div id="valchargeCOL">
+        <div>@mawb.ValuationChargeCC</div>
+    </div>
+
+    <div id="tax_lbl">
+       <div>Tax</div>
+    </div>
+
+    <div id="taxPP">
+        <div>@mawb.TaxPP</div>
+    </div>
+
+    <div id="taxCOL">
+        <div>@mawb.TaxCC</div>
+    </div>
+
+    <div id="othcharges_lbl">
+        <div>Other Charges</div>
+    </div>
+
+    <div id="othcharges">
+        <div>@mawb.OtherChargeA</div>
+        <div>@mawb.OtherChargeB</div>
+        <div>@mawb.OtherChargeC</div>
+        <div>@mawb.OtherChargeD</div>
+    </div>
+</div>
+
+
+
+<div id="mawbgrid07">
+
+     <div id="prepaid03_lbl">
+         <div>&nbsp;</div>
+    </div>
+
+    <div id="prepaid04_lbl">
+         <div>&nbsp;</div>
+    </div>
+
+    <div id="collect03_lbl">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="collect04_lbl">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="tocda_lbl">
+        <div>Total Other Charges Due Agent</div>
+    </div>
+
+    <div id="tocdaPP">
+        <div>@mawb.TotalOtherChargesDueAgentPP</div>
+    </div>
+
+    <div id="tocdaCOL">
+        <div>@mawb.TotalOtherChargesDueAgentCC</div>
+    </div>
+
+    <div id="tocdc_lbl">
+        <div>Total Other Charges Due Carrier</div>
+        </div>
+
+    <div id="tocdcPP">
+        <div>@mawb.TotalOtherChargesDueCarrierPP</div>
+    </div>
+
+    <div id="tocdcCOL">
+        <div>@mawb.TotalOtherChargesDueCarrierCC</div>
+    </div>
+
+    <div id="emptyA">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="emptyB">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="empty01">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="empty02">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="shippernote">
+        <div>Shipper certifies that the particulars on the face hereof are correct and thant isofar as any part of the consignment contains dangerous
+            goods, such part is properly described by name and is in proper condition for carriage by air according to the applicable Dangerous
+            Goods Regulations</div>
+    </div>
+
+    <div id="shipper_lbl">
+        <div>-----------------------------------------------------------------------------------------------------------------------------------</div>
+        <div>Signature of Shipper or his Agent</div>
+    </div>
+
+
+
+
+
+    <div id="carriersign">
+        <div>&nbsp;</div>
+    </div>
+
+    <div id="carriersigndate">
+        <div>@mawb.IssuingDate.ToShortDateString()</div>
+    </div>
+
+    <div id="carriersignplace">
+        <div>@mawb.IssuingPlace</div>
+    </div>
+
+    <div id="carriersignname">
+        <div>@mawb.IssuingPersonFullName</div>
+    </div>
+
+    <div id="carrier_lbl_01">
+        <div>-----------------------------------------------------------------------------------------------------------------------------------</div>
+    </div>
+
+    <div id="carrier_lbl_02">
+        <div>Executed on (date)</div>
+    </div>
+
+    <div id="carrier_lbl_03">
+        <div>at (place)</div>
+    </div>
+
+    <div id="carrier_lbl_04">
+        <div>Signature of Issuing Carrier or its Agent</div>
+    </div>
+
+    <div id="ttlPP_lbl">
+        <div>Total Prepaid</div>
+    </div>
+
+    <div id="ttlCOL_lbl">
+        <div>Total Collect</div>
+    </div>
+
+    <div id="ttlPP">
+        <div>@mawb.TotalPrepaid</div>
+    </div>
+
+    <div id="ttlCOL">
+        <div>@mawb.TotalCollect</div>
+    </div>
+
+    <div id="cucorates_lbl">
+        <div>Currency Conversion Rates</div>
+    </div>
+
+    <div id="cccharindst_lbl">
+        <div>CC Charges in Dest. Currency</div>
+    </div>
+
+    <div id="cucorates">
+        <div>@mawb.CuCoRates</div>
+    </div>
+
+    <div id="cccharindst">
+        <div>@mawb.CcChgsInDestCurrency</div>
+    </div>
+
+    <div id="carrieruse">
+        <div>For Carrier's Use only</div>
+        <div>at Destination</div>
+    </div>
+
+    <div id="chgsdest_lbl">
+        <div>Charges at Destination</div>
+    </div>
+
+    <div id="chgsdest">
+        <div>@if (@mawb.ChgsAtDest == null){<text>&nbsp;</text>}else{@mawb.ChgsAtDest}</div>
+    </div>
+
+    <div id="ttlcolchgs_lbl">
+        <div>Total Collect Charges</div>
+    </div>
+
+    <div id="ttlcolchgs">
+        <div>@if (@mawb.TotalCcChgs == null){<text>&nbsp;</text>}else{@mawb.TotalCcChgs}</div>
+    </div>
+
+    <div id="awbno03">
+        <div>@mawb.AwbNumber</div>
+    </div>
+</div>
+
+    @code {
+    [Parameter] public Mawb mawb { get; set; }
+    [Parameter] public EventCallback Print { get; set; }
+    [Parameter] public string barcode { get; set; } = "";
+    [Parameter] public string barcode_text { get; set; } = "";
+
+                                                                             
+
+}

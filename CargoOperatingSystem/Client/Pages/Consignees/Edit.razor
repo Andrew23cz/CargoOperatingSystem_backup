@@ -1,0 +1,25 @@
+﻿@page "/consignees/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Edit Consignee</h3>
+<hr />
+<br/>
+<FormComponent ButtonText="Update" OnValidSubmit="@EditConsignee" consignee="consignee"/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    Consignee consignee = new Consignee();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        consignee = await _client.GetFromJsonAsync<Consignee>($"{Endpoints.ConsigneesEndpoint}{id}");
+    }
+
+    private async Task EditConsignee()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.ConsigneesEndpoint}{id}", consignee);
+        _navManager.NavigateTo(Endpoints.ConsigneesIndex);
+    }
+}

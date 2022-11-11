@@ -1,0 +1,93 @@
+﻿@page "/deliveries/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">List Of deliveries</h3>
+<hr />
+
+<a href="/deliveries/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Delivery
+</a>
+<br/>
+<br/>
+
+@if(Deliveries == null)
+{
+    <div class="alert alert-info">Loading deliveries ...</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Loading Address</th>
+                <th>Loading Date&Time</th>
+                <th>Offload Address</th>
+                <th>Offload Date&Time</th>
+                <th>Driver Name</th>
+                <th>License Plate</th>
+                <th>Driver Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var delivery in Deliveries)
+            {
+                <tr>
+                    <td>@delivery.OriginCode</td>
+                    <td>@delivery.DestCode</td>
+                    <td>@delivery.LoadAddress</td>
+                    <td>@delivery.LoadDate</td>
+                    <td>@delivery.OffloadAddress</td>
+                    <td>@delivery.OffloadDate</td>
+                    <td>@delivery.DriverName</td>
+                    <td>@delivery.LicensePlate</td>
+                    <td>@delivery.DriverPhone</td>
+                    <td>
+                        <a href="/deliveries/view/@delivery.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/deliveries/edit/@delivery.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick=@(()=>Delete(@delivery.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
+
+
+@code {
+    private IList<Delivery> Deliveries;
+
+    
+
+    protected async override Task OnInitializedAsync()
+    {
+        Deliveries = await _client.GetFromJsonAsync<IList<Delivery>>(Endpoints.DeliveriesEndpoint);
+    }
+
+    private async Task Delete(int deliveryId)
+    {
+        var delivery = Deliveries.First(q => q.Id == deliveryId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {delivery.Id}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.DeliveriesEndpoint}{deliveryId}");
+            await OnInitializedAsync();
+        }
+    }
+
+}

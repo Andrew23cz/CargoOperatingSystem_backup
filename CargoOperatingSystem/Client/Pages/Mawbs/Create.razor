@@ -1,0 +1,150 @@
+﻿@page "/mawbs/create/{id:int}"
+@using System.Text.Json
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card-title">Create MAWB</h3>
+<hr />
+<br/>
+
+<FormComponent ButtonText="Create MAWB" OnValidSubmit="@CreateMawb" mawb="mawb"/>
+
+
+@code {
+    [Parameter]public int id { get; set; }
+    Mawb mawb = new Mawb();
+    Shipment shipment = new Shipment();
+    AwbStock awbstock = new AwbStock();
+    Airline airline = new Airline();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        shipment = await _client.GetFromJsonAsync<Shipment>($"{Endpoints.ShipmentsEndpoint}{id}");
+        awbstock = await _client.GetFromJsonAsync<AwbStock>($"{Endpoints.AwbStocksEndpoint}{shipment.AwbStockId}");
+        airline = await _client.GetFromJsonAsync<Airline>($"{Endpoints.AirlinesEndpoint}{awbstock.AirlineId}");
+
+        mawb.ShipmentId = shipment.Id;
+        mawb.AwbNumber = shipment.AwbNumber;
+        mawb.Origin = shipment.Origin;
+        mawb.Destination = shipment.Destination;
+        mawb.Pieces = shipment.Pieces;
+        mawb.GrossWeight = shipment.GrossWeight;
+        mawb.Volume = shipment.Volume;
+        mawb.ChargeableWeight = shipment.ChargeableWeight;
+        mawb.Commodity = shipment.Commodity;
+        mawb.IssuingAgent = shipment.Customer.CompanyName;
+        mawb.IssuingAgentAddressA = shipment.Customer.HqAddressA;
+        mawb.IssuingAgentAddressA = shipment.Customer.HqAddressB;
+        mawb.IssuingAgentAddressA = shipment.Customer.HqAddressC;
+        mawb.AgentIataCode = shipment.Customer.IataCode;
+        mawb.AirlineName = shipment.AwbStock.Airline.Name;
+        mawb.AirlineAddressA = shipment.AwbStock.Airline.AwbHeaderA;
+        mawb.AirlineAddressB = shipment.AwbStock.Airline.AwbHeaderB;
+        mawb.AirlineName = airline.Name;
+        mawb.AirlineAddressA = airline.AwbHeaderA;
+        mawb.AirlineAddressB = airline.AwbHeaderB;
+        mawb.FirstCarrierCode = airline.Code;
+        mawb.FirstFlightNoAndDate = $"{shipment.FirstFlightNumber}/{shipment.FirstFlightDate.ToShortDateString()}";
+        mawb.FirstFlightDest = shipment.FirstFlightDest;
+        mawb.SecondCarrierCode = airline.Code;
+        mawb.SecondFlightNoAndDate = $"{shipment.SecondFlightNumber}/{shipment.SecondFlightDate.ToShortDateString()}";
+        mawb.SecondFlightDest = shipment.SecondFlightDest;
+        mawb.ThirdCarrierCode = airline.Code;
+        mawb.ThirdFlightNoAndDate = $"{shipment.ThirdFlightNumber}/{shipment.ThirdFlightDate.ToShortDateString()}";
+        mawb.ThirdFlightDest = shipment.ThirdFlightDest;
+        mawb.OtherChargeA = shipment.ShcA;
+        mawb.OtherChargeB = shipment.ShcB;
+        mawb.OtherChargeC = shipment.ShcC;
+
+        var dimmensionCount = shipment.Dimmensions.Count();
+
+        if(shipment.Dimmensions.Count() != 0)
+        {
+            List<string> dims = new List<string>();
+            int dimcount = 0;
+
+            for (int i = 0; i < shipment.Dimmensions.Count; i++)
+            {
+                string currentDim = $"{shipment.Dimmensions[i].Pieces}pcs-{shipment.Dimmensions[i].Length}x{shipment.Dimmensions[i].Width}x{shipment.Dimmensions[i].Height}cm";
+                dims.Add(currentDim);
+                dimcount++;
+            }
+
+            mawb.NatureAndQttyGoodsA = dims[0];
+            dimcount--;
+
+            if(dimcount > 0)
+            {
+                mawb.NatureAndQttyGoodsB = dims[1];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                mawb.NatureAndQttyGoodsC = dims[2];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                mawb.NatureAndQttyGoodsD = dims[3];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                mawb.NatureAndQttyGoodsE = dims[4];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                mawb.NatureAndQttyGoodsF = dims[5];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                mawb.NatureAndQttyGoodsG = dims[6];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                mawb.NatureAndQttyGoodsH = dims[7];
+                dimcount--;
+            }
+
+            if(dimcount > 0)
+            {
+                mawb.NatureAndQttyGoodsI = dims[8];
+                dimcount--;
+            }
+
+
+        }
+
+        mawb.NatureAndQttyGoodsJ = $"Volume: {shipment.Volume}";
+
+
+
+        
+    }
+
+    private async Task CreateMawb()
+    {
+        var success = await _client.PostAsJsonAsync(Endpoints.MawbsEndpoint, mawb);
+
+        if (success.IsSuccessStatusCode)
+        {
+            await js.InvokeVoidAsync("alert", "MAWB Created!");
+            _navManager.NavigateTo($"{Endpoints.ShipmentsEdit}{id}");
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "ERROR !!!");
+        }
+    }
+}

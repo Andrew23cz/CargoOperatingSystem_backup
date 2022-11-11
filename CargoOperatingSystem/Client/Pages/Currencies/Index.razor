@@ -1,0 +1,81 @@
+﻿@page "/currencies/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject Microsoft.JSInterop.IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">Currency List</h3>
+<hr />
+
+<a href="/currencies/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Currency
+</a>
+<br/>
+<br/>
+
+@if(Currencies == null)
+{
+    <div class="alert alert-info">Loading Currencies ...</div>
+}
+else
+{
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>EUR Exchange Rate</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var currency in Currencies)
+            {
+                <tr>
+                    <td>@currency.Name</td>
+                    <td>@currency.Code</td>
+                    <td>@currency.ExchangeRate</td>
+                    <td>
+                        <a href="/currencies/view/@currency.Id" class="btn btn-primary btn-sm">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/currencies/edit/@currency.Id" class="btn btn-warning btn-sm">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger btn-sm" @onclick=@(()=>Delete(@currency.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+    
+}
+
+@code {
+
+    private IList<Currency> Currencies;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Currencies = await _client.GetFromJsonAsync<IList<Currency>>(Endpoints.CurrencyEndpoint);
+    }
+
+    private async Task Delete(int currencyId)
+    {
+        var currencies = Currencies.First(q => q.Id == currencyId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete this currency: {currencies.Name}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.CurrencyEndpoint}{currencyId}");
+            await OnInitializedAsync();
+        }
+    }
+
+}

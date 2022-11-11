@@ -1,0 +1,25 @@
+﻿@page "/workloads/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Edit Workload</h3>
+<hr />
+<br/>
+<FormComponent ButtonText="Update" OnValidSubmit="@EditWorkload" workload="workload"/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    Workload workload = new Workload();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        workload = await _client.GetFromJsonAsync<Workload>($"{Endpoints.WorkloadsEndpoint}{id}");
+    }
+
+    private async Task EditWorkload()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.WorkloadsEndpoint}{id}", workload);
+        _navManager.NavigateTo(Endpoints.WorkloadsIndex);
+    }
+}

@@ -1,0 +1,95 @@
+﻿<EditForm Model="@customer" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group">
+        <label>Company Name:</label>
+        <div>
+            <InputText @bind-Value="@customer.CompanyName" class="form-control"/>
+            <ValidationMessage For="@(()=> customer.CompanyName)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>HQ Address:</label>
+        <div>
+            <InputText @bind-Value="@customer.HqAddressA" class="form-control"/>
+            <ValidationMessage For="@(()=> customer.HqAddressA)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>HQ Address:</label>
+        <div>
+            <InputText @bind-Value="@customer.HqAddressB" class="form-control"/>
+            <ValidationMessage For="@(()=> customer.HqAddressB)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>HQ Address:</label>
+        <div>
+            <InputText @bind-Value="@customer.HqAddressC" class="form-control"/>
+            <ValidationMessage For="@(()=> customer.HqAddressC)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Invoicing Address:</label>
+        <div>
+            <InputText @bind-Value="@customer.InvoicingAddressA" class="form-control"/>
+            <ValidationMessage For="@(()=> customer.InvoicingAddressA)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Invoicing Address:</label>
+        <div>
+            <InputText @bind-Value="@customer.InvoicingAddressB" class="form-control"/>
+            <ValidationMessage For="@(()=> customer.InvoicingAddressB)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Invoicing Address:</label>
+        <div>
+            <InputText @bind-Value="@customer.InvoicingAddressC" class="form-control"/>
+            <ValidationMessage For="@(()=> customer.InvoicingAddressC)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Tax Number:</label>
+        <div>
+            <InputText @bind-Value="@customer.TaxNumber" class="form-control"/>
+            <ValidationMessage For="@(()=> customer.TaxNumber)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Contact Person:</label>
+        <div>
+            <InputText @bind-Value="@customer.ContactPersonName" class="form-control"/>
+            <ValidationMessage For="@(()=> customer.ContactPersonName)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Email:</label>
+        <div>
+            <InputText @bind-Value="@customer.Email" class="form-control"/>
+            <ValidationMessage For="@(()=> customer.Email)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Phone Number:</label>
+        <div>
+            <InputNumber @bind-Value="@customer.PhoneNumber" class="form-control"/>
+            <ValidationMessage For="@(()=> customer.PhoneNumber)" />
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-success btn-block">
+        @ButtonText
+    </button>
+
+</EditForm>
+
+@code {
+
+    [Parameter] public Customer customer { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+}

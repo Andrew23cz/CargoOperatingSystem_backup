@@ -1,0 +1,44 @@
+﻿/*.thisBody {*/
+    /*width: 21cm;
+    height: 29.7cm;*/
+    /*width: 100%;
+    height: 100%;
+    margin: 0.5cm;
+    position: static;
+}
+
+.thisBody.table.td {
+    width: 0.5cm;
+}*/
+
+
+table {
+    border-collapse:collapse;
+    table-layout:fixed;
+    width: 21cm;
+    /*height: 29.7cm;*/
+}
+
+th,
+td {
+    /*width: 0.5cm;*/
+    vertical-align: top;
+    text-align: left;
+}
+
+@media print {
+    table {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+td[rowspan] {
+    /*width: 0.5cm;*/
+    vertical-align: top;
+    text-align: left;
+}
+
+shipperBox {
+    width: 10.5cm;
+}

@@ -1,0 +1,23 @@
+﻿@page "/pickups/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card-title">Create Shipment Pickup Template</h3>
+
+
+<FormComponent ButtonText="Save Pickup" OnValidSubmit="@CreatePickup" pickup="pickup"/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    Pickup pickup = new Pickup();
+
+    private async Task CreatePickup()
+    {
+        await _client.PostAsJsonAsync(Endpoints.PickupsEndpoint, pickup);
+        _navManager.NavigateTo(Endpoints.PickupsIndex);
+    }
+
+}
+

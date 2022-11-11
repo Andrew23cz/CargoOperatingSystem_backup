@@ -1,0 +1,71 @@
+﻿@page "/test/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Create Airline From test</h3>
+<hr />
+<br/>
+
+<EditForm Model="@airline" OnValidSubmit="@CreateAirline">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group">
+        <label>Name:</label>
+        <div>
+            <InputText @bind-Value="@airline.Name" class="form-control"/>
+            <ValidationMessage For="@(()=> airline.Name)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>IATA Code:</label>
+        <div>
+            <InputText @bind-Value="@airline.Code" class="form-control"/>
+            <ValidationMessage For="@(()=> airline.Prefix)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Prefix:</label>
+        <div>
+            <InputText @bind-Value="@airline.Prefix" class="form-control"/>
+            <ValidationMessage For="@(()=> airline.Prefix)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>AWB Header Address (1st row):</label>
+        <div>
+            <InputTextArea @bind-Value="@airline.AwbHeaderA" class="form-control"/>
+            <ValidationMessage For="@(()=> airline.AwbHeaderA)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>AWB Header Address (2nd row):</label>
+        <div>
+            <InputTextArea @bind-Value="@airline.AwbHeaderB" class="form-control"/>
+            <ValidationMessage For="@(()=> airline.AwbHeaderB)" />
+        </div>
+    </div>
+            
+    <button type="submit" class="btn btn-success btn-block">
+        Create Airline From Test
+    </button>
+
+</EditForm>
+
+
+@code {
+
+    Airline airline = new Airline();
+
+    private async Task CreateAirline()
+    {
+        await _client.PostAsJsonAsync(Endpoints.AirlinesEndpoint, airline);
+        _navManager.NavigateTo(Endpoints.AirlinesIndex);
+    }
+
+
+}

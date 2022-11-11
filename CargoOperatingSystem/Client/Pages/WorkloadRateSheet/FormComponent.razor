@@ -1,0 +1,459 @@
+﻿@inject HttpClient _client
+
+<EditForm Model="@workloadRateSheet" OnValidSubmit="OnValidSubmit">
+    <fieldset disabled = "@isDisabled">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        
+        
+
+        <div class="row">
+            <div class="form-inline">
+                <label class="mr-3">Rate Sheet Name:</label>
+                <div>
+                    <InputText @bind-Value="@workloadRateSheet.Name" class="form-control"/>
+                    <ValidationMessage For="@(() => workloadRateSheet.Name)" />
+                </div>
+            </div>
+            <div class="form-inline mx-3">
+                <label class="mr-3">Currency:</label>
+                <div>
+                    <InputSelect @bind-Value="workloadRateSheet.CurrencyId" class="form-control">
+                        <option value="">-- Select Currency --</option>
+                        @if (Currencies != null)
+                        {
+                            foreach (var currency in Currencies)
+                            {
+                                <option value="@currency.Id">@currency.Code</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => workloadRateSheet.CurrencyId)" />
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid px-0 mt-4">
+            <div class="row">
+                <div id="ShpmtSpecAndFlts" class="col-3 p-2 mr-2"  style="background-color: darkgray">
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Mawb Issuing:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.AwbIssuing" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AwbIssuing)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Mawb Issuing Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.AwbIssuingCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AwbIssuingCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>HAWB Issuing:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.HawbIssuing" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.HawbIssuing)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>HAWB Issuing Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.HawbIssuingCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.HawbIssuingCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Cargo Labels:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.CargoLabels" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.CargoLabels)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.CargoLabelsCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.CargoLabelsCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Acceptance Assistance:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.AcceptanceAssist" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AcceptanceAssist)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.AcceptanceAssistCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AcceptanceAssistCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Documents Correction:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.DocumentsCorrection" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.DocumentsCorrection)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.DocumentsCorrectionCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.DocumentsCorrectionCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Printing Corrected Documents:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.PrintingCorrectedDocs" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.PrintingCorrectedDocs)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.PrintingCorrectedDocsCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.PrintingCorrectedDocsCode)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ShpmtSpecAndFlts" class="col-3 p-2 mr-2"  style="background-color: darkgray">
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Import Cargo Processing:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.ImportCgoProcessing" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.ImportCgoProcessing)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.ImportCgoProcessingCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.ImportCgoProcessingCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Special Cargo Labels:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.SpecCargoLabels" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.SpecCargoLabels)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.SpecCargoLabelsCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.SpecCargoLabelsCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>After Opening Hours Svc:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.AfterOpeningHoursService" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AfterOpeningHoursService)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.AfterOpeningHoursServiceCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AfterOpeningHoursServiceCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Manual Data Capture:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.ManualDataInsertion" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.ManualDataInsertion)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.ManualDataInsertionCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.ManualDataInsertionCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Picking-Up Documents:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.PickUpDocuments" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.PickUpDocuments)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.PickUpDocumentsCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.PickUpDocumentsCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Preparation For Security Check:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.SecurityCheckPrepare" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.SecurityCheckPrepare)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.SecurityCheckPrepareCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.SecurityCheckPrepareCode)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ShpmtSpecAndFlts" class="col-3 p-2 mr-2"  style="background-color: darkgray">
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Security Check Assistance:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.SecurityCheckAssist" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.SecurityCheckAssist)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Security Check Assistance Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.SecurityCheckAssistCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.SecurityCheckAssistCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Packing Assistance:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.PackingAssist" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.PackingAssist)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Packing Assistance Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.PackingAssistCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.PackingAssistCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>DG Acceptance Assistance:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.AcceptanceAssistDG" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AcceptanceAssistDG)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>DG Acceptance Assistance Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.AcceptanceAssistDGCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AcceptanceAssistDGCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>DG Consulting:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.CosultingDG" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.CosultingDG)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>DG Consulting Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.CosultingDGCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.CosultingDGCode)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="ShpmtSpecAndFlts" class="col-3 p-2 mr-2 mt-2"  style="background-color: darkgray">
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Additional Service A:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.AdditionalServiceA" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceA)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Additional Service A Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.AdditionalServiceACode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceACode)" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Additional Service B:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.AdditionalServiceB" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceB)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Additional Service B Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.AdditionalServiceBCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceBCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Additional Service C:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.AdditionalServiceC" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceC)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Additional Service C Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.AdditionalServiceCCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceCCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Additional Service D:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.AdditionalServiceD" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceD)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Additional Service D Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.AdditionalServiceDCode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceDCode)" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="form-group mx-3">
+                            <label>Additional Service E:</label>
+                            <div>
+                                <InputNumber @bind-Value="@workloadRateSheet.AdditionalServiceE" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceE)" />
+                            </div>
+                        </div>
+                        <div class="form-group mx-3">
+                            <label>Additional Service E Code:</label>
+                            <div>
+                                <InputText @bind-Value="@workloadRateSheet.AdditionalServiceECode" class="form-control"/>
+                                <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceECode)" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div id="ShpmtSpecAndFlts" class="col-6 p-2 mr-2 mt-2 pr-2"  style="background-color: darkgray">
+                    <div class="form-group">
+                        <label>Additional Service A Description:</label>
+                        <div>
+                            <InputText @bind-Value="@workloadRateSheet.AdditionalServiceNoteA" class="form-control"/>
+                            <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceNoteA)" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Service B Description:</label>
+                        <div>
+                            <InputText @bind-Value="@workloadRateSheet.AdditionalServiceNoteB" class="form-control"/>
+                            <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceNoteB)" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Service C Description:</label>
+                        <div>
+                            <InputText @bind-Value="@workloadRateSheet.AdditionalServiceNoteC" class="form-control"/>
+                            <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceNoteC)" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Service D Description:</label>
+                        <div>
+                            <InputText @bind-Value="@workloadRateSheet.AdditionalServiceNoteD" class="form-control"/>
+                            <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceNoteD)" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Service E Description:</label>
+                        <div>
+                            <InputText @bind-Value="@workloadRateSheet.AdditionalServiceNoteE" class="form-control"/>
+                            <ValidationMessage For="@(() => workloadRateSheet.AdditionalServiceNoteE)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (!isDisabled)
+        {
+            <div class="row">
+                <button type="submit" class="btn btn-success mt-2">
+                    @ButtonText
+                </button>
+            </div>
+        }
+    </fieldset>
+</EditForm>
+
+@code {
+    [Parameter] public WorkloadRateSheet workloadRateSheet { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public bool isDisabled { get; set; } = false;
+
+    private IList<Currency> Currencies;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Currencies = await _client.GetFromJsonAsync<IList<Currency>>(Endpoints.CurrencyEndpoint);
+    }
+
+}
+

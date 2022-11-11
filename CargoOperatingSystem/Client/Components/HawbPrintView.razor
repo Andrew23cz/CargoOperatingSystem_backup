@@ -1,0 +1,470 @@
+﻿<div class="mainDiv">
+
+
+    <table border="1">
+        <!-- Row ZERO -->
+        <tr>
+            <td colspan="42" >
+                <div style='float: left; text-align: left; font-size: 22px'>@hawb.AwbNumber</div>
+                <div style='float: right; text-align: right; font-size: 22px'>HAWB No: @hawb.HawbNumber</div>
+            </td>
+        </tr>
+
+        <!-- Row A -->
+        <tr>
+            <td class="shipperBox" colspan="21">
+                <div style='float: left; text-align: left'>Shipper's Name and Address</div>
+                <div style='float: right; text-align: right'>Account Number</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (hawb.ShipperName == null){<text>&nbsp;</text>}else{@hawb.ShipperName}</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (hawb.ShipperAddressA == null){<text>&nbsp;</text>}else{@hawb.ShipperAddressA}</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (hawb.ShipperAddressB == null){<text>&nbsp;</text>}else{@hawb.ShipperAddressB}</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (hawb.ShipperAddressC == null){<text>&nbsp;</text>}else{@hawb.ShipperAddressC}</div>
+                    
+            </td>
+
+            <td colspan="21">
+            
+                <div style='float: left; text-align: left'>Not Negotiable</div>
+                <br/>
+                <div style='float: left; text-align: left'>Air Waybill</div>
+                <br/>
+                <div style='float: left; text-align: left'>issued by</div>
+                <div style='float: right; text-align: right; padding-right: 15px'>@if (hawb.AirlineName == null){<text>&nbsp;</text>}else{@hawb.IssuingAgent}</div>
+                <br/>
+                <div style='float: right; text-align: right; padding-right: 15px'>@if (hawb.AirlineAddressA == null){<text>&nbsp;</text>}else{@hawb.IssuingAgentAddressA}</div>
+                <br/>
+                <div style='float: right; text-align: right; padding-right: 15px'>@if (hawb.AirlineAddressB == null){<text>&nbsp;</text>}else{@hawb.IssuingAgentAddressB}</div>
+                <br/>
+                <div style='float: right; text-align: right; padding-right: 15px'>@if (hawb.AirlineAddressB == null){<text>&nbsp;</text>}else{@hawb.IssuingAgentAddressC}</div>
+            </td>
+                
+        </tr>
+        <!-- Row B -->
+        <tr>
+            <td colspan="21">
+                <div style='float: left; text-align: left'>Consignee's Name and Address</div>
+                <div style='float: right; text-align: right'>Account Number</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (hawb.ConsigneeName == null){<text>&nbsp;</text>}else{@hawb.ConsigneeName}</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (hawb.ConsigneeAddressA == null){<text>&nbsp;</text>}else{@hawb.ConsigneeAddressA}</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (hawb.ConsigneeAddressB == null){<text>&nbsp;</text>}else{@hawb.ConsigneeAddressB}</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (hawb.ConsigneeAddressC == null){<text>&nbsp;</text>}else{@hawb.ConsigneeAddressC}</div>
+            </td>
+
+            <td colspan="21">
+                <div style='font-size: 8px; margin:0;'>
+                    It is agreed that the goods described herein are accepted in apparent good order and condition
+                    (except as noted)  for carriage  SUBJECT TO THE  CONDITIONS OF  CONTRACT  ON THE REVERSE HEREOF.
+                    ALL GOODS MAY BE CARRIED BY ANY OTHER MEANS INCLUDING ROAD OR ANY OTHER CARRIER UNLESS SPECIFIC
+                    CONTRARY INSTRUCTIONS ARE GIVEN HEREON BY THE SHIPPER. AND SHIPPER AGREES THAT THE SHIPMENT MAY
+                    BE  CARRIED VIA  INTERMEDIATE STOPPING PLACES  WHICH THE CARRIER DEEMS APPROPRIATE.THE SHIPPERS
+                    ATTENTION IS DRAWN TO  THE NOTICE  CONCERNING CARRIER'S  LIMITATIONS OF  LIABILITY. Shipper may
+                    increase such  limitation of  liability by  declaring  higher value  for carriage  and paying a
+                    supplemental charge if required'
+                </div>
+            </td>
+                
+        </tr>
+        <!-- Row C -->
+        <tr>
+            <td colspan="21">
+                <div style='float: left; text-align: left; font-size: 10px;'>Issuing Carrier's Agent Name and City</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.IssuingAgent == null){<text>&nbsp;</text>}else{@hawb.IssuingAgent}</div>
+            </td>
+            <td colspan="21" rowspan="2">
+                <div style='float: left; text-align: left; font-size: 10px;'>Accounting Information</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.AccountingInfoA == null){<text>&nbsp;</text>}else{@hawb.AccountingInfoA}</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.AccountingInfoB == null){<text>&nbsp;</text>}else{@hawb.AccountingInfoB}</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.AccountingInfoC == null){<text>&nbsp;</text>}else{@hawb.AccountingInfoC}</div>
+            </td>
+        </tr>
+        <!-- Row D -->
+        <tr>
+            <td colspan="11">
+                <div style='float: left; text-align: left; font-size: 10px;'>Agent's IATA Code</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.AgentIataCode == null){<text>&nbsp;</text>}else{@hawb.AgentIataCode}</div>
+            </td>
+            <td colspan="10">
+                <div style='float: left; text-align: left; font-size: 10px;'>Account Number</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.AgentAccountNumber == null){<text>&nbsp;</text>}else{@hawb.AgentAccountNumber}</div>
+            </td>
+        </tr>
+        <!-- Row E -->
+        <tr>
+            <td colspan="21">
+                <div style='float: left; text-align: left; font-size: 10px;'>Airport of Departure and Requested Routing</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.Origin == null){<text>&nbsp;</text>}else{@hawb.Origin}</div>
+
+            </td>
+            <td colspan="11">
+                <div style='float: left; text-align: left; font-size: 10px;'>Reference Number</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.ReferenceNo == null){<text>&nbsp;</text>}else{@hawb.ReferenceNo}</div>
+            </td>
+            <td colspan="10">
+                <div style='float: left; text-align: left; font-size: 10px;'>Optional Shipping Information</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.OptionalShippingInfoA == null){<text>&nbsp;</text>}else{@hawb.OptionalShippingInfoA}</div>
+            </td>
+                
+        </tr>
+
+        <tr>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>To</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.FirstFlightDest == null){<text>&nbsp;</text>}else{@hawb.FirstFlightDest}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>By First Carrier</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.FirstCarrierCode == null){<text>&nbsp;</text>}else{@hawb.FirstCarrierCode}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>to</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.SecondFlightDest == null){<text>&nbsp;</text>}else{@hawb.SecondFlightDest}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>by</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.SecondCarrierCode == null){<text>&nbsp;</text>}else{@hawb.SecondCarrierCode}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>to</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.ThirdFlightDest == null){<text>&nbsp;</text>}else{@hawb.ThirdFlightDest}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>by</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.ThirdCarrierCode == null){<text>&nbsp;</text>}else{@hawb.ThirdCarrierCode}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 8px;'>Currency</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.Currency == null){<text>&nbsp;</text>}else{@hawb.Currency}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 6px;'>CHGS Code</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.ChgsCode == null){<text>&nbsp;</text>}else{@hawb.ChgsCode}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 8px;'>WT/VAL</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.WtValPP == null){<text>&nbsp;</text>}else{@hawb.WtValPP}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 8px;'>Other</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.OtherChgsCodePP == null){<text>&nbsp;</text>}else{@hawb.OtherChgsCodePP}</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 8px;'>Declared Value For Carriage</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.DeclaredValueCarriage == null){<text>&nbsp;</text>}else{@hawb.DeclaredValueCarriage}</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 8px;'>Declared Value For Customs</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.DeclaredValueCustoms == null){<text>&nbsp;</text>}else{@hawb.DeclaredValueCustoms}</div>
+            </td>
+                
+        </tr>
+
+        <tr>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 10px;'>Airport Of Destination</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.Destination == null){<text>&nbsp;</text>}else{@hawb.Destination}</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 8px;'>Requested Flight/Date</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.FirstFlightNoAndDate == null){<text>&nbsp;</text>}else{@hawb.FirstFlightNoAndDate}</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 8px;'>Requested Flight/Date</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.SecondFlightNoAndDate == null){<text>&nbsp;</text>}else{@hawb.SecondFlightNoAndDate}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Amount of Insurance</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.AmountOfInsurance == null){<text>&nbsp;</text>}else{@hawb.AmountOfInsurance}</div>
+            </td>
+            <td colspan="15">
+                <div style='font-size: 8px; margin:0;'>
+                    INSURANCE - If Carrier offers Insurance, and such insurance is 
+                    requested in accordance with the conditions thereof, indicate 
+                    amount to be insured in figures in box marked "amount of insurance".
+                </div>
+                
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="36">
+                <div style='float: left; text-align: left; font-size: 10px;'>Handling Information</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@hawb.HandlingInfoA</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@hawb.HandlingInfoB</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@hawb.HandlingInfoC</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: center; font-size: 10px;'>SCI</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@hawb.Sci</div>
+            </td>
+                
+        </tr>
+
+        <tr class="ratingHeader">
+            <td colspan="3">
+                <div style='float:left; text-align: left; font-size: 10px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px'>No. of Pieces RCP</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 10px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px'>Gross weight</div>
+            </td>
+            <td colspan="4">
+                <div style='float: left; text-align: left; font-size: 10px; margin-left: 5px; margin-right: 5px; margin-top: 5px;'>Rate Class</div>
+                <div style='float: left; text-align: left; font-size: 10px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px'>Commodity Item No.</div>
+            </td>
+            <td colspan="4">
+                <div style='float: left; text-align: left; font-size: 10px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px'>Chargeable Weight</div>
+            </td>
+            <td colspan="4">
+                <div style='float: left; text-align: left; font-size: 10px;  margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px'>Rate / Charge</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 10px;  margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px'>Total</div>
+            </td>
+            <td colspan="15">
+                <div style='float: left; text-align: left; font-size: 10px; margin-left: 10px; margin-right: 10px; margin-top: 5px'>Nature and Quantity of Goods</div>
+                <br/>
+                <div style='float: left; text-align: left; font-size: 10px; margin-left: 10px; margin-right: 10px; margin-bottom: 5px'>(Incl. Dimensions or Volume)</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3">
+                <div class="pcsLine">@hawb.Pieces</div>
+            </td>
+            <td colspan="6">
+                <div class="pcsLine">@hawb.GrossWeight</div>
+            </td>
+            <td colspan="4">
+                <div class="pcsLine">@hawb.RateClass</div>
+            </td>
+            <td colspan="4">
+                <div class="pcsLine">@hawb.GrossWeight</div>
+            </td>
+            <td colspan="4">
+                <div class="pcsLine">@hawb.RateCharge</div>
+            </td>
+            <td colspan="6">
+                <div class="pcsLine">@hawb.TotalCharge</div>
+            </td>
+            
+            <td colspan="15">
+                <div style='float: left; text-align: center;'>@hawb.NatureAndQttyGoodsA</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@hawb.NatureAndQttyGoodsB</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@hawb.NatureAndQttyGoodsC</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@hawb.NatureAndQttyGoodsD</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@hawb.NatureAndQttyGoodsE</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@hawb.NatureAndQttyGoodsF</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@hawb.NatureAndQttyGoodsG</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@hawb.NatureAndQttyGoodsH</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@hawb.NatureAndQttyGoodsI</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@hawb.NatureAndQttyGoodsJ</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Weight Charge Prepaid</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.WeightChargePP == 0){<text>&nbsp;</text>}else{@hawb.WeightChargePP}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Weight Charge Collect</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.WeightChargeCC == 0){<text>&nbsp;</text>}else{@hawb.WeightChargeCC}</div>
+            </td>
+            <td colspan="24" rowspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>Other Charges</div>
+                <br/>
+                <div style='float: left; text-align: left; font-size: 10px; padding: 20px'>@hawb.OtherChargeA</div>
+                <div style='float: left; text-align: left; font-size: 10px; padding: 20px'>@hawb.OtherChargeB</div>
+                <div style='float: left; text-align: left; font-size: 10px; padding: 20px'>@hawb.OtherChargeC</div>
+                <div style='float: left; text-align: left; font-size: 10px; padding: 20px'>@hawb.OtherChargeD</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Valuation Charge Prepaid</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.ValuationChargePP == 0){<text>&nbsp;</text>}else{@hawb.ValuationChargePP}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Valuation Charge Collect</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.ValuationChargeCC == 0){<text>&nbsp;</text>}else{@hawb.ValuationChargeCC}</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Tax Prepaid</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.TaxPP == 0){<text>&nbsp;</text>}else{@hawb.TaxPP}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Tax Collect</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.TaxCC == 0){<text>&nbsp;</text>}else{@hawb.TaxCC}</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total other Charges Due Agent PP</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.TotalOtherChargesDueAgentPP == 0){<text>&nbsp;</text>}else{@hawb.TotalOtherChargesDueAgentPP}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total other Charges Due Agent CC</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.TotalOtherChargesDueAgentCC == 0){<text>&nbsp;</text>}else{@hawb.TotalOtherChargesDueAgentCC}</div>
+            </td>
+            <td class=align-bottom colspan="24" rowspan="3">
+                <div style='text-align: center; margin-left: 0; margin-right: 0; margin-top: 65px; margin-bottom: 0px'>
+                    @if (hawb.IssuingPersonFullName == null){<text>&nbsp;</text>}else{@hawb.IssuingPersonFullName} 
+                </div>
+                <div style='text-align: center; font-size: 10px; margin-left: 0; margin-right: 0; margin-top: 0px; margin-bottom: 0px'>
+                    Signature of Shipper or his Agent
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total other Charges Due Carrier PP</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.TotalOtherChargesDueCarrierPP == 0){<text>&nbsp;</text>}else{@hawb.TotalOtherChargesDueCarrierPP}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total other Charges Due Carrier CC</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.TotalOtherChargesDueCarrierCC == 0){<text>&nbsp;</text>}else{@hawb.TotalOtherChargesDueCarrierCC}</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div>&nbsp;</div>
+            </td>
+            <td colspan="9">
+                <div>&nbsp;</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total Prepaid</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.TotalPrepaid == 0){<text>&nbsp;</text>}else{@hawb.TotalPrepaid}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total Collect</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (hawb.TotalCollect == 0){<text>&nbsp;</text>}else{@hawb.TotalCollect}</div>
+            </td>
+            <td class=align-bottom colspan="24" rowspan="2">
+                <div style='text-align: left; margin: 0px'>
+                    @hawb.IssuingDate.ToShortDateString() &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @if (hawb.IssuingPlace == null){<text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text>}else{@hawb.IssuingPlace} 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @if (hawb.IssuingAgent == null){<text>&nbsp;</text>}else{@hawb.IssuingAgent}
+                </div>
+                       
+                <div style='text-align: left; margin: 0px; font-size: 10px;'>
+                    Executed on (date) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at (place) 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Signature of Issuing Carrier or its Agent
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Currency Conversion Rates</div>
+                <br/>
+                <div>&nbsp;</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>CC Charges in Dest. Currency</div>
+                <br/>
+                <div>&nbsp;</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>For Carrier's Use only at Destination</div>
+                <br/>
+                <div>&nbsp;</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Charges at Destination</div>
+                <br/>
+                <div>&nbsp;</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total Collect Charges</div>
+                <br/>
+                <div>&nbsp;</div>
+            </td>
+            <td colspan="15">
+                <div style='text-align: right; vertical-align: baseline; font-size: 22px'>HAWB No: @hawb.HawbNumber</div>
+            </td>
+        </tr>
+
+    </table>
+    <br/>
+    <br/>
+
+</div>        
+
+
+
+@code {
+    [Parameter] public Hawb hawb { get; set; }
+    [Parameter] public EventCallback Print { get; set; }
+    
+}
+

@@ -1,0 +1,343 @@
+﻿@inject HttpClient _client
+
+<EditForm Model="@afrate" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group">
+        <label>Currency: </label>
+        <div>
+            <InputSelect @bind-Value="afrate.CurrencyId" @oninput="PopulateCurrencyCode" class="form-control">
+                <option value="">-- Select Currency --</option>
+                @if (Currencies != null)
+                {
+                    foreach (var currency in Currencies)
+                    {
+                        <option value="@currency.Id">@currency.Code</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => afrate.CurrencyId)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Airline: </label>
+        <div>
+            <InputSelect @bind-Value="afrate.AirlineId" @oninput="PopulateAirlineName" class="form-control">
+                <option value="">-- Select Airline --</option>
+                @if (Airlines != null)
+                {
+                    foreach (var airline in Airlines)
+                    {
+                        <option value="@airline.Id">@airline.Name</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => afrate.AirlineId)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Account Name:</label>
+        <div>
+            <InputText @bind-Value="@afrate.AccountName" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.AccountName)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>NewChange:</label>
+        <div>
+            <InputText @bind-Value="@afrate.NewChange" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.NewChange)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Country Designator:</label>
+        <div>
+            <InputText @bind-Value="@afrate.CountryDesignator" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.CountryDesignator)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>IATA Code:</label>
+        <div>
+            <InputText @bind-Value="@afrate.IataNo" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.IataNo)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>CASS Code:</label>
+        <div>
+            <InputText @bind-Value="@afrate.CassNo" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.CassNo)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Destination City Name:</label>
+        <div>
+            <InputText @bind-Value="@afrate.DestinationCityName" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.DestinationCityName)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Destination City Code:</label>
+        <div>
+            <InputText @bind-Value="@afrate.DestinationCityCode" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.DestinationCityCode)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Destination Airport Code:</label>
+        <div>
+            <InputText @bind-Value="@afrate.DestinationAirportCode" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.DestinationAirportCode)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Destination Country Iso Code:</label>
+        <div>
+            <InputText @bind-Value="@afrate.DestinationCountryIsoCode" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.DestinationCountryIsoCode)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Carrier Code:</label>
+        <div>
+            <InputText @bind-Value="@afrate.CarrierCode" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.CarrierCode)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Carrier Prefix:</label>
+        <div>
+            <InputText @bind-Value="@afrate.CarrierPrefix" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.CarrierPrefix)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Gsa Name:</label>
+        <div>
+            <InputText @bind-Value="@afrate.GsaName" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.GsaName)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Product Name:</label>
+        <div>
+            <InputText @bind-Value="@afrate.ProductName" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.ProductName)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>DGR:</label>
+        <div>
+            <InputText @bind-Value="@afrate.Dgr" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.Dgr)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Prepaid Rate:</label>
+        <div>
+            <InputText @bind-Value="@afrate.PrepaidRate" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.PrepaidRate)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Collect Rate:</label>
+        <div>
+            <InputText @bind-Value="@afrate.CollectRate" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.CollectRate)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Effective From:</label>
+        <div>
+            <InputDate @bind-Value="@afrate.EffectiveFrom" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.EffectiveFrom)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Effective To:</label>
+        <div>
+            <InputDate @bind-Value="@afrate.EffectiveTo" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.EffectiveTo)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Origin Country Code:</label>
+        <div>
+            <InputText @bind-Value="@afrate.OriginCountryCode" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.OriginCountryCode)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Origin Airport Code:</label>
+        <div>
+            <InputText @bind-Value="@afrate.OriginAirportCode" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.OriginAirportCode)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Minimum Rate:</label>
+        <div>
+            <InputNumber @bind-Value="@afrate.MinimumRate" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.MinimumRate)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Normal Flat Rate:</label>
+        <div>
+            <InputNumber @bind-Value="@afrate.NormalFlatRate" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.NormalFlatRate)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Rate Weight Break +45kg:</label>
+        <div>
+            <InputNumber @bind-Value="@afrate.RateWeightBreak45" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.RateWeightBreak45)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Rate Weight Break +100kg:</label>
+        <div>
+            <InputNumber @bind-Value="@afrate.RateWeightBreak100" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.RateWeightBreak100)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Rate Weight Break +250kg:</label>
+        <div>
+            <InputNumber @bind-Value="@afrate.RateWeightBreak250" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.RateWeightBreak250)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Rate Weight Break +300kg:</label>
+        <div>
+            <InputNumber @bind-Value="@afrate.RateWeightBreak300" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.RateWeightBreak300)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Rate Weight Break +500kg:</label>
+        <div>
+            <InputNumber @bind-Value="@afrate.RateWeightBreak500" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.RateWeightBreak500)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Rate Weight Break +1000kg:</label>
+        <div>
+            <InputNumber @bind-Value="@afrate.RateWeightBreak1000" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.RateWeightBreak1000)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>ULD Name:</label>
+        <div>
+            <InputText @bind-Value="@afrate.UldName" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.UldName)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Pivot Weight:</label>
+        <div>
+            <InputNumber @bind-Value="@afrate.PivotWeight" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.PivotWeight)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Pivot Rate:</label>
+        <div>
+            <InputNumber @bind-Value="@afrate.PivotRate" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.PivotRate)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Flat Price:</label>
+        <div>
+            <InputNumber @bind-Value="@afrate.FlatPrice" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.FlatPrice)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Over Pivot Rate:</label>
+        <div>
+            <InputNumber @bind-Value="@afrate.OverPivotRate" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.OverPivotRate)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Notes:</label>
+        <div>
+            <InputText @bind-Value="@afrate.Notes" class="form-control"/>
+            <ValidationMessage For="@(()=> afrate.Notes)" />
+        </div>
+    </div>
+                
+    <button type="submit" class="btn btn-success btn-block">
+        @ButtonText
+    </button>
+
+</EditForm>
+
+
+@code {
+    [Parameter] public AfRates afrate { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    IList<Currency> Currencies;
+    IList<Airline> Airlines;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Currencies = await _client.GetFromJsonAsync<IList<Currency>>(Endpoints.CurrencyEndpoint);
+        Airlines = await _client.GetFromJsonAsync<IList<Airline>>(Endpoints.AirlinesEndpoint);
+    }
+
+    private async Task PopulateCurrencyCode()
+    {
+        await OnInitializedAsync();
+        var currency = Currencies.FirstOrDefault(q => q.Id == afrate.CurrencyId);
+
+        if(currency != null)
+        {
+            afrate.CurrencyCode = currency.Code;
+        }
+
+    }
+
+    private async Task PopulateAirlineName()
+    {
+        await OnInitializedAsync();
+        var airline = Airlines.FirstOrDefault(q => q.Id == afrate.AirlineId);
+
+        if(airline != null)
+        {
+            afrate.AirlineName = airline.Name;
+        }
+
+    }
+
+}

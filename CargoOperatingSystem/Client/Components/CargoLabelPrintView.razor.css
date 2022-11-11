@@ -1,0 +1,250 @@
+﻿@media print {
+    .pagebreak {
+        page-break-before: always;
+    }
+    /* page-break-after works, as well */
+
+    .cargolabelgrid01 {
+        height: 100%;
+        width: 100%
+        
+    }
+}
+
+@media (orientation: portrait) {
+    #cargolabelgrid01 {
+        display: grid;
+        font-family: Consolas;
+        grid-template-areas:    "airlinename       airlinename      airlinename"
+                                "barcode           barcode          barcode"
+                                "awbnumber_lbl     awbnumber_lbl    awbnumber_lbl"
+                                "awbnumber         awbnumber        awbnumber"
+                                "destination01_lbl pieces01_lbl     weight01_lbl"
+                                "destination01     pieces01         weight01"
+                                "origin_lbl        transitpoint_lbl transitpoint_lbl"
+                                "origin            transitpoint01   transitpoint01"
+                                "hawbnumber_lbl    hawbnumber_lbl   hawbnumber_lbl"
+                                "hawbnumber        hawbnumber       hawbnumber"
+                                "destination02_lbl pieces02_lbl     weight02_lbl"
+                                "destination02     pieces02         weight02"
+                                "hawbbarcode       hawbbarcode      hawbbarcode";
+
+        grid-template-columns: auto auto auto;
+        grid-template-rows: auto auto auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #cargolabelgrid01 {
+        display: grid;
+        width: 60%;
+        font-family: Consolas;
+        grid-template-areas:    "airlinename       airlinename      airlinename"
+                                "barcode           barcode          barcode"
+                                "awbnumber_lbl     awbnumber_lbl    awbnumber_lbl"
+                                "awbnumber         awbnumber        awbnumber"
+                                "destination01_lbl pieces01_lbl     weight01_lbl"
+                                "destination01     pieces01         weight01"
+                                "origin_lbl        transitpoint_lbl transitpoint_lbl"
+                                "origin            transitpoint01   transitpoint01"
+                                "hawbnumber_lbl    hawbnumber_lbl   hawbnumber_lbl"
+                                "hawbnumber        hawbnumber       hawbnumber"
+                                "destination02_lbl pieces02_lbl     weight02_lbl"
+                                "destination02     pieces02         weight02"
+                                "hawbbarcode       hawbbarcode      hawbbarcode";
+
+        grid-template-columns: auto auto auto;
+        grid-template-rows: auto auto auto;
+    }
+}
+
+#airlinename {
+    grid-area: airlinename;
+    text-align: center;
+    font-size: 90px;
+    padding-bottom: 20px;
+    border-color: black;
+    font-family: Consolas;
+}
+
+#barcode {
+    grid-area: barcode;
+    text-align: center;
+    font-size: 70px;
+    font-weight: bold;
+    padding-bottom: 20px;
+    border-color: black;
+    font-family: Consolas;
+}
+
+#awbnumber_lbl {
+    grid-area: awbnumber_lbl;
+    text-align: center;
+    font-size: 70px;
+    border-color: black;
+    font-family: Consolas;
+}
+
+#awbnumber {
+    grid-area: awbnumber;
+    text-align: center;
+    font-size: 80px;
+    font-weight: bold;
+    padding-bottom: 20px;
+    border-color: black;
+    font-family: Consolas;
+}
+
+#destination01_lbl {
+    grid-area: destination01_lbl;
+    font-size: 40px;
+    text-align: center;
+    border-color: black;
+    font-family: Consolas;
+}
+
+#destination01 {
+    grid-area: destination01;
+    font-size: 60px;
+    font-weight: bold;
+    text-align: center;
+    border-color: black;
+    font-family: Consolas;
+}
+
+#pieces01_lbl {
+    grid-area: pieces01_lbl;
+    font-size: 40px;
+    text-align: center;
+    border-color: black;
+    font-family: Consolas;
+}
+
+#pieces01 {
+    grid-area: pieces01;
+    font-size: 60px;
+    font-weight: bold;
+    text-align: center;
+    border-color: black;
+    font-family: Consolas;
+}
+
+#weight01_lbl {
+    grid-area: weight01_lbl;
+    font-size: 40px;
+    text-align: center;
+    border-color: black;
+    font-family: Consolas;
+}
+
+#weight01 {
+    grid-area: weight01;
+    font-size: 60px;
+    font-weight: bold;
+    text-align: center;
+    border-color: black;
+}
+
+#origin_lbl {
+    grid-area: origin_lbl;
+    font-size: 50px;
+    padding-top: 20px;
+    text-align: center;
+    border-color: black;
+}
+
+#origin {
+    grid-area: origin;
+    font-size: 60px;
+    font-weight: bold;
+    text-align: center;
+    border-color: black;
+}
+
+#transitpoint_lbl {
+    grid-area: transitpoint_lbl;
+    font-size: 40px;
+    text-align: left;
+    padding-top: 20px;
+    padding-left: 100px;
+    border-color: black;
+}
+
+#transitpoint01 {
+    grid-area: transitpoint01;
+    font-size: 60px;
+    text-align: center;
+    border-color: black;
+}
+
+#transitpoint02 {
+    grid-area: transitpoint02;
+    font-size: 60px;
+    text-align: center;
+    border-color: black;
+}
+
+#hawbnumber_lbl {
+    grid-area: hawbnumber_lbl;
+    font-size: 40px;
+    text-align: center;
+    padding-top: 20px;
+    border-color: black;
+}
+
+#hawbnumber {
+    grid-area: hawbnumber;
+    font-size: 60px;
+    font-weight: bold;
+    text-align: center;
+    border-color: black;
+}
+
+#destination02_lbl {
+    grid-area: destination02_lbl;
+    font-size: 40px;
+    text-align: center;
+    border-color: black;
+}
+
+#destination02 {
+    grid-area: destination02;
+    font-size: 50px;
+    text-align: center;
+    border-color: black;
+}
+
+#pieces02_lbl {
+    grid-area: pieces02_lbl;
+    font-size: 40px;
+    text-align: center;
+    border-color: black;
+}
+
+#pieces02 {
+    grid-area: pieces02;
+    font-size: 50px;
+    text-align: center;
+    border-color: black;
+}
+
+#weight02_lbl {
+    grid-area: weight02_lbl;
+    font-size: 40px;
+    text-align: center;
+    border-color: black;
+}
+
+#weight02 {
+    grid-area: weight02;
+    font-size: 50px;
+    text-align: center;
+    border-color: black;
+}
+
+#hawbbarcode {
+    grid-area: hawbbarcode;
+    font-size: 50px;
+    text-align: center;
+    border-color: black;
+}

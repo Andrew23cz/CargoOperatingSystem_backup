@@ -1,0 +1,81 @@
+﻿<EditForm Model="@supplier" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group mt-1 mr-3">
+        <div class="form-inline">
+            <label id="ChargeNameSelectLabel">Supplier Type:</label>
+            <div>
+                <InputSelect @bind-Value="supplier.SupplierType" class="form-control-sm">
+                    <option value="">-- Select Supplier Type ... --</option>
+                    <option value="rfs">Road Feeder Service - RFS</option>
+                    <option value="gha">Ground Handling Agent - GHA</option>
+                    <option value="other">Other Supplier</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => supplier.SupplierType)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Company Name:</label>
+        <div>
+            <InputText @bind-Value="@supplier.CompanyName" class="form-control"/>
+            <ValidationMessage For="@(()=> supplier.CompanyName)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>HQ Address:</label>
+        <div>
+            <InputTextArea @bind-Value="@supplier.HqAddress" class="form-control"/>
+            <ValidationMessage For="@(()=> supplier.HqAddress)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Invoicing Address:</label>
+        <div>
+            <InputTextArea @bind-Value="@supplier.InvoicingAddress" class="form-control"/>
+            <ValidationMessage For="@(()=> supplier.InvoicingAddress)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Tax Number:</label>
+        <div>
+            <InputText @bind-Value="@supplier.TaxNumber" class="form-control"/>
+            <ValidationMessage For="@(()=> supplier.TaxNumber)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Contact Person:</label>
+        <div>
+            <InputText @bind-Value="@supplier.ContactPersonName" class="form-control"/>
+            <ValidationMessage For="@(()=> supplier.ContactPersonName)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Email:</label>
+        <div>
+            <InputText @bind-Value="@supplier.Email" class="form-control"/>
+            <ValidationMessage For="@(()=> supplier.Email)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Phone Number:</label>
+        <div>
+            <InputNumber @bind-Value="@supplier.PhoneNumber" class="form-control"/>
+            <ValidationMessage For="@(()=> supplier.PhoneNumber)" />
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-success btn-block">
+        @ButtonText
+    </button>
+
+</EditForm>
+
+@code {
+    [Parameter] public Supplier supplier { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+}

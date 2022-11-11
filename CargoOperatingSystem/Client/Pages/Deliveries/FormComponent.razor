@@ -1,0 +1,131 @@
+﻿@inject HttpClient _client
+
+<EditForm Model="@delivery" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group">
+        <label>Trucking provider:</label>
+        <div>
+            <InputSelect @bind-Value="delivery.SupplierId" class="form-control">
+                <option value="">-- Select Service Provider --</option>
+                @if (Suppliers != null)
+                {
+                    foreach (var supplier in Suppliers)
+                    {
+                        <option value="@supplier.Id">@supplier.CompanyName</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => delivery.SupplierId)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Order Number:</label>
+        <div>
+            <InputText @bind-Value="@delivery.OrderNumber" class="form-control"/>
+            <ValidationMessage For="@(()=> delivery.OrderNumber)"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Loading Address:</label>
+        <div>
+            <InputTextArea @bind-Value="@delivery.LoadAddress" class="form-control"/>
+            <ValidationMessage For="@(()=> delivery.LoadAddress)"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Loading Date&Time:</label>
+        <div>
+            <InputDateTime @bind-Value="@delivery.LoadDate" class="form-control" />
+            <ValidationMessage For="@(()=> delivery.LoadDate)"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Offload Address:</label>
+        <div>
+            <InputTextArea @bind-Value="@delivery.OffloadAddress" class="form-control"/>
+            <ValidationMessage For="@(()=> delivery.OffloadAddress)"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Offload Date&Time:</label>
+        <div>
+            <InputDateTime @bind-Value="@delivery.OffloadDate" class="form-control" />
+            <ValidationMessage For="@(()=> delivery.OffloadDate)"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Origin Code:</label>
+        <div>
+            <InputText @bind-Value="@delivery.OriginCode" class="form-control"/>
+            <ValidationMessage For="@(()=> delivery.OriginCode)"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Destination Code:</label>
+        <div>
+            <InputText @bind-Value="@delivery.DestCode" class="form-control"/>
+            <ValidationMessage For="@(()=> delivery.DestCode)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Driver Name:</label>
+        <div>
+            <InputText @bind-Value="@delivery.DriverName" class="form-control"/>
+            <ValidationMessage For="@(()=> delivery.DriverName)"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Driver Phone:</label>
+        <div>
+            <InputNumber @bind-Value="@delivery.DriverPhone" class="form-control"/>
+            <ValidationMessage For="@(()=> delivery.DriverPhone)"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>License Plate:</label>
+        <div>
+            <InputText @bind-Value="@delivery.LicensePlate" class="form-control"/>
+            <ValidationMessage For="@(()=> delivery.LicensePlate)"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Delivery Amount:</label>
+        <div>
+            <InputNumber @bind-Value="@delivery.DeliveryAmount" class="form-control"/>
+            <ValidationMessage For="@(()=> delivery.DeliveryAmount)"/>
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-success btn-block">
+        Create Delivery
+    </button>
+
+</EditForm>
+
+
+@code {
+    [Parameter] public Delivery delivery { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    IList<Supplier> Suppliers;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Suppliers = await _client.GetFromJsonAsync<IList<Supplier>>(Endpoints.SuppliersEndpoint);
+    }
+
+}

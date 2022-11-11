@@ -1,0 +1,37 @@
+﻿@page "/mawbs/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+
+
+<MawbPrintViewNew Print="@Print" mawb="mawb" barcode="@barcode"/>
+        
+
+@code {
+    [Parameter] public int id { get; set; }
+    Mawb mawb = new Mawb();
+    string barcode = "";
+    string barcode_text = "";
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        mawb = await _client.GetFromJsonAsync<Mawb>($"{Endpoints.MawbsEndpoint}{id}");
+
+        BarcodeFonts bcf = new BarcodeFonts();
+        bcf.BarcodeType = BarcodeFonts.BarcodeEnum.Code39;		
+        bcf.CheckDigit = BarcodeFonts.YesNoEnum.Yes;
+        bcf.Data = mawb.AwbNumber;
+        bcf.encode();
+        barcode = bcf.EncodedData;
+        barcode_text = bcf.HumanText;
+
+    }
+
+    private async Task Print()
+    {
+        await js.InvokeVoidAsync("printInvoke");
+    }
+}

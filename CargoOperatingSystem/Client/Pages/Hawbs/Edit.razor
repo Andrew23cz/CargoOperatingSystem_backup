@@ -1,0 +1,27 @@
+﻿@page "/hawbs/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<div class="row">
+    <h3 class="card-title">Edit HAWB</h3>
+</div>
+
+<FormComponent ButtonText="Update HAWB" OnValidSubmit="@EditHawb" hawb="hawb"/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    Hawb hawb = new Hawb();
+    
+
+    protected async override Task OnParametersSetAsync()
+    {
+        hawb = await _client.GetFromJsonAsync<Hawb>($"{Endpoints.HawbsEndpoint}{id}");
+    }
+
+    private async Task EditHawb()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.HawbsEndpoint}{id}", hawb);
+        _navManager.NavigateTo($"/hawbs/mawbindex/{hawb.MawbId}");
+    }
+}

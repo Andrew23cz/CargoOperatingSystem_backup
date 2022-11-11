@@ -1,0 +1,49 @@
+﻿@page "/arrivals/create/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+@attribute [Authorize]
+
+
+<h3 class="card-title">Specify Shipment Arrival</h3>
+
+<div class="form-group mx-3">
+    <label>MAWB Number: @shipment.AwbNumber </label>
+</div>
+<hr />
+<br/>
+
+<FormComponent ButtonText="Save Arrival" OnValidSubmit="@CreateArrival" arrival="arrival"/> 
+
+
+@code {
+
+    [Parameter] public int id { get; set; }
+    Arrival arrival = new Arrival();
+    Shipment shipment = new Shipment();
+
+    private IList<Supplier> Suppliers;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        Suppliers = await _client.GetFromJsonAsync<IList<Supplier>>(Endpoints.SuppliersEndpoint);
+        shipment = await _client.GetFromJsonAsync<Shipment>($"{Endpoints.ShipmentsEndpoint}{id}");
+        arrival.ShipmentId = shipment.Id;
+    }
+
+    private async Task CreateArrival()
+    {
+        if(arrival.SupplierId != null)
+        {
+            await OnParametersSetAsync();
+            var supplier = Suppliers.First(q => q.Id == arrival.SupplierId);
+            arrival.ArrivalPoint = supplier.CompanyName;
+        }
+
+        await _client.PostAsJsonAsync(Endpoints.ArrivalsEndpoint, arrival);
+        _navManager.NavigateTo(Endpoints.ArrivalsIndex);
+        
+    }
+
+
+}

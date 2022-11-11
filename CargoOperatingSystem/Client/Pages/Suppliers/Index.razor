@@ -1,0 +1,85 @@
+﻿@page "/suppliers/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">List Of Suppliers</h3>
+<hr />
+
+<a href="/suppliers/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Supplier
+</a>
+<br/>
+<br/>
+
+@if(Suppliers == null)
+{
+    <div class="alert alert-info">Loading Suppliers ...</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Company Name</th>
+                <th>Tax Number</th>
+                <th>Headquaters Address</th>
+                <th>Invoicing Address</th>
+                <th>Contact Person</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var supplier in Suppliers)
+            {
+                <tr>
+                    <td>@supplier.CompanyName</td>
+                    <td>@supplier.TaxNumber</td>
+                    <td>@supplier.HqAddress</td>
+                    <td>@supplier.InvoicingAddress</td>
+                    <td>@supplier.ContactPersonName</td>
+                    <td>@supplier.Email</td>
+                    <td>
+                        <a href="/suppliers/view/@supplier.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/suppliers/edit/@supplier.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick=@(()=>Delete(@supplier.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
+
+
+@code {
+    private IList<Supplier> Suppliers;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Suppliers = await _client.GetFromJsonAsync<IList<Supplier>>(Endpoints.SuppliersEndpoint);
+    }
+
+    private async Task Delete(int supplierId)
+    {
+        var supplier = Suppliers.First(q => q.Id == supplierId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {supplier.CompanyName}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.SuppliersEndpoint}{supplierId}");
+            await OnInitializedAsync();
+        }
+    }
+
+}

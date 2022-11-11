@@ -1,0 +1,1754 @@
+﻿@page "/shipments/booking/{id:int}"
+@using System.Reflection
+@using System.Diagnostics
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+
+
+<h3 id="Title">Shipment Booking</h3>
+
+@*<div class="container-fluid px-0">
+
+    <div class="row">
+
+        @if(shipment.Mawb == null)
+        {
+            <div id="MawbButton" class="mr-2 mb-2">
+                <a href="/mawbs/create/@shipment.Id" class="btn btn-warning">
+                    <span class="oi oi-plus"></span>
+                    MAWB Data Capture &nbsp;&nbsp;&nbsp;
+                </a>
+            </div>
+    
+            <div id="HawbButton" class="mr-2 mb-2">
+                <a href="" @onclick="@HawbDangerAlert"  @onclick:preventDefault class="btn btn-danger">
+                    <span class="oi oi-circle-x"></span>
+                    HAWB Data Capture &nbsp;&nbsp;&nbsp;&nbsp;
+                </a>
+            </div>
+    
+        }
+        else
+        {
+            <div id="MawbButton" class="mr-2 mb-2">
+                <a href="/mawbs/edit/@shipment.Mawb.Id" class="btn btn-success">
+                    <span class="oi oi-circle-check"></span>
+                    MAWB Data Capture &nbsp;&nbsp;&nbsp;
+                </a>
+            </div>
+    
+            <div id="HawbButton" class="mr-2 mb-2">
+                <a href="/hawbs/mawbindex/@shipment.Mawb.Id" class="btn btn-warning">
+                    <span class="oi oi-plus"></span>
+                    HAWB Data Capture &nbsp;&nbsp;&nbsp;&nbsp;
+                </a>
+            </div>
+    
+        }
+
+        @if(shipment.Workload == null)
+        {
+            <div id="WorkloadButton" class="mr-2 mb-2">
+                <a href="/workloads/create/@shipment.Id" class="btn btn-warning">
+                    <span class="oi oi-plus"></span>
+                    Create Workload Data
+                </a>
+            </div>
+    
+        }
+        else
+        {
+            <div id="WorkloadButton" class="mr-2 mb-2">
+                <a href="/workloads/edit/@shipment.Workload.Id" class="btn btn-success">
+                    <span class="oi oi-circle-check"></span>
+                    Update Workload Data
+                </a>
+            </div>
+    
+        }
+
+        @if(shipment.Arrival == null)
+        {
+            <div id="ArrivalButton" class="mr-2 mb-2">
+                <a href="/arrivals/create/@shipment.Id" class="btn btn-warning">
+                    <span class="oi oi-plus"></span>
+                    Create Cargo Arrival &nbsp;&nbsp;&nbsp;&nbsp;
+                </a>
+            </div>
+    
+        }
+        else
+        {
+            <div id="ArrivalButton" class="mr-2 mb-2">
+                <a href="/arrivals/edit/@shipment.Arrival.Id" class="btn btn-success">
+                    <span class="oi oi-circle-check"></span>
+                    Update Cargo Arrival &nbsp;&nbsp;&nbsp;&nbsp;
+                </a>
+            </div>
+    
+        }
+
+        @if(shipment.Pickup == null)
+        {
+            <div id="PickupButton" class="mb-2">
+                <a href="/pickups/create/@shipment.Id" class="btn btn-warning">
+                    <span class="oi oi-plus"></span>
+                    Create Cargo Pickup &nbsp;&nbsp;&nbsp;&nbsp;
+                </a>
+            </div>
+    
+        }
+        else
+        {
+            <div id="PickupButton" class="mb-2">
+                <a href="/pickups/edit/@shipment.Pickup.Id" class="btn btn-success">
+                    <span class="oi oi-circle-check"></span>
+                    Update Cargo Pickup &nbsp;&nbsp;&nbsp;&nbsp;
+                </a>
+            </div>
+    
+        }
+
+
+    </div>
+
+</div>*@
+
+
+<EditForm id="BookForm" Model="@shipment" OnValidSubmit="@EditShipment">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="row">
+
+        <div id="AwbNumber" class="mb-1">
+            <label>AWB Number: @shipment.AwbNumber</label>
+        </div>
+        
+        <div id="CustomerSelect" class="mb-1">
+            <div class="form-inline">
+                <label class="pr-5">Customer:</label>
+                <div>
+                    <InputSelect @bind-Value="shipment.CustomerId" class="form-control-sm">
+                        <option value="">-- Select Customer --</option>
+                        @if (Customers != null)
+                        {
+                            foreach (var customer in Customers)
+                            {
+                                <option value="@customer.Id">@customer.CompanyName</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => shipment.CustomerId)" />
+                </div>
+            </div>
+        </div>
+
+        <div id="SaveButton">
+            <button type="submit" form="BookForm" class="btn btn-success btn-lg mr-2" disabled="@(!context.Validate() || !context.IsModified())">
+                <span class="oi oi-book"></span>
+                Save Booking
+            </button>
+        </div>
+
+        <div id="SaveButton">
+            <button type="button" class="btn btn-primary btn-lg" @onclick="@PopulateCharges">
+                <span class="oi oi-calculator"></span>
+                Populate Charges
+            </button>
+        </div>
+
+    </div>
+    <br/>
+
+
+    <div class="container-fluid px-0">
+
+        <div class="row">
+
+            <div id="ShpmtSpecAndFlts" class="col-5 pb-2 mr-2"  style="background-color: darkgray">
+
+                <div id="ShipmentDetailsLabel" class="row">
+                    <label style="margin:0">Shipment Details</label>
+                </div>
+                
+                <div id="OriginDestCommRow" class="row pl-3">
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Origin</label>
+                        <div>
+                            <InputText @bind-Value="@shipment.Origin" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.Origin)" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Final Destination</label>
+                        <div>
+                            <InputText @bind-Value="@shipment.Destination" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.Destination)" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Commodity</label>
+                        <div>
+                            <InputText @bind-Value="@shipment.Commodity" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.Commodity)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="PcsGwVolRow" class="row pl-3">
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Pieces</label>
+                        <div>
+                            <InputNumber @bind-Value="@shipment.Pieces" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.Pieces)" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Gross Weight</label>
+                        <div>
+                            <InputNumber @bind-Value="@shipment.GrossWeight" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.GrossWeight)" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Volume</label>
+                        <div>
+                            <InputNumber @bind-Value="@shipment.Volume" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.Volume)" />
+                        </div>
+                    </div>
+        
+                </div>
+
+                <div id="ShcRow" class="row pl-3">
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">SHC-1</label>
+                        <div>
+                            <InputText @bind-Value="@shipment.ShcA" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.ShcA)" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">SHC-2</label>
+                        <div>
+                            <InputText @bind-Value="@shipment.ShcB" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.ShcB)" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">SHC-3</label>
+                        <div>
+                            <InputText @bind-Value="@shipment.ShcC" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.ShcC)" />
+                        </div>
+                    </div>
+        
+                </div>
+
+                <div id="chwinput" class="row pl-3 mb-1">
+                    <div class="form-group mt-1 mr-3">
+                        <label id="InputLabel">Chargeable Weight</label>
+                        <div>
+                            <InputNumber @bind-Value="@shipment.ChargeableWeight" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.ChargeableWeight)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="FirstFlightRow" class="row pl-3">
+                    <div id="FirstFlightNumber" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">1st Flight Number</label>
+                        <div>
+                            <InputText @bind-Value="@shipment.FirstFlightNumber" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.FirstFlightNumber)" />
+                        </div>
+                    </div>
+                    <div id="FirstFlightDate" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">1st Flight Date</label>
+                        <div>
+                            <InputDate @bind-Value="@shipment.FirstFlightDate" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.FirstFlightDate)" />
+                        </div>
+                    </div>
+                    <div id="FirstFlightDest" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">1st Flight Dest</label>
+                        <div>
+                            <InputText @bind-Value="@shipment.FirstFlightDest" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.FirstFlightDest)" />
+                        </div>
+                    </div>
+                </div>
+                <div id="SecondFlightRow" class="row pl-3">
+                    <div id="SecondFlightNumber" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">2nd Flight Number</label>
+                        <div>
+                            <InputText @bind-Value="@shipment.SecondFlightNumber" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.SecondFlightNumber)" />
+                        </div>
+                    </div>
+                    <div id="SecondFlightDate" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">2nd Flight Date</label>
+                        <div>
+                            <InputDate @bind-Value="@shipment.SecondFlightDate" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.SecondFlightDate)" />
+                        </div>
+                    </div>
+                    <div id="SecondFlightDest" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">2nd Flight Dest</label>
+                        <div>
+                            <InputText @bind-Value="@shipment.SecondFlightDest" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.SecondFlightDest)" />
+                        </div>
+                    </div>
+                </div>
+                <div  id="ThirdFlightRow" class="row pl-3">
+                    <div id="ThirdFlightNumber" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">3rd Flight Number</label>
+                        <div>
+                            <InputText @bind-Value="@shipment.ThirdFlightNumber" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.ThirdFlightNumber)" />
+                        </div>
+                    </div>
+                    <div id="ThirdFlightDate" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">3rd Flight Date</label>
+                        <div>
+                            <InputDate @bind-Value="@shipment.ThirdFlightDate" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.ThirdFlightDate)" />
+                        </div>
+                    </div>
+                    <div id="ThirdFlightDest" class="form-group mt-1 mr-3">
+                        <label id="InputLabel">3rd Flight Dest</label>
+                        <div>
+                            <InputText @bind-Value="@shipment.ThirdFlightDest" class="form-control-sm"/>
+                            <ValidationMessage For="@(()=> shipment.ThirdFlightDest)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div id="IssuingDateRow" class="row pl-3">
+                    <label id="InputLabel" class="pt-2 mr-3">MAWB Issuing Date</label>
+                    <div>
+                        <InputDate @bind-Value="@shipment.MawbIssuingDate" class="form-control-sm mt-2 mb-2 mr-3"/>
+                        <ValidationMessage For="@(()=> shipment.MawbIssuingDate)" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="DimmInputBox" class="col-5"  style="background-color: darkgray">
+                <div>
+                    <DimensionForm OnValidSubmit="@CreateDimension" dimension="dimension"/>
+            
+                    <br/>
+
+                    @if (ThisShpmtDims == null)
+                    {
+                        <div class="alert alert-info">Loading Dimensions ...</div>
+                    }
+                    else
+                    {
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Pieces</th>
+                                    <th>Length</th>
+                                    <th>Width</th>
+                                    <th>Height</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var dimension in ThisShpmtDims)
+                                {
+                                    <tr>
+                                        <td>@dimension.Pieces</td>
+                                        <td>@dimension.Length</td>
+                                        <td>@dimension.Width</td>
+                                        <td>@dimension.Height</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm" type="button" @onclick=@(()=>DeleteDimension(@dimension.Id))>
+                                                <span class="oi oi-delete"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="ChargesInputBox" class="col-5 mt-2 mr-2"  style="background-color: darkgray">
+                <div>
+                    <BuyChargesForm ButtonText="Insert Buying Charge" OnValidSubmit="@CreateBuyCharge" charge="newBuyCharge" dueSupplierCheck="buyDueSupplierCheck" otherChargeCheck="buyOtherChargeCheck"/>
+            
+                    <br/>
+
+                    @if (ThisShpmtBuyCharges == null)
+                    {
+                        <div class="alert alert-info">Loading Buying Charges ...</div>
+                    }
+                    else
+                    {
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Definition</th>
+                                    <th>Due</th>
+                                    <th>Currency</th>
+                                    <th>Amount</th>
+                                    <th>Type</th>
+                                    <th>Note</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var buyCharge in ThisShpmtBuyCharges)
+                                {
+                                    <tr>
+                                        <td>@buyCharge.ChargeName</td>
+                                        <td>@buyCharge.ChargeDue</td>
+                                        <td>@buyCharge.Currency.Code</td>
+                                        <td>@buyCharge.Amount</td>
+                                        <td>@buyCharge.ChargeType</td>
+                                        <td>@buyCharge.Note</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm" type="button" @onclick=@(()=>DeleteBuyCharge(@buyCharge.Id))>
+                                                <span class="oi oi-delete"></span>
+                                            </button>
+                                            <button class="btn btn-warning btn-sm" type="button" @onclick=@(()=>SetChargePopupVisible(@buyCharge.Id))>
+                                                <span class="oi oi-magnifying-glass"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+
+            <div id="ChargesInputBox" class="col-5 mt-2"  style="background-color: darkgray">
+                <div>
+                    <SellChargesForm ButtonText="Insert Selling Charge" OnValidSubmit="@CreateSellCharge" charge="newSellCharge" dueSupplierCheck="sellDueSupplierCheck" otherChargeCheck="sellOtherChargeCheck"/>
+            
+                    <br/>
+
+                    @if (ThisShpmtSellCharges == null)
+                    {
+                        <div class="alert alert-info">Loading Selling Charges ...</div>
+                    }
+                    else
+                    {
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Definition</th>
+                                    <th>Due</th>
+                                    <th>Currency</th>
+                                    <th>Amount</th>
+                                    <th>Type</th>
+                                    <th>Note</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sellCharge in ThisShpmtSellCharges)
+                                {
+                                    <tr>
+                                        <td>@sellCharge.ChargeName</td>
+                                        <td>@sellCharge.ChargeDue</td>
+                                        <td>@sellCharge.Currency.Code</td>
+                                        <td>@sellCharge.Amount</td>
+                                        <td>@sellCharge.ChargeType</td>
+                                        <td>@sellCharge.Note</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm" type="button" @onclick=@(()=>DeleteSellCharge(@sellCharge.Id))>
+                                                <span class="oi oi-delete"></span>
+                                            </button>
+                                            <button class="btn btn-warning btn-sm" type="button" @onclick=@(()=>SetChargePopupVisible(@sellCharge.Id))>
+                                                <span class="oi oi-magnifying-glass"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</EditForm>
+
+<SfDialog Width="400px" @bind-Visible="@ChargePopupIsVisible" IsModal="true">
+    <DialogTemplates>
+        <Content>
+
+            <table style="width:375px">
+                <tr>
+                    <th style="width:100px">Definition:</th>
+                    <td>@popupCharge.ChargeName</td>
+                </tr>
+                <tr>
+                    <th>Due:</th>
+                    <td>@popupCharge.ChargeDue</td>
+                </tr>
+                <tr>
+                    <th>Currency:</th>
+                    <td>@popupCharge.Currency.Code</td>
+                </tr>
+                <tr>
+                    <th>Amount:</th>
+                    <td>@popupCharge.Amount</td>
+                </tr>
+                <tr>
+                    <th>Type:</th>
+                    <td>@popupCharge.ChargeType</td>
+                </tr>
+                @if (@popupCharge.Supplier != null)
+                {
+                    <tr>
+                        <th>Supplier:</th>
+                        <td>@popupCharge.Supplier.CompanyName</td>
+                    </tr>
+                }
+                <tr>
+                    <th>Note:</th>
+                    <td>@popupCharge.Note</td>
+                </tr>
+            </table>
+
+
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton OnClick="@OnDialogueBtnClick" Content="Ok" IsPrimary="true">
+        </DialogButton>
+    </DialogButtons>
+</SfDialog>
+
+
+@code {
+    [Parameter] public int id { get; set; }
+    Shipment shipment = new Shipment();
+
+    IList<Customer> Customers;
+    IList<Dimmension> ThisShpmtDims;
+    IList<Charge> ThisShpmtCharges;
+    IList<Charge> ThisShpmtBuyCharges;
+    IList<Charge> ThisShpmtSellCharges;
+    IList<Charge> thisShipmentAutoPopulatedCharges;
+    
+
+    bool shipmentNotChanged = true;
+    bool shipmentSavedByDimUpdate = false;
+    bool sellDueSupplierCheck = false;
+    bool sellOtherChargeCheck = false;
+    bool buyDueSupplierCheck = false;
+    bool buyOtherChargeCheck = false;
+    bool ChargePopupIsVisible { get; set; } = false;
+
+
+    Charge newBuyCharge = new Charge();
+    Charge newSellCharge = new Charge();
+    Charge popupCharge = new Charge();
+    Dimmension dimension = new Dimmension();
+    Airline airline = new Airline();
+    AwbStock awbstock = new AwbStock();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if(shipmentNotChanged)
+        {
+            shipment = await _client.GetFromJsonAsync<Shipment>($"{Endpoints.ShipmentsEndpoint}{id}");
+        }
+        Customers = await _client.GetFromJsonAsync<IList<Customer>>($"{Endpoints.CustomersEndpoint}");
+
+        ThisShpmtDims = await _client.GetFromJsonAsync<IList<Dimmension>>($"{Endpoints.DimmensionsEndpoint}GetDimensionsByShipmentId/{shipment.Id}");
+        ThisShpmtCharges = await _client.GetFromJsonAsync<IList<Charge>>($"{Endpoints.ChargesEndpoint}GetChargesByShipmentId/{shipment.Id}");
+        ThisShpmtBuyCharges = ThisShpmtCharges.Where(q => q.BuyingSelling == "buying").ToList();
+        ThisShpmtSellCharges = ThisShpmtCharges.Where(q => q.BuyingSelling == "selling").ToList();
+        thisShipmentAutoPopulatedCharges = ThisShpmtCharges.Where(q => q.AutoPopulated == true).ToList();
+        shipmentNotChanged = true;
+        shipmentSavedByDimUpdate = false;
+    }
+
+    private async Task PopulateBillingDate()
+    {
+        string airlinePrefix = shipment.AwbNumber.Substring(0, 3);
+        airline = await _client.GetFromJsonAsync<Airline>($"{Endpoints.AirlinesEndpoint}GetAirlineByPrefix/{airlinePrefix}");
+
+        if(airline.BillingDateBasis == "issuingdate")
+        {
+            shipment.BillingDate = shipment.MawbIssuingDate;
+        }
+
+        if(airline.BillingDateBasis == "firstflightdate")
+        {
+            shipment.BillingDate = shipment.FirstFlightDate;
+        }
+
+        if(airline.BillingDateBasis == "secondflightdate")
+        {
+            shipment.BillingDate = shipment.SecondFlightDate;
+        }
+    }
+
+    private void OnDialogueBtnClick()
+    {
+        ChargePopupIsVisible = false;
+    }
+
+    private async Task SetChargePopupVisible(int chargeId)
+    {
+        popupCharge = await _client.GetFromJsonAsync<Charge>($"{Endpoints.ChargesEndpoint}{chargeId}");
+        ChargePopupIsVisible = true;
+    }
+
+    private async Task EditShipment()
+    {
+        if (shipment.ShipmentStatus == "Created" && shipment.CustomerId != null)
+        {
+            shipment.ShipmentStatus = "Booked";
+
+        }
+
+        await PopulateBillingDate();
+        var success = await _client.PutAsJsonAsync($"{Endpoints.ShipmentsEndpoint}{id}", shipment);
+
+        if (success.IsSuccessStatusCode && !shipmentSavedByDimUpdate)
+        {
+            await EditAwbStock(shipment.AwbStockId);
+            await js.InvokeVoidAsync("alert", "SAVED");
+        }
+
+        await OnParametersSetAsync();
+    }
+
+    private async Task DeleteDimension(int dimensionId)
+    {
+        var dimensionToDelete = await _client.GetFromJsonAsync<Dimmension>($"{Endpoints.DimmensionsEndpoint}{dimensionId}");
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {dimensionToDelete.Pieces}pcs / {dimensionToDelete.Length}x{dimensionToDelete.Width}x{dimensionToDelete.Height}cm?");
+
+        if (confirm)
+        {
+            var success = await _client.DeleteAsync($"{Endpoints.DimmensionsEndpoint}{dimensionId}");
+            if (success.IsSuccessStatusCode)
+            {
+                shipmentNotChanged = false;
+                success.Dispose();
+                await OnParametersSetAsync();
+                shipmentSavedByDimUpdate = true;
+                await PopulateChwAndVol();
+            }
+
+        }
+    }
+
+    private async Task CreateDimension()
+    {
+        dimension.ShipmentId = shipment.Id;
+        var success = await _client.PostAsJsonAsync(Endpoints.DimmensionsEndpoint, dimension);
+        if (success.IsSuccessStatusCode)
+        {
+            shipmentNotChanged = false;
+            success.Dispose();
+            await OnParametersSetAsync();
+            shipmentSavedByDimUpdate = true;
+            await PopulateChwAndVol();
+        }
+    }
+
+    private async Task DeleteBuyCharge(int buyChargeId)
+    {
+        var chargeToDelete = await _client.GetFromJsonAsync<Charge>($"{Endpoints.ChargesEndpoint}{buyChargeId}");
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete charge {chargeToDelete.ChargeType}:{chargeToDelete.Amount} {chargeToDelete.Currency.Code}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.ChargesEndpoint}{buyChargeId}");
+            await OnParametersSetAsync();
+        }
+    }
+
+    private async Task DeleteSellCharge(int sellChargeId)
+    {
+        var chargeToDelete = await _client.GetFromJsonAsync<Charge>($"{Endpoints.ChargesEndpoint}{sellChargeId}");
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete charge {chargeToDelete.ChargeType}:{chargeToDelete.Amount} {chargeToDelete.Currency.Code}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.ChargesEndpoint}{sellChargeId}");
+            await OnParametersSetAsync();
+        }
+    }
+
+    private async Task CreateBuyCharge()
+    {
+        newBuyCharge.ShipmentId = shipment.Id;
+        newBuyCharge.BuyingSelling = "buying";
+
+        if(newBuyCharge.ChargeName == "other")
+        {
+            buyOtherChargeCheck = true;
+        }
+        else
+        {
+            buyOtherChargeCheck = false;
+        }
+
+        if(newBuyCharge.ChargeDue == "supplier")
+        {
+            buyDueSupplierCheck = true;
+        }
+        else
+        {
+            buyDueSupplierCheck = false;
+        }
+
+
+        await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newBuyCharge);
+        await OnParametersSetAsync();
+    }
+
+    private async Task CreateSellCharge()
+    {
+        newSellCharge.ShipmentId = shipment.Id;
+        newSellCharge.BuyingSelling = "selling";
+
+        if(newSellCharge.ChargeName == "other")
+        {
+            sellOtherChargeCheck = true;
+        }
+        else
+        {
+            sellOtherChargeCheck = false;
+        }
+
+        if(newSellCharge.ChargeDue == "supplier")
+        {
+            sellDueSupplierCheck = true;
+        }
+        else
+        {
+            sellDueSupplierCheck = false;
+        }
+
+        await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newSellCharge);
+        await OnParametersSetAsync();
+    }
+
+    private async Task PopulateChwAndVol()
+    {
+        shipment.Volume = ChwCalculator.CalculateVolume(ThisShpmtDims);
+        shipment.ChargeableWeight = ChwCalculator.CalculateChW(ThisShpmtDims, (double)shipment.GrossWeight);
+        await EditShipment();
+    }
+
+
+
+    private async Task EditAwbStock(int awbStockId)
+    {
+        awbstock = await _client.GetFromJsonAsync<AwbStock>($"{Endpoints.AwbStocksEndpoint}{awbStockId}");
+
+        if(awbstock.CustomerId != shipment.CustomerId)
+        {
+            awbstock.CustomerId = shipment.CustomerId;
+            await _client.PutAsJsonAsync($"{Endpoints.AwbStocksEndpoint}{awbStockId}", awbstock);
+        }
+    }
+
+    private async Task HawbDangerAlert()
+    {
+        await js.InvokeVoidAsync("alert", "MAWB Data Capture Not Finalized!");
+    }
+
+    private async Task PopulateCharges()
+    {
+        await PopulateChargesFromWorkload();
+        await PopulateChargesFromChargeTemplates();
+    }
+
+    private async Task PopulateChargesFromChargeTemplates()
+    {
+        IList<ChargeTemplate> chargeTemplates;
+        chargeTemplates = await _client.GetFromJsonAsync<IList<ChargeTemplate>>($"{Endpoints.ChargeTemplatesEndpoint}");
+
+        var thisAirlineChargeTemplates = chargeTemplates.Where(x => x.Airline != null 
+            && x.Airline.Prefix == shipment.AwbNumber.Substring(0, 3)
+            && (x.OriginAirport == shipment.Origin
+            || x.DestinationAirport == shipment.Destination
+            || (x.ShcCode == shipment.ShcA
+            || x.ShcCode == shipment.ShcB
+            || x.ShcCode == shipment.ShcC))).ToList(); 
+
+        var noAirlineChargeTemplates = chargeTemplates.Where(x => x.Airline == null 
+            && (x.OriginAirport == shipment.Origin
+            || x.DestinationAirport == shipment.Destination
+            || (x.ShcCode == shipment.ShcA
+            || x.ShcCode == shipment.ShcB
+            || x.ShcCode == shipment.ShcC))); 
+
+
+        //var AirlineSupplierOriginDestShc = chargeTemplates.Where(
+        //    x => x.Airline != null && x.Airline.Prefix == shipment.AwbNumber.Substring(0, 3) &&
+        //        x.Supplier != null && x.SupplierId == shipment.Arrival.SupplierId ?? shipment.Pickup.
+        //)
+
+
+        foreach(var charge in thisAirlineChargeTemplates)
+        {
+            var checkChargesByTemplateName = thisShipmentAutoPopulatedCharges.FirstOrDefault(x => x.AutoPopulateCode == charge.TemplateName);
+
+            if(checkChargesByTemplateName == null)
+            {
+                Charge newWorkloadCharge = new Charge();
+                newWorkloadCharge.ShipmentId = shipment.Id;
+                newWorkloadCharge.CurrencyId = charge.CurrencyId;
+                newWorkloadCharge.ChargeName = charge.ChargeName;
+                newWorkloadCharge.ChargeType = charge.ChargeType;
+                newWorkloadCharge.ChargeDue = charge.ChargeDue;
+                newWorkloadCharge.OtherChargeCode = charge.OtherChargeCode ?? "";
+                newWorkloadCharge.Note = charge.Note ?? "";
+                newWorkloadCharge.BuyingSelling = charge.BuyingSelling;
+                newWorkloadCharge.AutoPopulated = true;
+                newWorkloadCharge.AutoPopulateCode = charge.TemplateName;
+                newWorkloadCharge.Amount = charge.Amount;
+                await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+                
+            }
+
+        }
+
+        foreach(var charge in noAirlineChargeTemplates)
+        {
+            var checkChargesByTemplateName = thisShipmentAutoPopulatedCharges.FirstOrDefault(x => x.AutoPopulateCode == charge.TemplateName);
+
+            if(checkChargesByTemplateName == null)
+            {
+                Charge newWorkloadCharge = new Charge();
+                newWorkloadCharge.ShipmentId = shipment.Id;
+                newWorkloadCharge.CurrencyId = charge.CurrencyId;
+                newWorkloadCharge.ChargeName = charge.ChargeName;
+                newWorkloadCharge.ChargeType = charge.ChargeType;
+                newWorkloadCharge.ChargeDue = charge.ChargeDue;
+                newWorkloadCharge.OtherChargeCode = charge.OtherChargeCode ?? "";
+                newWorkloadCharge.Note = charge.Note ?? "";
+                newWorkloadCharge.BuyingSelling = charge.BuyingSelling;
+                newWorkloadCharge.AutoPopulated = true;
+                newWorkloadCharge.AutoPopulateCode = charge.TemplateName;
+                newWorkloadCharge.Amount = charge.Amount;
+                await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+                
+            }
+
+        }
+
+        await OnParametersSetAsync();
+
+        
+
+    }
+
+    private async Task PopulateChargesFromWorkload()
+    {
+        if (shipment.Workload != null)
+        {
+            //var thisShipmentAutoPopulatedCharges = ThisShpmtSellCharges.Where(q => q.AutoPopulated == true);
+
+
+            var workloadPropList = shipment.Workload.GetType()
+                .GetProperties()
+                .Where(x => x.PropertyType == typeof(int) && (x.Name != "Id" || x.Name != "WorkloadRateSheetId" || x.Name != "ShipmentId") );
+
+            foreach (var prop in workloadPropList)
+            {
+                var val = prop.GetValue(shipment.Workload, null).ToString();
+                var val1 = int.TryParse(val, out int parsedVal);
+
+                if (parsedVal != 0)
+                {
+
+                    if (thisShipmentAutoPopulatedCharges.Count() > 0)
+                    {
+                        var checkIfSameCharge = thisShipmentAutoPopulatedCharges.FirstOrDefault(x => x.AutoPopulateCode == prop.Name);
+
+                        if(checkIfSameCharge == null)
+                        {
+                            var workloadRateSheetPropList = shipment.Workload.WorkloadRateSheet.GetType()
+                                .GetProperties()
+                                .Where(x => x.PropertyType == typeof(decimal));
+
+                            var findSameProp = workloadRateSheetPropList.FirstOrDefault(x => x.Name == prop.Name);
+
+                            try
+                            {
+                                var ratesVal = findSameProp.GetValue(shipment.Workload.WorkloadRateSheet, null).ToString();
+                                var ratesVal1 = decimal.TryParse(ratesVal, out decimal parsedRatesVal);
+                                var amount = parsedVal * parsedRatesVal;
+
+                                Charge newWorkloadCharge = new Charge();
+                                newWorkloadCharge.ShipmentId = shipment.Id;
+                                newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+                                newWorkloadCharge.ChargeName = "workload";
+                                newWorkloadCharge.ChargeType = "awb";
+                                newWorkloadCharge.ChargeDue = "gsa";
+                                newWorkloadCharge.OtherChargeCode = "MA";
+                                newWorkloadCharge.Note = GetNoteForChargePopulatedFromWorkload(prop.Name.ToString());
+                                newWorkloadCharge.BuyingSelling = "selling";
+                                newWorkloadCharge.AutoPopulated = true;
+                                newWorkloadCharge.AutoPopulateCode = prop.Name.ToString();
+                                newWorkloadCharge.Amount = amount;
+                                await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+                                //await OnParametersSetAsync();
+                            }
+                            catch(Exception ex)
+                            {
+                                Debug.WriteLine($"Exception message: {ex}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var workloadRateSheetPropList = shipment.Workload.WorkloadRateSheet.GetType()
+                            .GetProperties()
+                            .Where(x => x.PropertyType == typeof(decimal));
+
+                        var findSameProp = workloadRateSheetPropList.FirstOrDefault(x => x.Name == prop.Name);
+
+                        try
+                        {
+                            var ratesVal = findSameProp.GetValue(shipment.Workload.WorkloadRateSheet, null).ToString();
+                            var ratesVal1 = decimal.TryParse(ratesVal, out decimal parsedRatesVal);
+                            var amount = parsedVal * parsedRatesVal;
+
+                            Charge newWorkloadCharge = new Charge();
+                            newWorkloadCharge.ShipmentId = shipment.Id;
+                            newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+                            newWorkloadCharge.ChargeName = "workload";
+                            newWorkloadCharge.ChargeType = "awb";
+                            newWorkloadCharge.ChargeDue = "gsa";
+                            newWorkloadCharge.OtherChargeCode = "MA";
+                            newWorkloadCharge.Note = GetNoteForChargePopulatedFromWorkload(prop.Name.ToString());
+                            newWorkloadCharge.BuyingSelling = "selling";
+                            newWorkloadCharge.AutoPopulated = true;
+                            newWorkloadCharge.AutoPopulateCode = prop.Name.ToString();
+                            newWorkloadCharge.Amount = amount;
+                            await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+                            //await OnParametersSetAsync();
+                        }
+                        catch(Exception ex)
+                        {
+                            Debug.WriteLine($"Exception message: {ex}");
+                        }
+                    }
+                }
+            }
+            await OnParametersSetAsync();
+        }
+    }
+
+    private string GetNoteForChargePopulatedFromWorkload(string propName)
+    {
+        switch (propName) 
+        {
+            case "AwbIssuing":
+                return "MAWB Issuing";
+
+            case "HawbIssuing":
+                return "HAWB Issuing";
+
+            case "CargoLabels":
+                return "Cargo labels";
+
+            case "AcceptanceAssist":
+                return "Acceptance assisstance";
+
+            case "DocumentsCorrection":
+                return "Document Correction";
+
+            case "ImportCgoProcessing":
+                return "Import cargo";
+
+            case "PrintingCorrectedDocs":
+                return "Print corrected documents";
+
+            case "SpecCargoLabels":
+                return "Special cargo labels";
+
+            case "AfterOpeningHoursService":
+                return "After opening hours service";
+
+            case "ManualDataInsertion":
+                return "Manual data insertion";
+
+            case "PickUpDocuments":
+                return "Pick-up documents";
+
+            case "SecurityCheckPrepare":
+                return "Prepare for security check";
+
+            case "SecurityCheckAssist":
+                return "Security check assistance";
+
+            case "PackingAssist":
+                return "Packing assistance";
+
+            case "AcceptanceAssistDG":
+                return "DG acceptance assistance";
+
+            case "CosultingDG":
+                return "DGR consulting";
+
+            case "AdditionalServiceA":
+                return "";
+
+            case "AdditionalServiceB":
+                return "";
+
+            case "AdditionalServiceC":
+                return "";
+
+            case "AdditionalServiceD":
+                return "";
+
+            case "AdditionalServiceE":
+                return "";
+
+            default:
+                return propName;
+
+        }
+    }
+
+
+
+    //private async Task PopulateCharges()
+    //{
+    //    if (shipment.Workload != null)
+    //    {
+    //        var thisShipmentAutoPopulatedCharges = ThisShpmtSellCharges.Where(q => q.AutoPopulated == true);
+
+    //        if (shipment.Workload.AwbIssuing != 0)
+    //        {
+    //            if(thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.AwbIssuingCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateAwbIssueCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateAwbIssueCharge();
+    //            }
+    //        }
+
+
+    //        if (shipment.Workload.HawbIssuing != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.HawbIssuingCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateHawbIssueCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateHawbIssueCharge();
+    //            }
+    //        }
+            
+            
+    //        if (shipment.Workload.CargoLabels != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.CargoLabelsCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateLabelCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateLabelCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.AcceptanceAssist != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.AcceptanceAssistCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateAcceptanceAssistCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateAcceptanceAssistCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.DocumentsCorrection != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.DocumentsCorrectionCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateDocumentCorrectionCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateDocumentCorrectionCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.ImportCgoProcessing != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.ImportCgoProcessingCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateImportCgoCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateImportCgoCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.PrintingCorrectedDocs != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.PrintingCorrectedDocsCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulatePrintCorrectedDocCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulatePrintCorrectedDocCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.SpecCargoLabels != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.SpecCargoLabelsCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateSpcLabelCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateSpcLabelCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.AfterOpeningHoursService != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.AfterOpeningHoursServiceCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateAfterOpeningCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateAfterOpeningCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.ManualDataInsertion != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.ManualDataInsertionCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateManualDataCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateManualDataCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.PickUpDocuments != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.PickUpDocumentsCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulatePickupDocumentsCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulatePickupDocumentsCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.SecurityCheckPrepare != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.SecurityCheckPrepareCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateSecurityCheckPrepCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateSecurityCheckPrepCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.SecurityCheckAssist != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.SecurityCheckAssistCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateSecurityCheckAssistCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateSecurityCheckAssistCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.PackingAssist != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.PackingAssistCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulatePackAssistCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulatePackAssistCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.CosultingDG != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.CosultingDGCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateConsultDgCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateConsultDgCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.AdditionalServiceA != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.AdditionalServiceACode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateAddSvcACharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateAddSvcACharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.AdditionalServiceB != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.AdditionalServiceBCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateAddSvcBCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateAddSvcBCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.AdditionalServiceC != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.AdditionalServiceCCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateAddSvcCCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateAddSvcCCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.AdditionalServiceD != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.AdditionalServiceDCode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateAddSvcDCharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateAddSvcDCharge();
+    //            } 
+    //        }
+            
+
+    //        if (shipment.Workload.AdditionalServiceE != 0)
+    //        {
+    //            if (thisShipmentAutoPopulatedCharges != null)
+    //            {
+    //                var checkIfChargeExist = thisShipmentAutoPopulatedCharges.FirstOrDefault(q => q.AutoPopulateCode == shipment.Workload.WorkloadRateSheet.AdditionalServiceECode);
+
+    //                if (checkIfChargeExist == null)
+    //                {
+    //                    await AutoPopulateAddSvcECharge();
+    //                }
+    //            }
+    //            else
+    //            {
+    //                await AutoPopulateAddSvcECharge();
+    //            } 
+    //        }
+            
+    //    }
+    //    await OnParametersSetAsync();
+    //}
+
+    //private async Task AutoPopulateAwbIssueCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "MAWB issuing";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.AwbIssuingCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.AwbIssuing * shipment.Workload.WorkloadRateSheet.AwbIssuing;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateHawbIssueCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "HAWB issuing";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.HawbIssuingCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.HawbIssuing * shipment.Workload.WorkloadRateSheet.HawbIssuing;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateLabelCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Cargo labels";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.CargoLabelsCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.CargoLabels * shipment.Workload.WorkloadRateSheet.CargoLabels;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateAcceptanceAssistCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Acceptance assistance";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.AcceptanceAssistCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.AcceptanceAssist * shipment.Workload.WorkloadRateSheet.AcceptanceAssist;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateDocumentCorrectionCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Documents correction";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.DocumentsCorrectionCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.DocumentsCorrection * shipment.Workload.WorkloadRateSheet.DocumentsCorrection;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateImportCgoCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Import shipment processing";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.ImportCgoProcessingCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.ImportCgoProcessing * shipment.Workload.WorkloadRateSheet.ImportCgoProcessing;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulatePrintCorrectedDocCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Print corrected documents";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.PrintingCorrectedDocsCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.PrintingCorrectedDocs * shipment.Workload.WorkloadRateSheet.PrintingCorrectedDocs;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateSpcLabelCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Special cgo labels";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.SpecCargoLabelsCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.SpecCargoLabels * shipment.Workload.WorkloadRateSheet.SpecCargoLabels;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateAfterOpeningCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "After opening hrs service";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.AfterOpeningHoursServiceCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.AfterOpeningHoursService * shipment.Workload.WorkloadRateSheet.AfterOpeningHoursService;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateManualDataCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Manual data insertion";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.ManualDataInsertionCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.ManualDataInsertion * shipment.Workload.WorkloadRateSheet.ManualDataInsertion;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulatePickupDocumentsCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Pickup documents";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.PickUpDocumentsCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.PickUpDocuments * shipment.Workload.WorkloadRateSheet.PickUpDocuments;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateSecurityCheckPrepCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Prepare for security check";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.SecurityCheckPrepareCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.SecurityCheckPrepare * shipment.Workload.WorkloadRateSheet.SecurityCheckPrepare;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateSecurityCheckAssistCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Security check assistance";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.SecurityCheckAssistCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.SecurityCheckAssist * shipment.Workload.WorkloadRateSheet.SecurityCheckAssist;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulatePackAssistCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Packing assistance";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.PackingAssistCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.PackingAssist * shipment.Workload.WorkloadRateSheet.PackingAssist;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateAcceptanceAssistDgCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Acceptance assistance DG";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.AcceptanceAssistDGCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.AcceptanceAssistDG * shipment.Workload.WorkloadRateSheet.AcceptanceAssistDG;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateConsultDgCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.Note = "Consulting DG";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.CosultingDGCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.CosultingDG * shipment.Workload.WorkloadRateSheet.CosultingDG;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateAddSvcACharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.AdditionalServiceACode;
+    //    newWorkloadCharge.Amount = shipment.Workload.AdditionalServiceA * shipment.Workload.WorkloadRateSheet.AdditionalServiceA;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+    
+    //private async Task AutoPopulateAddSvcBCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.AdditionalServiceBCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.AdditionalServiceB * shipment.Workload.WorkloadRateSheet.AdditionalServiceB;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateAddSvcCCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.AdditionalServiceCCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.AdditionalServiceC * shipment.Workload.WorkloadRateSheet.AdditionalServiceC;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateAddSvcDCharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.AdditionalServiceDCode;
+    //    newWorkloadCharge.Amount = shipment.Workload.AdditionalServiceD * shipment.Workload.WorkloadRateSheet.AdditionalServiceD;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+
+    //private async Task AutoPopulateAddSvcECharge()
+    //{
+    //    Charge newWorkloadCharge = new Charge();
+    //    newWorkloadCharge.ShipmentId = shipment.Id;
+    //    newWorkloadCharge.CurrencyId = shipment.Workload.WorkloadRateSheet.CurrencyId;
+    //    newWorkloadCharge.ChargeName = "workload";
+    //    newWorkloadCharge.ChargeType = "awb";
+    //    newWorkloadCharge.ChargeDue = "gsa";
+    //    newWorkloadCharge.OtherChargeCode = "MA";
+    //    newWorkloadCharge.BuyingSelling = "selling";
+    //    newWorkloadCharge.AutoPopulated = true;
+    //    newWorkloadCharge.AutoPopulateCode = shipment.Workload.WorkloadRateSheet.AdditionalServiceECode;
+    //    newWorkloadCharge.Amount = shipment.Workload.AdditionalServiceE * shipment.Workload.WorkloadRateSheet.AdditionalServiceE;
+    //    await _client.PostAsJsonAsync(Endpoints.ChargesEndpoint, newWorkloadCharge);
+    //}
+}

@@ -1,0 +1,770 @@
+﻿@page "/shipments/"
+@using System.Linq.Expressions
+@inject HttpClient _client
+@inject IShipmentService shipmentService
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+
+@*@if(Shipments == null)
+{
+    <div class="alert alert-info">Loading Shipments ...</div>
+}
+else
+{
+    <table class="table table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>AWB Number</th>
+                <th>Customer</th>
+                <th>Arrival Point</th>
+                <th>Arrival Time</th>
+                <th>Workload Status</th>
+                <th>Mawb Status</th>
+                <th>Data Verification</th>
+                <th>Invoicing Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var shipment in Shipments)
+            {
+                <tr>
+                    <td>@shipment.AwbNumber</td>
+                    @if (shipment.CustomerId == null)
+                    {
+                        <td class="alert-danger">Not Assigned</td>
+                    }
+                    else
+                    {
+                        <td class="alert-success">@shipment.Customer.CompanyName</td>
+                    }
+                    
+                    @if (shipment.Arrival == null)
+                    {
+                        <td class="alert-danger">Not Ready</td>
+                        <td class="alert-danger">Not Ready</td>
+                    }
+                    else
+                    {
+                        <td class="alert-success">@shipment.Arrival.ArrivalPoint</td>
+                        <td class="alert-success">@shipment.Arrival.ArrivalTime</td>
+                    }
+                    
+                    @if (shipment.Workload == null)
+                    {
+                        <td class="alert-danger">Not Ready</td>
+                    }
+                    else
+                    {
+                        <td class="alert-success">Ready</td>
+                    }
+                    
+
+                    @if(shipment.Mawb == null)
+                    {
+                        <td class="alert-danger">Not Ready</td>
+                    }
+                    else
+                    {
+                        <td class="alert-success">Ready</td>
+                    }
+
+                    @if (shipment.IsChecked)
+                    {
+                        <td class="alert-success">@shipment.IsChecked</td>
+                    }
+                    else
+                    {
+                        <td class="alert-danger">@shipment.IsChecked</td>
+                    }
+
+                    @if (shipment.IsInvoiced)
+                    {
+                        <td class="alert-success">@shipment.IsInvoiced</td>
+                    }
+                    else
+                    {
+                        <td class="alert-danger">@shipment.IsInvoiced</td>
+                    }
+                    
+                    <td>
+                        <a href="/shipments/view/@shipment.Id" class="btn btn-primary btn-sm">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/shipments/edit/@shipment.Id" class="btn btn-warning btn-sm">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <a href="/shipments/booking/@shipment.Id" class="btn btn-secondary btn-sm">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger btn-sm" @onclick=@(()=>Delete(@shipment.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+    <br/>*@
+
+@*<EditForm Model="shipment" OnValidSubmit="@NavigateToBooking">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="row">
+        <div class="form-group mx-3">
+            <label style="margin: 0; font-family: Calibri">AWB Number</label>
+            <div>
+                <InputText @bind-Value="@shipment.AwbNumber" class="form-control-sm" style="max-width: 140px"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label style="margin: 0">&nbsp;</label>
+            <div>
+                <button type="submit" style="font-family: Calibri">Book</button> 
+            </div>
+                
+        </div>
+    </div>
+        
+</EditForm>*@
+
+@{
+    var Tool = (new List<string>() {"Search"});
+    var SpecificCols = (new string[] {"AwbNumber"});
+}
+
+
+<SfButton CssClass="e-small e-primary" @onclick="EditBooking" Disabled="@ButtonsDisabled">Book</SfButton>
+<SfButton CssClass="e-small e-danger" @onclick="Delete" Disabled="@ButtonsDisabled"> Delete</SfButton>
+<SfButton CssClass="e-small e-warning" @onclick="ExcelExport">Export to Excel</SfButton>
+
+@if(selectedShipments != null)
+{
+    @if(selectedShipments[0].Mawb != null)
+    {
+        <SfButton CssClass="e-small e-success" @onclick="MawbDataCapture" Disabled="@ButtonsDisabled">Capture MAWB</SfButton>
+    }
+    else
+    {
+        <SfButton CssClass="e-small e-custom" @onclick="MawbDataCapture" Disabled="@ButtonsDisabled">Capture MAWB</SfButton>
+    }
+}
+else
+{
+    <SfButton CssClass="e-small e-custom" @onclick="MawbDataCapture" Disabled="@ButtonsDisabled">Capture MAWB</SfButton>
+}
+
+@if(selectedShipments != null)
+{
+    @if(selectedShipments[0].Mawb != null)
+    {
+        @if(selectedShipments[0].Mawb.Hawbs != null)
+        {
+            <SfButton CssClass="e-small e-success" @onclick="HawbDataCapture" Disabled="@ButtonsDisabled">Capture HAWB</SfButton>
+        }
+        else
+        {
+            <SfButton CssClass="e-small e-custom" @onclick="HawbDataCapture" Disabled="@ButtonsDisabled">Capture HAWB</SfButton>
+        }
+    }
+    else
+    {
+        <SfButton CssClass="e-small e-custom" @onclick="HawbDataCapture" Disabled="@ButtonsDisabled">Capture HAWB</SfButton>
+    }
+}
+else
+{
+    <SfButton CssClass="e-small e-custom" @onclick="HawbDataCapture" Disabled="@ButtonsDisabled">Capture HAWB</SfButton>
+}
+
+@if(selectedShipments != null)
+{
+    @if(selectedShipments[0].Workload != null)
+    {
+        <SfButton CssClass="e-small e-success" @onclick="CreateWorkload" Disabled="@ButtonsDisabled">Workload</SfButton>
+    }
+    else
+    {
+        <SfButton CssClass="e-small e-custom" @onclick="CreateWorkload" Disabled="@ButtonsDisabled">Workload</SfButton>
+    }
+}
+else
+{
+    <SfButton CssClass="e-small e-custom" @onclick="CreateWorkload" Disabled="@ButtonsDisabled">Workload</SfButton>
+}
+
+@*@if(selectedShipments != null)
+{
+    @if(selectedShipments[0].Pickup != null)
+    {
+        <SfButton CssClass="e-small e-success" @onclick="CreatePickup" Disabled="@PickupButtonDisabled">Pick-Up</SfButton>
+    }
+    else
+    {
+        <SfButton CssClass="e-small e-custom" @onclick="CreatePickup" Disabled="@PickupButtonDisabled">Pick-Up</SfButton>
+    }
+}
+else
+{
+    <SfButton CssClass="e-small e-custom" @onclick="CreatePickup" Disabled="@PickupButtonDisabled">Pick-Up</SfButton>
+}*@
+
+@if(selectedShipments != null)
+{
+    @if(selectedShipments[0].Arrival != null)
+    {
+        <SfButton CssClass="e-small e-success" @onclick="CreateArrival" Disabled="@ArrivalButtonDisabled">Arrival</SfButton>
+    }
+    else
+    {
+        <SfButton CssClass="e-small e-custom" @onclick="CreateArrival" Disabled="@ArrivalButtonDisabled">Arrival</SfButton>
+    }
+}
+else
+{
+    <SfButton CssClass="e-small e-custom" @onclick="CreateArrival" Disabled="@ArrivalButtonDisabled">Arrival</SfButton>
+}
+
+
+
+<br />
+<div class="mb-3"></div>
+
+<SfButton @onclick="DataScopeToday" CssClass="e-small e-info">Today</SfButton>
+<SfButton @onclick="DataScopeThisWeek" CssClass="e-small e-info">This Week</SfButton>
+<SfButton @onclick="DataScopeThisWeekTD" CssClass="e-small e-info">This Week TD</SfButton>
+<SfButton @onclick="DataScopeLastWeek" CssClass="e-small e-info">Last Week</SfButton>
+<SfButton @onclick="DataScopeLastWeekTD" CssClass="e-small e-info">Last Week TD</SfButton>
+<SfButton @onclick="DataScopeThisMonth" CssClass="e-small e-info">This Month</SfButton>
+<SfButton @onclick="DataScopeThisMonthTD" CssClass="e-small e-info">This Month TD</SfButton>
+<SfButton @onclick="DataScopeLastMonth" CssClass="e-small e-info">Last Month</SfButton>
+<SfButton @onclick="DataScopeLastMonthTD" CssClass="e-small e-info">Last Month TD</SfButton>
+<SfButton @onclick="DataScopeThisYear" CssClass="e-small e-info">This Year</SfButton>
+<SfButton @onclick="DataScopeThisYearTD" CssClass="e-small e-info">This Year TD</SfButton>
+<SfButton @onclick="DataScopeLastYear" CssClass="e-small e-info">Last Year</SfButton>
+<SfButton @onclick="DataScopeLastYearTD" CssClass="e-small e-info">Last Year TD</SfButton>
+<SfButton @onclick="DataScopeAll" CssClass="e-small e-info">All Data</SfButton>
+
+
+
+
+<SfGrid ID="ShipmentGrid" DataSource="shipmentService.Shipments" AllowResizing="true" AllowPaging="true" AllowSorting="true" AllowFiltering="true" AllowExcelExport="true" AllowPdfExport="true" Toolbar=@Tool @ref="Grid">
+    <GridSearchSettings Fields="@SpecificCols">  </GridSearchSettings>
+    <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Excel"> </GridFilterSettings> 
+    <GridPageSettings PageSize="50" PageSizes="@pagerDropdown" PageCount="3"></GridPageSettings>
+    <GridEvents RowSelected="RowSelected" TValue="Shipment"></GridEvents>
+    <GridColumns>
+        <GridColumn Field=@nameof(Shipment.Id) 
+                    HeaderText="ID" 
+                    IsPrimaryKey="true"
+                    IsIdentity="true"
+                    Visible="false">
+        </GridColumn>
+        
+        <GridColumn Field=@nameof(Shipment.AwbNumber) 
+                    HeaderText="AWB Number">
+        </GridColumn>
+        <GridForeignColumn TValue="Customer" 
+                           Field=@nameof(Shipment.CustomerId) 
+                           HeaderText="Customer" 
+                           ForeignKeyValue=@nameof(Customer.CompanyName)
+                           ForeignKeyField=@nameof(Customer.Id) 
+                           ForeignDataSource="@Customers">
+                           
+        </GridForeignColumn>
+
+        <GridColumn Field=@nameof(Shipment.Destination) 
+                    HeaderText="Destination">
+        </GridColumn>
+        <GridColumn Field=@nameof(Shipment.FirstFlightNumber) 
+                    HeaderText="First Flight Number">
+        </GridColumn>
+        <GridColumn Field=@nameof(Shipment.FirstFlightDate)
+                    HeaderText="First Flight Date"
+                    Type = "ColumnType.Date"
+                    Format="dd/MM/yyyy">
+        </GridColumn>
+        <GridColumn Field=@nameof(Shipment.FirstFlightDest) 
+                    HeaderText="First Flight Dest">
+        </GridColumn>
+        
+        <GridColumn Field=@nameof(Shipment.Pieces) 
+                    HeaderText="Pieces">
+        </GridColumn>
+        <GridColumn Field=@nameof(Shipment.GrossWeight) 
+                    HeaderText="Gross Weight">
+        </GridColumn>
+        <GridColumn Field=@nameof(Shipment.ChargeableWeight) 
+                    HeaderText="Chargeable Weight">
+        </GridColumn>
+        <GridColumn Field=@nameof(Shipment.Volume) 
+                    HeaderText="Volume">
+        </GridColumn>
+        <GridColumn HeaderText="MAWB" TextAlign="TextAlign.Center">
+            <Template>
+                @{
+                    var val = (context as Shipment);
+                    if(val.Mawb == null)
+                    {
+                        <span class="oi oi-x" style="color:red" data-inline="false"></span>
+                    }
+                    else
+                    {
+                        <span class="oi oi-check" style="color:green" data-inline="false"></span>
+                    }
+                }
+            </Template>
+        </GridColumn>
+        <GridColumn HeaderText="Workload" TextAlign="TextAlign.Center">
+            <Template>
+                @{
+                    var val = (context as Shipment);
+                    if(val.Workload == null)
+                    {
+                        <span class="oi oi-x" style="color:red" data-inline="false"></span>
+                    }
+                    else
+                    {
+                        <span class="oi oi-check" style="color:green" data-inline="false"></span>
+                    }
+                }
+            </Template>
+        </GridColumn>
+        <GridColumn HeaderText="Arrival" TextAlign="TextAlign.Center">
+            <Template>
+                @{
+                    var val = (context as Shipment);
+                    if(val.Arrival == null)
+                    {
+                        <span class="oi oi-x" style="color:red" data-inline="false"></span>
+                    }
+                    else
+                    {
+                        <span class="oi oi-check" style="color:green" data-inline="false"></span>
+                    }
+                }
+            </Template>
+        </GridColumn>
+    </GridColumns>
+</SfGrid>
+
+
+
+
+
+@code {
+    private Shipment shipment = new Shipment();
+    private IList<Shipment> Shipments;
+    private IList<Customer> Customers;
+    private bool ButtonsDisabled = true;
+    private bool ArrivalButtonDisabled = true;
+    //private bool PickupButtonDisabled = true;
+    private IList<Shipment> selectedShipments;
+    AwbStock awbstock = new AwbStock();
+    SfGrid<Shipment> Grid;
+    private string[] DataScopeButtonLabelArray = new string[] {"Today", "This Week", "This Month", "This Year", "All Data"};
+    public string[] pagerDropdown { get; set; } = new string[] { "All", "5", "10", "15", "20", "50", "100" };
+
+    protected async override Task OnInitializedAsync()
+    {
+        //GenericDataResult<Shipment> ShipmentsDataResult = await _client.GetFromJsonAsync<GenericDataResult<Shipment>>(Endpoints.ShipmentsEndpoint);
+        await shipmentService.GetShipments();
+        Customers = await _client.GetFromJsonAsync<IList<Customer>>(Endpoints.CustomersEndpoint);
+    }
+
+    //private async Task Delete(int shipmentId)
+    //{
+    //    var shipment = Shipments.First(q => q.Id == shipmentId);
+    //    var awbStockId = shipment.AwbStockId;
+    //    var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete this Shipment: {shipment.Id}?");
+
+    //    if (confirm)
+    //    {
+    //        var success = await _client.DeleteAsync($"{Endpoints.ShipmentsEndpoint}{shipmentId}");
+    //        if (success.IsSuccessStatusCode)
+    //        {
+    //            success.Dispose();
+    //            await EditAwbStock(awbStockId);
+    //        }
+    //    }
+
+    //    await OnInitializedAsync();
+    //}
+
+
+    private async Task Delete()
+    {
+        var record = await this.Grid.GetSelectedRecordsAsync();
+
+        if(record.Count > 0)
+        {
+
+
+            var awbStockId = record[0].AwbStockId;
+
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete this Shipment: {record[0].Id}?");
+
+            if (confirm)
+            {
+                var success = await _client.DeleteAsync($"{Endpoints.ShipmentsEndpoint}{record[0].Id}");
+                if (success.IsSuccessStatusCode)
+                {
+                    success.Dispose();
+                    await EditAwbStock(awbStockId);
+                }
+            }
+
+            await OnInitializedAsync();
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "No Record Selected!");
+        }
+
+
+    }
+
+    private async Task EditAwbStock(int awbStockId)
+    {
+        awbstock = await _client.GetFromJsonAsync<AwbStock>($"{Endpoints.AwbStocksEndpoint}{awbStockId}");
+        awbstock.AwbStatus = "Available";
+        await _client.PutAsJsonAsync($"{Endpoints.AwbStocksEndpoint}{awbStockId}", awbstock);
+
+    }
+
+    private async Task EditBooking()
+    {
+        var record = await this.Grid.GetSelectedRecordsAsync();
+
+        if(record.Count > 0)
+        {
+            _navManager.NavigateTo($"{Endpoints.ShipmentsEdit}{record[0].Id}");
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "No Record Selected!");
+        }
+
+
+    }
+
+    private async Task NavigateToBooking()
+    {
+
+        var findShipment = await _client.GetFromJsonAsync<Shipment>($"api/shipments/{shipment.AwbNumber}");
+
+        if (findShipment != null)
+        {
+            _navManager.NavigateTo($"{Endpoints.ShipmentsEdit}{findShipment.Id}");
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "Shipment Not Found!");
+        }
+
+
+    }
+
+    private async Task MawbDataCapture()
+    {
+        var records = await this.Grid.GetSelectedRecordsAsync();
+
+        if(records.Count > 0)
+        {
+            try
+            {
+                var mawb = await _client.GetFromJsonAsync<Mawb>($"{Endpoints.MawbsEndpoint}{records[0].Mawb.Id}");
+                _navManager.NavigateTo($"{Endpoints.MawbsEdit}{mawb.Id}");
+            }
+            catch
+            {
+                _navManager.NavigateTo($"{Endpoints.MawbsCreate}{records[0].Id}");
+            }
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "No Record Selected!");
+        }
+
+    }
+
+    private async Task HawbDataCapture()
+    {
+        var records = await this.Grid.GetSelectedRecordsAsync();
+
+        if(records.Count > 0)
+        {
+            try
+            {
+                var mawb = await _client.GetFromJsonAsync<Mawb>($"{Endpoints.MawbsEndpoint}{records[0].Mawb.Id}");
+                _navManager.NavigateTo($"/hawbs/mawbindex/{mawb.Id}");
+            }
+            catch
+            {
+                await js.InvokeVoidAsync("alert", "Please capture MAWB data first!");
+            }
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "No Record Selected!");
+        }
+    }
+
+    private async Task CreateWorkload()
+    {
+        var records = await this.Grid.GetSelectedRecordsAsync();
+
+        if(records.Count > 0)
+        {
+            try
+            {
+                var workload = await _client.GetFromJsonAsync<Workload>($"{Endpoints.WorkloadsEndpoint}{records[0].Workload.Id}");
+                _navManager.NavigateTo($"{Endpoints.WorkloadsEdit}{workload.Id}");
+            }
+            catch
+            {
+                _navManager.NavigateTo($"{Endpoints.WorkloadsCreate}{records[0].Id}");
+            }
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "No Record Selected!");
+        }
+    }
+
+    //private async Task CreatePickup()
+    //{
+    //    var records = await this.Grid.GetSelectedRecordsAsync();
+
+    //    if(records.Count > 0)
+    //    {
+    //        try
+    //        {
+    //            var pickup = await _client.GetFromJsonAsync<Pickup>($"{Endpoints.PickupsEndpoint}{records[0].Pickup.Id}");
+    //            _navManager.NavigateTo($"{Endpoints.PickupsEdit}{pickup.Id}");
+    //        }
+    //        catch
+    //        {
+    //            _navManager.NavigateTo($"{Endpoints.PickupsCreate}{records[0].Id}");
+    //        }
+    //    }
+    //    else
+    //    {
+    //        await js.InvokeVoidAsync("alert", "No Record Selected!");
+    //    }
+    //}
+
+    private async Task CreateArrival()
+    {
+        var records = await this.Grid.GetSelectedRecordsAsync();
+
+        if(records.Count > 0)
+        {
+            try
+            {
+                var arrival = await _client.GetFromJsonAsync<Arrival>($"{Endpoints.ArrivalsEndpoint}{records[0].Arrival.Id}");
+                _navManager.NavigateTo($"{Endpoints.ArrivalsEdit}{arrival.Id}");
+            }
+            catch
+            {
+                _navManager.NavigateTo($"{Endpoints.ArrivalsCreate}{records[0].Id}");
+            }
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "No Record Selected!");
+        }
+    }
+
+    public async Task ExcelExport()
+    {
+        ExcelExportProperties ExportProperties = new ExcelExportProperties();
+        ExportProperties.ExportType = ExportType.CurrentPage;
+        ExportProperties.IncludeHiddenColumn = true;
+        await this.Grid.ExcelExport(ExportProperties);
+
+    }
+
+    private async Task DataScopeThisYearTD()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateRangeGenerator.ThisYearToDate(DateTime.Now);
+        var start = dateRange.Start.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.End.ToString("dd\\/MM\\/yyyy");
+
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeThisYear()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateRangeGenerator.ThisYear(DateTime.Now);
+        var start = dateRange.Start.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.End.ToString("dd\\/MM\\/yyyy");
+
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeLastYear()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateRangeGenerator.LastYear(DateTime.Now);
+        var start = dateRange.Start.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.End.ToString("dd\\/MM\\/yyyy");
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeLastYearTD()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateRangeGenerator.LastYearToDate(DateTime.Now);
+        var start = dateRange.Start.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.End.ToString("dd\\/MM\\/yyyy");
+
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeThisMonth()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateRangeGenerator.ThisMonth(DateTime.Now);
+        var start = dateRange.Start.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.End.ToString("dd\\/MM\\/yyyy");
+
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeThisMonthTD()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateRangeGenerator.ThisMonthToDate(DateTime.Now);
+        var start = dateRange.Start.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.End.ToString("dd\\/MM\\/yyyy");
+
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeLastMonth()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateRangeGenerator.LastMonth(DateTime.Now);
+        var start = dateRange.Start.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.End.ToString("dd\\/MM\\/yyyy");
+
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeLastMonthTD()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateRangeGenerator.LastMonthToDate(DateTime.Now);
+        var start = dateRange.Start.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.End.ToString("dd\\/MM\\/yyyy");
+
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeThisWeek()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateRangeGenerator.ThisWeek(DateTime.Now);
+        var start = dateRange.Start.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.End.ToString("dd\\/MM\\/yyyy");
+
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeThisWeekTD()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateRangeGenerator.ThisWeekToDate(DateTime.Now);
+        var start = dateRange.Start.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.End.ToString("dd\\/MM\\/yyyy");
+
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeLastWeek()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateRangeGenerator.LastWeek(DateTime.Now);
+        var start = dateRange.Start.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.End.ToString("dd\\/MM\\/yyyy");
+
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeLastWeekTD()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateRangeGenerator.ThisWeekToDate(DateTime.Now);
+        var start = dateRange.Start.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.End.ToString("dd\\/MM\\/yyyy");
+
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeToday()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        var dateRange = DateTime.Now;
+        var start = dateRange.ToString("dd\\/MM\\/yyyy");
+        var end = dateRange.AddDays(1).ToString("dd\\/MM\\/yyyy");
+
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>($"{Endpoints.ShipmentsEndpoint}GetShipmentsByDateRange/{start}/{end}");
+    }
+
+    private async Task DataScopeAll()
+    {
+        ButtonsDisabled = true;
+        ArrivalButtonDisabled = true;
+        Shipments = await _client.GetFromJsonAsync<IList<Shipment>>(Endpoints.ShipmentsEndpoint);
+    }
+
+    private async Task RowSelected()
+    {
+        selectedShipments = await this.Grid.GetSelectedRecordsAsync();
+
+        if (selectedShipments[0] != null)
+        {
+            ButtonsDisabled = false;
+
+            if(selectedShipments[0].Arrival == null)
+            {
+                ArrivalButtonDisabled = false;
+            }
+            else if(selectedShipments[0].Arrival != null)
+            {
+                ArrivalButtonDisabled = false;
+            }
+            else
+            {
+                await js.InvokeVoidAsync("alert", "Both Pickup and Arrival must not be captured. Please delete one of them!");
+            }
+
+
+
+        }
+
+    }
+    
+}

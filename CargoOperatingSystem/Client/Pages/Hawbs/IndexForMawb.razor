@@ -1,0 +1,101 @@
+﻿@page "/hawbs/mawbindex/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<div class="form-group mx-3">
+    <label>MAWB Number: @mawb.AwbNumber </label>
+</div>
+<hr/>
+
+<a href="/hawbs/create/@mawb.Id" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New HAWB
+</a>
+<br/>
+<br/>
+
+@if(thisShipmentHawbs == null)
+{
+    <div class="alert alert-info">Loading HAWBs ...</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>HAWB Number</th>
+                <th>Pieces</th>
+                <th>GW</th>
+                <th>Vol</th>
+                <th>ChW</th>
+                <th>Shipper</th>
+                <th>Consignee</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var hawb in thisShipmentHawbs)
+            {
+                <tr>
+                    <td>@hawb.HawbNumber</td>
+                    <td>@hawb.Pieces</td>
+                    <td>@hawb.GrossWeight</td>
+                    <td>@hawb.Volume</td>
+                    <td>@hawb.ChargeableWeight</td>
+                    <td>@hawb.ShipperName</td>
+                    <td>@hawb.ConsigneeName</td>
+                    <td>
+                        <a href="/hawbs/view/@hawb.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/hawbs/edit/@hawb.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick=@(()=>Delete(@hawb.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
+
+
+
+
+@code {
+    [Parameter] public int id { get; set; }
+    private Mawb mawb = new Mawb();
+    private IList<Hawb> Hawbs;
+    private IList<Hawb> thisShipmentHawbs;
+    
+
+    protected async override Task OnParametersSetAsync()
+    {
+        mawb = await _client.GetFromJsonAsync<Mawb>($"{Endpoints.MawbsEndpoint}{id}");
+        Hawbs = await _client.GetFromJsonAsync<IList<Hawb>>(Endpoints.HawbsEndpoint);
+        thisShipmentHawbs = Hawbs.Where(q => q.MawbId == mawb.Id).ToList();
+        
+    }
+
+    private async Task Delete(int hawbId)
+    {
+        var hawb = thisShipmentHawbs.First(q => q.Id == hawbId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete this HAWB: {hawb.HawbNumber}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.HawbsEndpoint}{hawbId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    
+
+
+}

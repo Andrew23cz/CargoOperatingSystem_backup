@@ -1,0 +1,24 @@
+﻿@page "/agentsubmitconsignees/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Create Consignee</h3>
+<hr />
+<br/>
+
+<FormComponent ButtonText="Create New" OnValidSubmit="@CreateAgentSubmitConsignee" agentSubmitConsignee="agentSubmitConsignee"/> 
+
+
+@code {
+
+    AgentSubmitConsignee agentSubmitConsignee = new AgentSubmitConsignee();
+
+    private async Task CreateAgentSubmitConsignee()
+    {
+        await _client.PostAsJsonAsync(Endpoints.AgentSubmitConsigneesEndpoint, agentSubmitConsignee);
+        _navManager.NavigateTo(Endpoints.AgentSubmitConsigneesIndex);
+    }
+
+
+}

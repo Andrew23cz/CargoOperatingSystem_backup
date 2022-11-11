@@ -1,0 +1,191 @@
+﻿@page "/chargetemplates/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject Microsoft.JSInterop.IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">Charge Templates</h3>
+<hr />
+
+<SfGrid DataSource="@ChargeTemplates" AllowPaging="true" AllowSorting="true" AllowFiltering="true" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Cancel", "Update" })" TValue="ChargeTemplate">
+     <GridPageSettings PageSize="50"></GridPageSettings>
+     <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"></GridEditSettings>
+     <GridEvents OnActionBegin="ActionBeginHandler" OnActionComplete="ActionCompleteHandler" TValue="ChargeTemplate"></GridEvents>
+        <GridColumns>
+             <GridColumn Field=@nameof(ChargeTemplate.Id) 
+                         HeaderText="ID" 
+                         IsPrimaryKey="true"
+                         IsIdentity="true"
+                         Visible="false">
+             </GridColumn>
+             <GridColumn Field=@nameof(ChargeTemplate.TemplateName) 
+                         HeaderText="Template Name"> 
+             </GridColumn>
+             <GridColumn Field=@nameof(ChargeTemplate.OtherChargeCode) 
+                         HeaderText="OC Code" 
+                         Format="C2">
+             </GridColumn>
+             <GridColumn Field=@nameof(ChargeTemplate.Amount) 
+                         HeaderText="Amount" 
+                         Format="C2">
+             </GridColumn>
+             <GridColumn Field=@nameof(ChargeTemplate.ChargeName) 
+                         HeaderText="Definition" 
+                         Format="C2">
+                         <EditTemplate> 
+                            <SfDropDownList TValue="string" TItem="DropDownClass" Placeholder="Charge Definition" @bind-Value="@((context as ChargeTemplate).ChargeName)" DataSource="@DefinitionOptions">
+                                <DropDownListFieldSettings Value="Value" Text="Text"></DropDownListFieldSettings>
+                            </SfDropDownList>
+                        </EditTemplate>
+             </GridColumn>
+             <GridColumn Field=@nameof(ChargeTemplate.ChargeDue) 
+                         HeaderText="Payee" 
+                         Format="C2">
+                         <EditTemplate> 
+                            <SfDropDownList TValue="string" TItem="DropDownClass" Placeholder="Charge Payee" @bind-Value="@((context as ChargeTemplate).ChargeDue)" DataSource="@DueOptions">
+                                <DropDownListFieldSettings Value="Value" Text="Text"></DropDownListFieldSettings>
+                            </SfDropDownList>
+                        </EditTemplate>
+             </GridColumn>
+             <GridColumn Field=@nameof(ChargeTemplate.ChargeType) 
+                         HeaderText="Type" 
+                         Format="C2">
+                         <EditTemplate> 
+                            <SfDropDownList TValue="string" TItem="DropDownClass" Placeholder="Charge Type" @bind-Value="@((context as ChargeTemplate).ChargeType)" DataSource="@TypeOptions">
+                                <DropDownListFieldSettings Value="Value" Text="Text"></DropDownListFieldSettings>
+                            </SfDropDownList>
+                        </EditTemplate>
+             </GridColumn>
+             <GridColumn Field=@nameof(ChargeTemplate.BuyingSelling) 
+                         HeaderText="Buy or Sell" 
+                         Format="C2">
+                         <EditTemplate> 
+                            <SfDropDownList TValue="string" TItem="DropDownClass" Placeholder="Buying or Selling" @bind-Value="@((context as ChargeTemplate).BuyingSelling)" DataSource="@BuySellOptions">
+                                <DropDownListFieldSettings Value="Value" Text="Text"></DropDownListFieldSettings>
+                            </SfDropDownList>
+                        </EditTemplate>
+             </GridColumn>
+             <GridColumn Field=@nameof(ChargeTemplate.OriginAirport) 
+                         HeaderText="Origin Dest." 
+                         Format="C2">
+             </GridColumn>
+             <GridColumn Field=@nameof(ChargeTemplate.DestinationAirport) 
+                         HeaderText="Final Dest." 
+                         Format="C2">
+             </GridColumn>
+             <GridColumn Field=@nameof(ChargeTemplate.ShcCode) 
+                         HeaderText="SHC" 
+                         Format="C2">
+             </GridColumn>
+             <GridForeignColumn TValue="Currency" 
+                               Field=@nameof(ChargeTemplate.CurrencyId) 
+                               HeaderText="Currency" 
+                               ForeignKeyValue=@nameof(Currency.Code)
+                               ForeignKeyField=@nameof(Currency.Id) 
+                               ForeignDataSource="@Currencies">
+            </GridForeignColumn>
+            <GridForeignColumn TValue="Airline" 
+                               Field=@nameof(ChargeTemplate.AirlineId) 
+                               HeaderText="Airline" 
+                               ForeignKeyValue=@nameof(Airline.Name)
+                               ForeignKeyField=@nameof(Airline.Id) 
+                               ForeignDataSource="@Airlines">
+            </GridForeignColumn>
+            <GridForeignColumn TValue="Supplier" 
+                               Field=@nameof(ChargeTemplate.SupplierId) 
+                               HeaderText="Supplier" 
+                               ForeignKeyValue=@nameof(Supplier.CompanyName)
+                               ForeignKeyField=@nameof(Supplier.Id) 
+                               ForeignDataSource="@Suppliers">
+            </GridForeignColumn>
+            <GridColumn Field=@nameof(ChargeTemplate.Note) 
+                         HeaderText="Note" 
+                         Format="C2">
+             </GridColumn>
+        </GridColumns>
+</SfGrid>
+
+@code {
+    private IList<ChargeTemplate> ChargeTemplates;
+    private IList<Airline> Airlines;
+    private IList<Supplier> Suppliers;
+    private IList<Currency> Currencies;
+
+    public class DropDownClass
+    {  
+        public string Value { get; set; }
+        public string Text { get; set; }
+    }
+
+    private List<DropDownClass> DefinitionOptions = new List<DropDownClass>() {
+        new DropDownClass() { Value = "airfreight", Text = "Airfreight"},
+        new DropDownClass() { Value = "other", Text = "Other"},
+        new DropDownClass() { Value = "workload", Text = "Workload"}
+    };
+
+    private List<DropDownClass> DueOptions = new List<DropDownClass>() {
+        new DropDownClass() { Value = "carrier", Text = "Due Carrier"},
+        new DropDownClass() { Value = "supplier", Text = "Due Supplier"},
+        new DropDownClass() { Value = "gsa", Text = "Due GSA"},
+        new DropDownClass() { Value = "none", Text = "Due None"}
+    };
+
+    private List<DropDownClass> TypeOptions = new List<DropDownClass>() {
+        new DropDownClass() { Value = "chw", Text = "Per ChW"},
+        new DropDownClass() { Value = "gw", Text = "Per GW"},
+        new DropDownClass() { Value = "awb", Text = "Per AWB"},
+        new DropDownClass() { Value = "pc", Text = "Per Piece"}
+    };
+
+    private List<DropDownClass> BuySellOptions = new List<DropDownClass>() {
+        new DropDownClass() { Value = "buying", Text = "Buying"},
+        new DropDownClass() { Value = "selling", Text = "Selling"}
+    };
+
+    protected async override Task OnInitializedAsync()
+    {
+        ChargeTemplates = await _client.GetFromJsonAsync<IList<ChargeTemplate>>(Endpoints.ChargeTemplatesEndpoint);
+        Airlines = await _client.GetFromJsonAsync<IList<Airline>>(Endpoints.AirlinesEndpoint);
+        Suppliers = await _client.GetFromJsonAsync<IList<Supplier>>(Endpoints.SuppliersEndpoint);
+        Currencies = await _client.GetFromJsonAsync<IList<Currency>>(Endpoints.CurrencyEndpoint);
+    }
+
+    private async Task Delete(int chargeTemplateId)
+    {
+        var chargeTemplate = ChargeTemplates.First(q => q.Id == chargeTemplateId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {chargeTemplate.ChargeName}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.ChargeTemplatesEndpoint}{chargeTemplateId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    public async Task ActionBeginHandler(ActionEventArgs<ChargeTemplate> Args)
+    {
+        if (Args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            if (Args.Action == "Add")
+            {
+                await _client.PostAsJsonAsync(Endpoints.ChargeTemplatesEndpoint, Args.Data);
+
+            }
+            else
+            {
+                await _client.PutAsJsonAsync($"{Endpoints.ChargeTemplatesEndpoint}{Args.Data.Id}", Args.Data);
+            }
+        }
+        if (Args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Delete))
+        {
+            await _client.DeleteAsync($"{Endpoints.ChargeTemplatesEndpoint}{Args.Data.Id}");
+        }
+    }
+    public async Task ActionCompleteHandler(ActionEventArgs<ChargeTemplate> Args)
+    {
+        if (Args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            await OnInitializedAsync();
+        }
+    }
+}

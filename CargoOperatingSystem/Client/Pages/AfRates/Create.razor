@@ -1,0 +1,24 @@
+﻿@page "/afrates/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Create Rate</h3>
+<hr />
+<br/>
+
+<FormComponent ButtonText="Create Rate" OnValidSubmit="@CreateRate" afrate="afrate"/> 
+
+
+@code {
+
+    AfRates afrate = new AfRates();
+    
+    private async Task CreateRate()
+    {
+        await _client.PostAsJsonAsync(Endpoints.AfRatesEndpoint, afrate);
+        _navManager.NavigateTo(Endpoints.AfRatesIndex);
+    }
+
+
+}

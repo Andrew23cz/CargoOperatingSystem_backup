@@ -1,0 +1,131 @@
+﻿@page "/test/"
+@using CargoOperatingSystem.Shared
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@inject AuthenticationStateProvider _authStateProvider
+@attribute [Authorize(Roles = "Administrator, CustomerUser")]
+
+<h3 class="card card-title">List Of Airlines In Test</h3>
+<hr />
+
+<a href="/airlines/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Airline
+</a>
+<br/>
+<br/>
+<label>User ID: @userId</label>
+
+@if(Airlines == null)
+{
+    <div class="alert alert-info">Loading Airlines ...</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Prefix</th>
+                <th>Header Address</th>
+                <th>Data Owner</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (userId == "Cargopoint")
+            {
+                @foreach(var airline in Airlines)
+                {
+                    <tr>
+                        <td>@airline.Name</td>
+                        <td>@airline.Code</td>
+                        <td>@airline.Prefix</td>
+                        <td>@airline.AwbHeaderA<br/>@airline.AwbHeaderB</td>
+                        <td>@airline.CompanyIdentity</td>
+                        <td>
+                            <a href="/airlines/view/@airline.Id" class="btn btn-primary">
+                                <span class="oi oi-book"></span>
+                            </a>
+                            <a href="/airlines/edit/@airline.Id" class="btn btn-warning">
+                                <span class="oi oi-pencil"></span>
+                            </a>
+                            <button class="btn btn-danger" @onclick=@(()=>Delete(@airline.Id))>
+                                <span class="oi oi-delete"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                @foreach(var airline in onlyCompanyAirlines)
+                {
+                    <tr>
+                        <td>@airline.Name</td>
+                        <td>@airline.Code</td>
+                        <td>@airline.Prefix</td>
+                        <td>@airline.AwbHeaderA<br/>@airline.AwbHeaderB</td>
+                        <td>@airline.CompanyIdentity</td>
+                        <td>
+                            <a href="/airlines/view/@airline.Id" class="btn btn-primary">
+                                <span class="oi oi-book"></span>
+                            </a>
+                            <a href="/airlines/edit/@airline.Id" class="btn btn-warning">
+                                <span class="oi oi-pencil"></span>
+                            </a>
+                            <button class="btn btn-danger" @onclick=@(()=>Delete(@airline.Id))>
+                                <span class="oi oi-delete"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+
+
+            
+
+        </tbody>
+        
+    </table>
+}
+
+
+
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    string userId;
+
+    private IList<Airline> Airlines;
+    private IList<Airline> onlyCompanyAirlines;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Airlines = await _client.GetFromJsonAsync<IList<Airline>>(Endpoints.AirlinesEndpoint);
+        var user = (await authenticationStateTask).User;
+        userId = user.FindFirst(CustomClaimTypes.Company).Value;
+        onlyCompanyAirlines = Airlines.Where(q => q.CompanyIdentity == userId).ToList();
+
+    }
+
+    private async Task Delete(int airlineId)
+    {
+        var airline = Airlines.First(q => q.Id == airlineId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {airline.Name}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.AirlinesEndpoint}{airlineId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    
+
+
+}

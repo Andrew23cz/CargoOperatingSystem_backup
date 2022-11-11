@@ -1,0 +1,76 @@
+﻿@page "/agentsubmithawbs/create/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card-title">Create HAWB</h3>
+<hr />
+<br/>
+
+<FormComponent ButtonText="Create HAWB" OnValidSubmit="@CreateHawb" agentSubmitHawb="agentSubmitHawb"/>
+
+
+@code {
+
+    [Parameter]public int id { get; set; }
+    private AgentSubmitMawb agentSubmitMawb = new AgentSubmitMawb();
+    private AgentSubmitHawb agentSubmitHawb = new AgentSubmitHawb();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        agentSubmitMawb = await _client.GetFromJsonAsync<AgentSubmitMawb>($"{Endpoints.AgentSubmitMawbsEndpoint}{id}");
+        agentSubmitHawb.AwbNumber = agentSubmitMawb.AwbNumber;
+        agentSubmitHawb.Pieces = agentSubmitMawb.Pieces;
+        agentSubmitHawb.GrossWeight = agentSubmitMawb.GrossWeight;
+        agentSubmitHawb.ChargeableWeight = agentSubmitMawb.ChargeableWeight;
+        agentSubmitHawb.Volume = agentSubmitMawb.Volume;
+        agentSubmitHawb.IssuingAgent = agentSubmitMawb.IssuingAgent;
+        agentSubmitHawb.IssuingAgentAddressA = agentSubmitMawb.IssuingAgentAddressA;
+        agentSubmitHawb.IssuingAgentAddressB = agentSubmitMawb.IssuingAgentAddressB;
+        agentSubmitHawb.IssuingAgentAddressC = agentSubmitMawb.IssuingAgentAddressC;
+        agentSubmitHawb.AgentIataCode = agentSubmitMawb.AgentIataCode;
+        agentSubmitHawb.IssuingDate = agentSubmitMawb.IssuingDate;
+        agentSubmitHawb.IssuingPlace = agentSubmitMawb.IssuingPlace;
+        agentSubmitHawb.IssuingPersonFullName = agentSubmitMawb.IssuingPersonFullName;
+        agentSubmitHawb.Origin = agentSubmitMawb.Origin;
+        agentSubmitHawb.Destination = agentSubmitMawb.Destination;
+        agentSubmitHawb.FirstCarrierCode = agentSubmitMawb.FirstCarrierCode;
+        agentSubmitHawb.FirstFlightDest = agentSubmitMawb.FirstFlightDest;
+        agentSubmitHawb.FirstFlightNoAndDate = agentSubmitMawb.FirstFlightNoAndDate;
+        agentSubmitHawb.SecondCarrierCode = agentSubmitMawb.SecondCarrierCode;
+        agentSubmitHawb.SecondFlightDest = agentSubmitMawb.SecondFlightDest;
+        agentSubmitHawb.SecondFlightNoAndDate = agentSubmitMawb.SecondFlightNoAndDate;
+        agentSubmitHawb.ThirdCarrierCode = agentSubmitMawb.ThirdCarrierCode;
+        agentSubmitHawb.ThirdFlightDest = agentSubmitMawb.ThirdFlightDest;
+        agentSubmitHawb.Commodity = agentSubmitMawb.Commodity;
+        agentSubmitHawb.Currency = agentSubmitMawb.Currency;
+        agentSubmitHawb.NatureAndQttyGoodsA = agentSubmitMawb.NatureAndQttyGoodsA;
+        agentSubmitHawb.NatureAndQttyGoodsB = agentSubmitMawb.NatureAndQttyGoodsB;
+        agentSubmitHawb.NatureAndQttyGoodsC = agentSubmitMawb.NatureAndQttyGoodsC;
+        agentSubmitHawb.NatureAndQttyGoodsD = agentSubmitMawb.NatureAndQttyGoodsD;
+        agentSubmitHawb.NatureAndQttyGoodsE = agentSubmitMawb.NatureAndQttyGoodsE;
+        agentSubmitHawb.NatureAndQttyGoodsF = agentSubmitMawb.NatureAndQttyGoodsF;
+        agentSubmitHawb.NatureAndQttyGoodsG = agentSubmitMawb.NatureAndQttyGoodsG;
+        agentSubmitHawb.NatureAndQttyGoodsH = agentSubmitMawb.NatureAndQttyGoodsH;
+        agentSubmitHawb.NatureAndQttyGoodsI = agentSubmitMawb.NatureAndQttyGoodsI;
+        agentSubmitHawb.NatureAndQttyGoodsJ = agentSubmitMawb.NatureAndQttyGoodsJ;
+        agentSubmitHawb.OtherChargeA = agentSubmitMawb.OtherChargeA;
+        agentSubmitHawb.OtherChargeB = agentSubmitMawb.OtherChargeB;
+        agentSubmitHawb.OtherChargeC = agentSubmitMawb.OtherChargeC;
+        agentSubmitHawb.OtherChargeD = agentSubmitMawb.OtherChargeD;
+        agentSubmitHawb.AccountingInfoA = agentSubmitMawb.AccountingInfoA;
+        agentSubmitHawb.AccountingInfoB = agentSubmitMawb.AccountingInfoB;
+        agentSubmitHawb.AccountingInfoC = agentSubmitMawb.AccountingInfoC;
+        agentSubmitHawb.AgentAccountNumber = agentSubmitMawb.AgentAccountNumber;
+        
+
+    }
+        
+    private async Task CreateHawb()
+    {
+        await _client.PostAsJsonAsync(Endpoints.AgentSubmitHawbsEndpoint, agentSubmitHawb);
+        _navManager.NavigateTo($"/agentsubmithawbs/agentsubmitmawbindex/{id}");
+    }
+}

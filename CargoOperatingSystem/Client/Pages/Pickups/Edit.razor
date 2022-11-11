@@ -1,0 +1,25 @@
+﻿@page "/pickups/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Edit Shipment Pickup Template</h3>
+<hr />
+<br/>
+<FormComponent ButtonText="Update Pickup" OnValidSubmit="@EditPickup" pickup="pickup"/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    Pickup pickup = new Pickup();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        pickup = await _client.GetFromJsonAsync<Pickup>($"{Endpoints.PickupsEndpoint}{id}");
+    }
+
+    private async Task EditPickup()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.PickupsEndpoint}{id}", pickup);
+        _navManager.NavigateTo(Endpoints.PickupsIndex);
+    }
+}

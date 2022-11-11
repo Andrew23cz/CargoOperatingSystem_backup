@@ -1,0 +1,174 @@
+﻿@page "/awbstocks/"
+@using System.Net
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">AWB Stock List</h3>
+<hr />
+
+<a href="/awbstocks/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New AWB Stock
+</a>
+<br/>
+<br/>
+
+@if(Awbstocks == null)
+{
+    <div class="alert alert-info">Loading Awb Stock ...</div>
+}
+else
+{
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Airline</th>
+                <th>AWB Number</th>
+                <th>AWB Status</th>
+                <th>Customer</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var awbstock in Awbstocks)
+            {
+                <tr>
+                    <td>@awbstock.Airline.Name</td>
+                    <td>
+                        @if(awbstock.AwbStatus == "Available")
+                        {
+                            <button class="btn btn-success btn-sm" @onclick=@(()=>CreateShipment(awbstock)) >
+                                @awbstock.Airline.Prefix-@awbstock.AwbNumber
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-danger btn-sm" @onclick=@(()=>CreateShipment(awbstock)) >
+                                @awbstock.Airline.Prefix-@awbstock.AwbNumber
+                            </button>
+                        }
+                    </td>
+                    <td>@awbstock.AwbStatus</td>
+                    
+                    @if(awbstock.CustomerId != null)
+                    {
+                        <td>@awbstock.Customer.CompanyName</td>
+
+                    }
+                    else
+                    {
+                        <td>@noCustomer</td>
+                    }
+                    
+                    <td>
+                        <a href="/awbstocks/view/@awbstock.Id" class="btn btn-primary btn-sm">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/awbstocks/edit/@awbstock.Id" class="btn btn-warning btn-sm">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger btn-sm" @onclick=@(()=>Delete(@awbstock.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
+
+
+
+
+@code {
+
+    private IList<AwbStock> Awbstocks;
+    string noCustomer = "Not Assigned";
+
+    //TESTING
+    Shipment shipment = new Shipment();
+
+    protected async override Task OnInitializedAsync()
+    {
+        Awbstocks = await _client.GetFromJsonAsync<IList<AwbStock>>(Endpoints.AwbStocksEndpoint);
+
+    }
+
+    public async Task CreateShipment(AwbStock awbstock)
+    {
+        if(awbstock.AwbStatus == "Used")
+        {
+            var confirmRedirect = await js.InvokeAsync<bool>("confirm", $"AWB number: {awbstock.AwbNumber} is already used! Do you want to open shipment booking?");
+            if (confirmRedirect)
+            {
+                _navManager.NavigateTo($"{Endpoints.ShipmentsEdit}{awbstock.Shipment.Id}");
+            }
+
+        }
+        else
+        {
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to use following AWB Number for booking: {awbstock.AwbNumber}?");
+
+            if (confirm)
+            {
+
+                shipment.AwbNumber = $"{awbstock.Airline.Prefix}-{awbstock.AwbNumber}";
+                shipment.AwbStockId = awbstock.Id;
+                shipment.CustomerId = awbstock.CustomerId;
+
+                try
+                {
+                    var shipmentExistCheck = await _client.GetFromJsonAsync<Shipment>($"{Endpoints.ShipmentsEndpoint}{shipment.AwbNumber}");
+                }
+                catch (HttpRequestException ex)
+                {
+
+                    if (ex.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        var shipmentPostSuccess = await _client.PostAsJsonAsync(Endpoints.ShipmentsEndpoint, shipment);
+                        if (shipmentPostSuccess.IsSuccessStatusCode)
+                        {
+                            awbstock.AwbStatus = "Used";
+                            var awbStockPutSuccess = await _client.PutAsJsonAsync($"{Endpoints.AwbStocksEndpoint}{awbstock.Id}", awbstock);
+
+                            if (awbStockPutSuccess.IsSuccessStatusCode)
+                            {
+                                var shipmentNav = await _client.GetFromJsonAsync<Shipment>($"{Endpoints.ShipmentsEndpoint}GetShipmentByAwbStockId/{awbstock.Id}");
+                                _navManager.NavigateTo($"{Endpoints.ShipmentsEdit}{shipmentNav.Id}");
+                            }
+                            else
+                            {
+                                await js.InvokeVoidAsync("alert", "AwbStock Status Update Error!");
+                            }
+                        }
+                        else
+                        {
+                            await js.InvokeVoidAsync("alert", "Shipment Status Update Error!");
+                        }
+                    }
+                    else
+                    {
+                        await js.InvokeVoidAsync("alert", "Shipment AWB Number already in system!");
+                    }
+                }
+            }
+        }
+    }
+
+    
+    private async Task Delete(int awbstockId)
+    {
+        var awbstock = Awbstocks.First(q => q.Id == awbstockId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {awbstock.AwbNumber}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.AwbStocksEndpoint}{awbstockId}");
+            await OnInitializedAsync();
+        }
+    }
+}

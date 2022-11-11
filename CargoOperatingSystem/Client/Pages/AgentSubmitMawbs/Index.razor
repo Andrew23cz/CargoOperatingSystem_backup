@@ -1,0 +1,101 @@
+﻿@page "/agentsubmitmawbs/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">List Of MAWBs</h3>
+<hr />
+<br/>
+@if(AgentSubmitMawbs == null)
+{
+    <div class="alert alert-info">Loading MAWBs ...</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>MAWB Number</th>
+                <th>Issuing Agent</th>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Pieces</th>
+                <th>GW</th>
+                <th>Vol</th>
+                <th>ChW</th>
+                <th>Shipper</th>
+                <th>Consignee</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var agentMawb in AgentSubmitMawbs)
+            {
+                <tr>
+                    <td>@agentMawb.AwbNumber</td>
+                    <td>@agentMawb.IssuingAgent</td>
+                    <td>@agentMawb.Origin</td>
+                    <td>@agentMawb.Destination</td>
+                    <td>@agentMawb.Pieces</td>
+                    <td>@agentMawb.GrossWeight</td>
+                    <td>@agentMawb.Volume</td>
+                    <td>@agentMawb.ChargeableWeight</td>
+                    <td>@agentMawb.ShipperName</td>
+                    <td>@agentMawb.ConsigneeName</td>
+                    <td>
+                        <a href="/agentsubmitmawbs/view/@agentMawb.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/agentsubmitmawbs/consolmanifestview/@agentMawb.Id" class="btn btn-secondary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/agentsubmitmawbs/cargolabelview/@agentMawb.Id" class="btn btn-info">
+                            <span class="oi oi-list"></span>
+                        </a>
+                        <a href="/agentsubmitmawbs/edit/@agentMawb.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick=@(()=>Delete(@agentMawb.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
+
+
+
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    string userId;
+
+    private IList<AgentSubmitMawb> AgentSubmitMawbs;
+
+    protected async override Task OnInitializedAsync()
+    {
+        AgentSubmitMawbs = await _client.GetFromJsonAsync<IList<AgentSubmitMawb>>(Endpoints.AgentSubmitMawbsEndpoint);
+        var user = (await authenticationStateTask).User;
+        userId = user.FindFirst(CustomClaimTypes.Company).Value;
+
+    }
+
+    private async Task Delete(int agentMawbId)
+    {
+        var mawbToDelete = AgentSubmitMawbs.First(q => q.Id == agentMawbId); 
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete this MAWB: {mawbToDelete.AwbNumber}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.AgentSubmitMawbsEndpoint}{agentMawbId}");
+            await OnInitializedAsync();
+        }
+    }
+}
+

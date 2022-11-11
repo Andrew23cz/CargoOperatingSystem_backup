@@ -1,0 +1,87 @@
+﻿@page "/consignees/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">List Of Consignees</h3>
+<hr />
+
+<a href="/consignees/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Consignee
+</a>
+<br/>
+<br/>
+
+@if(Consignees == null)
+{
+    <div class="alert alert-info">Loading Consignees ...</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var consignee in Consignees)
+            {
+                <tr>
+                    <td>@consignee.Name</td>
+                    <td>@consignee.AddressA<br/>@consignee.AddressB</td>
+                    <td>@consignee.Email</td>
+                    <td>@consignee.PhoneNumber</td>
+                    <td>
+                        <a href="/consignees/view/@consignee.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/consignees/edit/@consignee.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick=@(()=>Delete(@consignee.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
+
+
+
+
+@code {
+
+    private IList<Consignee> Consignees;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Consignees = await _client.GetFromJsonAsync<IList<Consignee>>(Endpoints.ConsigneesEndpoint);
+    }
+
+    private async Task Delete(int consigneeId)
+    {
+        var consignee = Consignees.First(q => q.Id == consigneeId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {consignee.Name}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.ConsigneesEndpoint}{consigneeId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    
+
+
+}

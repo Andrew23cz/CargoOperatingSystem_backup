@@ -1,0 +1,25 @@
+﻿@page "/shippers/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Edit Shipper</h3>
+<hr />
+<br/>
+<FormComponent ButtonText="Update" OnValidSubmit="@EditShipper" shipper="shipper"/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    Shipper shipper = new Shipper();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        shipper = await _client.GetFromJsonAsync<Shipper>($"{Endpoints.ShippersEndpoint}{id}");
+    }
+
+    private async Task EditShipper()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.ShippersEndpoint}{id}", shipper);
+        _navManager.NavigateTo(Endpoints.ShippersIndex);
+    }
+}

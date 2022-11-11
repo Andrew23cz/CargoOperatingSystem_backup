@@ -1,0 +1,66 @@
+﻿<EditForm Model="@currency" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group">
+        <label>Currency Name:</label>
+        <div>
+            <InputText @bind-Value="@currency.Name" class="form-control"/>
+            <ValidationMessage For="@(()=> currency.Name)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Currency Code:</label>
+        <div>
+            <InputText @bind-Value="@currency.Code" class="form-control"/>
+            <ValidationMessage For="@(()=> currency.Code)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Currency Description:</label>
+        <div>
+            <InputText @bind-Value="@currency.Description" class="form-control"/>
+            <ValidationMessage For="@(()=> currency.Description)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Currency Symbol:</label>
+        <div>
+            <InputText @bind-Value="@currency.Symbol" class="form-control"/>
+            <ValidationMessage For="@(()=> currency.Symbol)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Currency Symbol Code:</label>
+        <div>
+            <InputText @bind-Value="@currency.SymbolCode" class="form-control"/>
+            <ValidationMessage For="@(()=> currency.SymbolCode)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Currency Exchange Rate to EUR:</label>
+        <div>
+            <InputNumber @bind-Value="@currency.ExchangeRate" class="form-control"/>
+            <ValidationMessage For="@(()=> currency.ExchangeRate)" />
+        </div>
+    </div>
+
+            
+    <button type="submit" class="btn btn-success btn-block">
+        @ButtonText
+    </button>
+
+</EditForm>
+
+
+@code {
+    [Parameter] public Currency currency { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+}

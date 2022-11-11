@@ -1,0 +1,33 @@
+﻿@page "/workloads/create/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Create New Workload</h3>
+
+<div class="form-group mx-3">
+    <label>MAWB Number: @shipment.AwbNumber </label>
+</div>
+
+
+<FormComponent ButtonText="Create New Workload" OnValidSubmit="@CreateWorkload" workload="workload"/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    Workload workload = new Workload();
+    Shipment shipment = new Shipment();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        shipment = await _client.GetFromJsonAsync<Shipment>($"{Endpoints.ShipmentsEndpoint}{id}");
+        workload.ShipmentId = shipment.Id;
+        
+    }
+
+    private async Task CreateWorkload()
+    {
+        await _client.PostAsJsonAsync(Endpoints.WorkloadsEndpoint, workload);
+        _navManager.NavigateTo(Endpoints.WorkloadsIndex);
+    }
+
+}

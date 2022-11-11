@@ -1,0 +1,180 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+<div class="top-row pl-4 navbar navbar-dark hideWhenPrint">
+    <a class="navbar-brand" href="">CargoOperatingSystem</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+
+        <div class="@NavMenuCssClass hideWhenPrint" @onclick="ToggleNavMenu">
+            <ul class="nav flex-column">
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </li>
+                <AuthorizeView>
+                    <Authorized>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="arrivals">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Arrivals
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="airlines">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Airlines
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="awbstocks">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> AWB Stock
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="shipments">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Shipments
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="customers">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Customers
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="suppliers">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Suppliers
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="mawbs">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> MAWBs
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="hawbs">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> HAWBs
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="pickups">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Pickup
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="shippers">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Shippers
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="afrates">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Rates
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="chargetemplates">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Charge Templates
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="workloadratesheets">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Workload Rates
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="currencies">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Currency
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="agentsubmitconsignees">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> AS-Consignee
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="agentsubmitshippers">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> AS-Shipper
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="agentsubmitmodels">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> AS-Booking
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="agentsubmitmawbs">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> AS-Mawbs
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="agentsubmithawbs">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> AS-Hawbs
+                            </NavLink>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
+                <AuthorizeView Roles="Administrator">
+                    <Authorized>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="consignees">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Consignees
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="deliveries">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Deliveries
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="workloads">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Workloads
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="submittedagentbookings">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Submitted Bookings
+                            </NavLink>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
+
+                        
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="test">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Test Index
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="test/create">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Test Create
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="test/claims">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Test Claims
+                            </NavLink>
+                        </li>
+
+            </ul>
+        </div>
+    
+
+
+
+
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    
+
+    
+}

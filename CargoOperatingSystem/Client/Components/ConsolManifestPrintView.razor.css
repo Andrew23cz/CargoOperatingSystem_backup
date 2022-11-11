@@ -1,0 +1,236 @@
+﻿/**   {
+    font-family: Arial, Verdana, sans-serif;
+    color: #665544;
+    text-align: left;}
+
+body {
+    width: 50%;
+}
+
+.article {
+    background-color: #efefef;
+    margin-top: 20px;
+    padding: 10px 0px 5px 0px;
+    height: 100px;
+
+}
+
+
+@media print {
+        
+    body {
+
+        width: calc(210mm * 1.20);
+        height: calc(297mm * 1.20);
+    }
+}*/
+
+
+@media (orientation: portrait) {
+
+    #mawbgrid {
+        display: grid;
+        /* The rows, columns and areas of the grid are defined visually
+     * using the grid-template-areas property.  Each string is a row,
+     * and each word an area.  The number of words in a string
+     * determines the number of columns. Note the number of words
+     * in each string must be identical. */
+        grid-template-areas: "docname awbno"
+            "shipper consignee"
+            "date flights";
+        /* The way to size columns and rows can be assigned with the
+     * grid-template-columns and grid-template-rows properties. */
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #mawbgrid {
+        display: grid;
+        width: 50%;
+        /* Again the template property defines areas of the same name,
+     * but this time positioned differently to better suit a
+     * landscape orientation. */
+        grid-template-areas: "docname awbno"
+            "shipper consignee"
+            "date flights";
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+    }
+}
+
+/*
+MAWB GRID
+*/
+
+#docname {
+    grid-area: docname;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#awbno {
+    grid-area: awbno;
+    text-align: right;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#shipper {
+    grid-area: shipper;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 40px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#consignee {
+    grid-area: consignee;
+    padding-top: 10px;
+    padding-left: 10px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#date {
+    grid-area: date;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 40px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#flights {
+    grid-area: flights;
+    padding-top: 10px;
+    padding-left: 10px;
+    border-right: 1px solid;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+
+@media (orientation: portrait) {
+
+    #hawbgrid {
+        display: grid;
+        /* The rows, columns and areas of the grid are defined visually
+      * using the grid-template-areas property.  Each string is a row,
+      * and each word an area.  The number of words in a string
+      * determines the number of columns. Note the number of words
+      * in each string must be identical. */
+        grid-template-areas: "hawbno shipper_hawb goodsdesc"
+            "dest shipper_hawb goodsdesc"
+            "pcsweight consignee_hawb goodsdesc"
+            "pcsweight consignee_hawb goodsdesc";
+        /* The way to size columns and rows can be assigned with the
+      * grid-template-columns and grid-template-rows properties. */
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: auto auto auto auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #hawbgrid {
+        display: grid;
+        width: 50%;
+        /* Again the template property defines areas of the same name,
+      * but this time positioned differently to better suit a
+      * landscape orientation. */
+        grid-template-areas: "hawbno shipper_hawb goodsdesc"
+            "dest shipper_hawb goodsdesc"
+            "pcsweight consignee_hawb goodsdesc"
+            "pcsweight consignee_hawb goodsdesc";
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: auto auto auto auto;
+    }
+}
+
+/*
+HAWB GRID
+*/
+
+#hawbno {
+    grid-area: hawbno;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    border-top: 2px solid;
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#dest {
+    grid-area: dest;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#shipper_hawb {
+    grid-area: shipper_hawb;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 20px;
+    border-top: 2px solid;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#consignee_hawb {
+    grid-area: consignee_hawb;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 20px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#pcsweight {
+    grid-area: pcsweight;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 40px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#goodsdesc {
+    grid-area: goodsdesc;
+    padding-top: 10px;
+    padding-left: 10px;
+    border-top: 2px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}

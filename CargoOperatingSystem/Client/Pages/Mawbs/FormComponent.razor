@@ -1,0 +1,713 @@
+﻿@inject HttpClient _client
+
+<EditForm Model="@mawb" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="row mb-3">
+        <button type="submit" class="btn btn-success">
+            Save MAWB Data Capture
+        </button>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-3 mr-2"  style="background-color: darkgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; border-top:1px solid; font-family:Calibri">
+                <div class="row">
+                    <div class="form-group ml-3 mr-5 pt-4">
+                        <label class="font-weight-bold" style="font-size:24px">AWB Number: @mawb.AwbNumber </label>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Shipper:</label>
+                        <div>
+                            <InputSelect @bind-Value="mawb.ShipperId" @oninput="PopulateShipper" class="form-control">
+                                <option value="">-- Select Shipper --</option>
+                                @if (Shippers != null)
+                                {
+                                    foreach (var shipper in Shippers)
+                                    {
+                                        <option value="@shipper.Id">@shipper.Name</option>
+                                    }
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => mawb.ShipperId)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Consignee:</label>
+                        <div>
+                            <InputSelect @bind-Value="mawb.ConsigneeId" @oninput="PopulateConsignee" class="form-control">
+                                <option value="">-- Select Consignee --</option>
+                                @if (Consignees != null)
+                                {
+                                    foreach (var consignee in Consignees)
+                                    {
+                                        <option value="@consignee.Id">@consignee.Name</option>
+                                    }
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => mawb.ConsigneeId)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-2"  style="background-color: lightgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri ">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Origin:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.Origin" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.Origin)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Destination:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.Destination" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.Destination)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Issuing Carrier's Agent Name and City':</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.IssuingAgent" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.IssuingAgent)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Agent's IATA Code':</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.AgentIataCode" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.AgentIataCode)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-2"  style="background-color: darkgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri ">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Accounting Information 1):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.AccountingInfoA" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.AccountingInfoA)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Accounting Information 2):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.AccountingInfoB" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.AccountingInfoB)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Accounting Information 3):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.AccountingInfoC" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.AccountingInfoC)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-2"  style="background-color:lightgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri ">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Pieces:</label>
+                        <div>
+                            <InputNumber @bind-Value="@mawb.Pieces" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.Pieces)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>GW:</label>
+                        <div>
+                            <InputNumber @bind-Value="@mawb.GrossWeight" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.GrossWeight)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>ChW:</label>
+                        <div>
+                            <InputNumber @bind-Value="@mawb.ChargeableWeight" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.ChargeableWeight)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Rate Class:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.RateClass" @onfocusout="CalculateAndPopulateCharges" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.RateClass)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Rate/Charge:</label>
+                        <div>
+                            <InputNumber @bind-Value="@mawb.RateCharge" @onfocusout="CalculateAndPopulateCharges" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.RateCharge)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Total:</label>
+                        <div>
+                            <InputNumber @bind-Value="@mawb.TotalCharge" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.TotalCharge)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-2"  style="background-color: darkgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri ">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>First Carrier Code:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.FirstCarrierCode" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.FirstCarrierCode)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>First Flight Destination:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.FirstFlightDest" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.FirstFlightDest)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>First Flight Number and Date:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.FirstFlightNoAndDate" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.FirstFlightNoAndDate)" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Second Carrier Code:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.SecondCarrierCode" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.SecondCarrierCode)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Second Flight Destination:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.SecondFlightDest" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.SecondFlightDest)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Second Flight Number and Date:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.SecondFlightNoAndDate" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.SecondFlightNoAndDate)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-2"  style="background-color: lightgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri ">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Handling Information 1):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.HandlingInfoA" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.HandlingInfoA)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Handling Information 2):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.HandlingInfoB" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.HandlingInfoB)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Handling Information 3):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.HandlingInfoC" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.HandlingInfoC)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>SCI:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.Sci" class="form-control w-50"/>
+                            <ValidationMessage For="@(()=> mawb.Sci)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-2"  style="background-color: darkgray; border-left:1px solid; border-right:1px solid; border-bottom:1px solid; font-family:Calibri ">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Reference Number:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.ReferenceNo" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.ReferenceNo)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Optional Shipping Info 1):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.OptionalShippingInfoA" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.OptionalShippingInfoA)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Optional Shipping Info 2):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.OptionalShippingInfoB" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.OptionalShippingInfoB)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-2"  style="background-color: lightgray; border-left:1px solid; border-right:1px solid; font-family:Calibri ">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Currency:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.Currency" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.Currency)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>CHGS Code:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.ChgsCode" @onfocusout="ChangePrepaidAndCollect" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.ChgsCode)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Declared Value For Carriage:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.DeclaredValueCarriage" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.DeclaredValueCarriage)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Declared Value For Customs:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.DeclaredValueCustoms" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.DeclaredValueCustoms)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Amount of Insurance:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.AmountOfInsurance" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.AmountOfInsurance)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-2"  style="background-color: darkgray; border:1px solid; font-family:Calibri ">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 1):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.NatureAndQttyGoodsA" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.NatureAndQttyGoodsA)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 2):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.NatureAndQttyGoodsB" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.NatureAndQttyGoodsB)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 3):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.NatureAndQttyGoodsC" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.NatureAndQttyGoodsC)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 4):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.NatureAndQttyGoodsD" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.NatureAndQttyGoodsD)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 5):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.NatureAndQttyGoodsE" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.NatureAndQttyGoodsE)" />
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 6):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.NatureAndQttyGoodsF" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.NatureAndQttyGoodsF)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 7):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.NatureAndQttyGoodsG" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.NatureAndQttyGoodsG)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 8):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.NatureAndQttyGoodsH" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.NatureAndQttyGoodsH)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 9):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.NatureAndQttyGoodsI" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.NatureAndQttyGoodsI)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Nature and Quantity of Goods 10):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.NatureAndQttyGoodsJ" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.NatureAndQttyGoodsJ)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div class="col-10 pb-2 pt-2"  style="background-color: lightgray; border-left:1px solid; border-right:1px solid; font-family:Calibri ">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Other Charge 1):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.OtherChargeA" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.OtherChargeA)" />
+                        </div>
+                    </div>
+
+                    <div class="form-group mx-3">
+                        <label>Other Charge 2):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.OtherChargeB" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.OtherChargeB)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Other Charge 3):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.OtherChargeC" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.OtherChargeC)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Other Charge 4):</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.OtherChargeD" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.OtherChargeD)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+           <div class="col-5 pb-2 pt2"  style="background-color: darkgray; border-left:1px solid; border-right:1px solid; border-top:1px solid; font-family:Calibri">
+                <div class="form-group mr-3">
+                    <label>Weight Charge Prepaid:</label>
+                    <div>
+                        <InputNumber @bind-Value="@mawb.WeightChargePP" class="form-control"/>
+                        <ValidationMessage For="@(()=> mawb.WeightChargePP)" />
+                    </div>
+                </div>
+                <div class="form-group mr-3">
+                    <label>Valuation Charge Prepaid:</label>
+                    <div>
+                        <InputNumber @bind-Value="@mawb.ValuationChargePP" class="form-control"/>
+                        <ValidationMessage For="@(()=> mawb.ValuationChargePP)" />
+                    </div>
+                </div>
+                <div class="form-group mr-3">
+                    <label>Tax:</label>
+                    <div>
+                        <InputNumber @bind-Value="@mawb.TaxPP" class="form-control"/>
+                        <ValidationMessage For="@(()=> mawb.TaxPP)" />
+                    </div>
+                </div>
+                <div class="form-group mr-3">
+                    <label>Total Other Charges Due Agent Prepaid:</label>
+                    <div>
+                        <InputNumber @bind-Value="@mawb.TotalOtherChargesDueAgentPP" class="form-control"/>
+                        <ValidationMessage For="@(()=> mawb.TotalOtherChargesDueAgentPP)" />
+                    </div>
+                </div>
+                <div class="form-group mr-3">
+                    <label>Total Other Charges Due Carrier Prepaid:</label>
+                    <div>
+                        <InputNumber @bind-Value="@mawb.TotalOtherChargesDueCarrierPP" class="form-control"/>
+                        <ValidationMessage For="@(()=> mawb.TotalOtherChargesDueCarrierPP)" />
+                    </div>
+                </div>
+                <div class="form-group mr-3">
+                    <label>Total Prepaid:</label>
+                    <div>
+                        <InputNumber @bind-Value="@mawb.TotalPrepaid" class="form-control"/>
+                        <ValidationMessage For="@(()=> mawb.TotalPrepaid)" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-5 pb-2 pt-2"  style="background-color: darkgray; border-right:1px solid; border-top:1px solid; font-family:Calibri">
+                <div class="form-group mx-3">
+                    <label>Weight Charge Collect:</label>
+                    <div>
+                        <InputNumber @bind-Value="@mawb.WeightChargeCC" class="form-control"/>
+                        <ValidationMessage For="@(()=> mawb.WeightChargeCC)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Valuation Charge Collect:</label>
+                    <div>
+                        <InputNumber @bind-Value="@mawb.ValuationChargeCC" class="form-control"/>
+                        <ValidationMessage For="@(()=> mawb.ValuationChargeCC)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Valuation Charge Collect:</label>
+                    <div>
+                        <InputNumber @bind-Value="@mawb.TaxCC" class="form-control"/>
+                        <ValidationMessage For="@(()=> mawb.TaxCC)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Total Other Charges Due Agent Collect:</label>
+                    <div>
+                        <InputNumber @bind-Value="@mawb.TotalOtherChargesDueAgentCC" class="form-control"/>
+                        <ValidationMessage For="@(()=> mawb.TotalOtherChargesDueAgentCC)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Total Other Charges Due Carrier Collect:</label>
+                    <div>
+                        <InputNumber @bind-Value="@mawb.TotalOtherChargesDueCarrierCC" class="form-control"/>
+                        <ValidationMessage For="@(()=> mawb.TotalOtherChargesDueCarrierCC)" />
+                    </div>
+                </div>
+                <div class="form-group mx-3">
+                    <label>Total Collect:</label>
+                    <div>
+                        <InputNumber @bind-Value="@mawb.TotalCollect" class="form-control"/>
+                        <ValidationMessage For="@(()=> mawb.TotalCollect)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+           <div class="col-10 pb-2 pt-2"  style="background-color: lightgray; border:1px solid; font-family:Calibri ">
+                <div class="row">
+                    <div class="form-group mx-3">
+                        <label>Issuing Date:</label>
+                        <div>
+                            <InputDate @bind-Value="@mawb.IssuingDate" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.IssuingDate)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Issuing Place:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.IssuingPlace" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.IssuingPlace)" />
+                        </div>
+                    </div>
+                    <div class="form-group mx-3">
+                        <label>Issuing Person Full Name:</label>
+                        <div>
+                            <InputText @bind-Value="@mawb.IssuingPersonFullName" class="form-control"/>
+                            <ValidationMessage For="@(()=> mawb.IssuingPersonFullName)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3 mb-3">
+        <button type="submit" class="btn btn-success">
+            Save MAWB Data Capture
+        </button>
+    </div>
+
+    
+
+    
+    
+    
+
+</EditForm>
+
+@code {
+
+    [Parameter] public Mawb mawb { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private IList<Shipper> Shippers;
+    private IList<Consignee> Consignees;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Shippers = await _client.GetFromJsonAsync<IList<Shipper>>(Endpoints.ShippersEndpoint);
+        Consignees = await _client.GetFromJsonAsync<IList<Consignee>>(Endpoints.ConsigneesEndpoint);
+    }
+
+
+    private async Task PopulateShipper()
+    {
+        await OnInitializedAsync();
+        var shipper = Shippers.FirstOrDefault(q => q.Id == mawb.ShipperId);
+
+        if(shipper != null)
+        {
+            mawb.ShipperName = shipper.Name;
+            mawb.ShipperAddressA = shipper.AddressA;
+            mawb.ShipperAddressB = shipper.AddressB;
+            mawb.ShipperEmail = shipper.Email;
+            mawb.ShipperPhoneNumber = shipper.PhoneNumber;
+        }
+
+    }
+
+    private void PopulateConsignee()
+    {
+        StateHasChanged();
+        var consignee = Consignees.FirstOrDefault(q => q.Id == mawb.ConsigneeId);
+
+        if(consignee != null)
+        {
+            mawb.ConsigneeName = consignee.Name;
+            mawb.ConsigneeAddressA = consignee.AddressA;
+            mawb.ConsigneeAddressB = consignee.AddressB;
+            mawb.ConsigneeEmail = consignee.Email;
+            mawb.ConsigneePhoneNumber = consignee.PhoneNumber;
+        }
+
+    }
+
+    private async Task CalculateAndPopulateCharges()
+    {
+        if(mawb.ChgsCode.ToUpper() == "PP")
+        {
+            if(mawb.RateClass.ToUpper() == "M" || mawb.RateClass.ToUpper() == "MIN")
+            {
+                mawb.TotalCharge = mawb.RateCharge;
+                mawb.WeightChargePP = mawb.TotalCharge;
+
+            }
+            else
+            {
+                mawb.TotalCharge = Math.Round((mawb.RateCharge * mawb.ChargeableWeight), 2);
+                mawb.WeightChargePP = Math.Round(mawb.TotalCharge, 2);
+            }
+
+            mawb.TotalPrepaid = Math.Round((mawb.WeightChargePP + mawb.ValuationChargePP + mawb.TaxPP + mawb.TotalOtherChargesDueAgentPP + mawb.TotalOtherChargesDueCarrierPP), 2);
+            await OnInitializedAsync();
+        }
+
+        if(mawb.ChgsCode.ToUpper() == "CC")
+        {
+            if(mawb.RateClass.ToUpper() == "M" || mawb.RateClass.ToUpper() == "MIN")
+            {
+                mawb.TotalCharge = mawb.RateCharge;
+                mawb.WeightChargeCC = mawb.TotalCharge;
+            }
+            else
+            {
+                mawb.TotalCharge = Math.Round((mawb.RateCharge * mawb.ChargeableWeight), 2);
+                mawb.WeightChargeCC = Math.Round(mawb.TotalCharge, 2);
+            }
+
+            mawb.TotalCollect = Math.Round((mawb.WeightChargeCC + mawb.ValuationChargeCC + mawb.TaxCC + mawb.TotalOtherChargesDueAgentCC + mawb.TotalOtherChargesDueCarrierCC), 2);
+            await OnInitializedAsync();
+        }
+    }
+
+    private async Task ChangePrepaidAndCollect()
+        {
+            mawb.WeightChargeCC = mawb.ValuationChargeCC = mawb.TaxCC = mawb.TotalOtherChargesDueAgentCC = mawb.TotalOtherChargesDueCarrierCC = 0;
+            mawb.WeightChargePP = mawb.ValuationChargePP = mawb.TaxPP = mawb.TotalOtherChargesDueAgentPP = mawb.TotalOtherChargesDueCarrierPP = 0;
+            await CalculateAndPopulateCharges();
+            await OnInitializedAsync();
+        }
+}

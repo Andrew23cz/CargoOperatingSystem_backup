@@ -1,0 +1,20 @@
+﻿@page "/workloadratesheets/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Create New Workload Rate Sheet</h3>
+
+<FormComponent OnValidSubmit="@CreateWorkloadRateSheet" workloadRateSheet="workloadRateSheet"/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    WorkloadRateSheet workloadRateSheet = new WorkloadRateSheet();
+
+    private async Task CreateWorkloadRateSheet()
+    {
+        await _client.PostAsJsonAsync(Endpoints.WorkloadRateSheetsEndpoint, workloadRateSheet);
+        _navManager.NavigateTo(Endpoints.WorkloadRateSheetsIndex);
+    }
+
+}

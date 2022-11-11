@@ -1,0 +1,353 @@
+﻿@page "/agentsubmitmodels/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<EditForm Model="agentSubmitModel" OnValidSubmit="@CreateNewBooking">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="row">
+        <div class="form-group mx-3">
+            <label style="margin: 0; font-family: Calibri">AWB Number</label>
+            <div>
+                <InputText @bind-Value="@agentSubmitModel.AwbNumber" class="form-control-sm" style="max-width: 140px"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label style="margin: 0">&nbsp;</label>
+            <div>
+                <button type="submit" style="font-family: Calibri">Book</button> 
+            </div>
+                
+        </div>
+    </div>
+        
+</EditForm>
+
+
+<SfButton @onclick="EditBooking" Disabled="@EditButtonDisabled"> Edit </SfButton>
+<SfButton @onclick="Delete" Disabled="@DeleteButtonDisabled"> Delete </SfButton>
+<SfButton @onclick="SubmitToProcessing" Disabled="@SubmitButtonDisabled"> Submit </SfButton>
+<SfButton @onclick="CallBack" Disabled="@CallBackButtonDisabled"> Call Back </SfButton>
+<SfButton @onclick="MawbDataCapture" Disabled="@MawbButtonDisabled"> Capture MAWB </SfButton>
+<SfButton @onclick="HawbDataCapture" Disabled="@HawbButtonDisabled"> Capture HAWB </SfButton>
+
+
+<SfGrid ID="ShipmentGrid" DataSource="@AgentSubmitModels" AllowPaging="true" AllowSorting="true" AllowFiltering="true" AllowExcelExport="true" AllowPdfExport="true" @ref="Grid">
+        <GridPageSettings PageSize="50"></GridPageSettings>
+        <GridEvents RowSelected="RowSelected" TValue="AgentSubmitModel"></GridEvents>
+        <GridColumns>
+            <GridColumn Field=@nameof(AgentSubmitModel.Id) 
+                        HeaderText="ID" 
+                        IsPrimaryKey="true"
+                        IsIdentity="true"
+                        Visible="false">
+            </GridColumn>
+        
+            <GridColumn Field=@nameof(AgentSubmitModel.AwbNumber) 
+                        HeaderText="AWB Number"
+                        Width="150">
+            </GridColumn>
+
+            <GridColumn Field=@nameof(AgentSubmitModel.Destination) 
+                        HeaderText="Dest."
+                        Width="100">
+            </GridColumn>
+            <GridColumn Field=@nameof(AgentSubmitModel.FirstFlightNumber) 
+                        HeaderText="First Flight Number"
+                        Visible="false">
+            </GridColumn>
+            <GridColumn Field=@nameof(AgentSubmitModel.FirstFlightDate)
+                        HeaderText="First Flight Date"
+                        Type = "ColumnType.Date"
+                        Format="dd/MM/yyyy"
+                        Width="150">
+            </GridColumn>
+            <GridColumn Field=@nameof(AgentSubmitModel.FirstFlightDest) 
+                        HeaderText="Departure"
+                        Visible="false">
+            </GridColumn>
+        
+            <GridColumn Field=@nameof(AgentSubmitModel.Pieces) 
+                        HeaderText="Pcs"
+                        Width="80">
+            </GridColumn>
+            <GridColumn Field=@nameof(AgentSubmitModel.GrossWeight) 
+                        HeaderText="GW"
+                        Width="80">
+            </GridColumn>
+            <GridColumn Field=@nameof(AgentSubmitModel.ChargeableWeight) 
+                        HeaderText="ChW"
+                        Width="80">
+            </GridColumn>
+            <GridColumn Field=@nameof(AgentSubmitModel.Volume) 
+                        HeaderText="Vol"
+                        Width="80">
+            </GridColumn>
+            <GridColumn HeaderText="MAWB" TextAlign="TextAlign.Center" Width="100">
+                <Template Context="asm">
+                    @{
+                        var AsModel = (asm as AgentSubmitModel);
+                        var checkMAWB = AgentSubmitMawbs.FirstOrDefault(q => q.AwbNumber == AsModel.AwbNumber);
+
+                        if(checkMAWB == null)
+                        {
+                            <span class="oi oi-x" style="color:red" data-inline="false"></span>
+                        }
+                        else
+                        {
+                            <span class="oi oi-check" style="color:green" data-inline="false"></span>
+                        }
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn HeaderText="HAWBs" TextAlign="TextAlign.Center" Width="100">
+                <Template Context="asm">
+                    @{
+                        var AsModel = (asm as AgentSubmitModel);
+                        var checkHAWB = AgentSubmitHawbs.FirstOrDefault(q => q.AwbNumber == AsModel.AwbNumber);
+
+                        if(checkHAWB == null)
+                        {
+                            <span class="oi oi-x" style="color:red" data-inline="false"></span>
+                        }
+                        else
+                        {
+                            <span class="oi oi-check" style="color:green" data-inline="false"></span>
+                        }
+                    }
+                </Template>
+            </GridColumn>
+            <GridColumn Field=@nameof(AgentSubmitModel.Submitted) 
+                        HeaderText="Submitted"
+                        Width="100">
+            </GridColumn>
+        </GridColumns>
+</SfGrid>
+
+
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    ClaimsPrincipal user;
+    string userId;
+
+    private IList<AgentSubmitModel> AgentSubmitModels;
+    private IList<AgentSubmitMawb> AgentSubmitMawbs;
+    private IList<AgentSubmitHawb> AgentSubmitHawbs;
+    private IList<AwbStock> AwbStocks;
+    private AgentSubmitModel agentSubmitModel = new AgentSubmitModel();
+    SfGrid<AgentSubmitModel> Grid;
+
+    private bool EditButtonDisabled = false;
+    private bool DeleteButtonDisabled = false;
+    private bool SubmitButtonDisabled = false;
+    private bool CallBackButtonDisabled = false;
+    private bool MawbButtonDisabled = false;
+    private bool HawbButtonDisabled = false;
+
+    protected async override Task OnInitializedAsync()
+    {
+        user = (await authenticationStateTask).User;
+        userId = user.FindFirst(CustomClaimTypes.Company).Value;
+        AgentSubmitModels = await _client.GetFromJsonAsync<IList<AgentSubmitModel>>(Endpoints.AgentSubmitModelsEndpoint);
+        AgentSubmitMawbs = await _client.GetFromJsonAsync<IList<AgentSubmitMawb>>(Endpoints.AgentSubmitMawbsEndpoint);
+        AgentSubmitHawbs = await _client.GetFromJsonAsync<IList<AgentSubmitHawb>>(Endpoints.AgentSubmitHawbsEndpoint);
+        AwbStocks = await _client.GetFromJsonAsync<IList<AwbStock>>(Endpoints.AwbStocksEndpoint);
+    }
+
+
+    private async Task Delete()
+    {
+        var agentSubmitModels = await this.Grid.GetSelectedRecordsAsync();
+
+        if(agentSubmitModels.Count > 0)
+        {
+
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete this Shipment: {agentSubmitModels[0].Id}?");
+
+            if (confirm)
+            {
+                var success = await _client.DeleteAsync($"{Endpoints.AgentSubmitModelsEndpoint}{agentSubmitModels[0].Id}");
+            }
+
+            await OnInitializedAsync();
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "No Record Selected!");
+        }
+
+
+    }
+
+    private async Task EditBooking()
+    {
+        var agentSubmitModels = await this.Grid.GetSelectedRecordsAsync();
+
+        if(agentSubmitModels.Count > 0)
+        {
+            _navManager.NavigateTo($"{Endpoints.AgentSubmitModelsEdit}{agentSubmitModels[0].Id}");
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "No Record Selected!");
+        }
+
+
+    }
+
+    private async Task CreateNewBooking()
+    {
+
+        var awbStock = AwbStocks.FirstOrDefault(q => $"{q.Airline.Prefix}-{q.AwbNumber}" == agentSubmitModel.AwbNumber);
+        var AwbNoForNav = agentSubmitModel.AwbNumber;
+
+
+        if(awbStock != null && awbStock.Customer != null && awbStock.Customer.CompanyName != userId)
+        {
+            await js.InvokeVoidAsync("alert", "AWB number already used by other subject! Please contact administrator.");
+        }
+        else if(awbStock != null && awbStock.Customer != null && awbStock.AwbStatus == "Used" && awbStock.Customer.CompanyName == userId)
+        {
+            var confirm = await js.InvokeAsync<bool>("confirm", $"AWB No.: {agentSubmitModel.AwbNumber} is assigned to your company, but booking already exists. Proceed anyway?");
+
+            if (confirm)
+            {
+                await _client.PostAsJsonAsync(Endpoints.AgentSubmitModelsEndpoint, agentSubmitModel);
+                var AgentSubmitModelsForNav = await _client.GetFromJsonAsync<IList<AgentSubmitModel>>(Endpoints.AgentSubmitModelsEndpoint);
+                var agentSubmitModelNav = AgentSubmitModelsForNav.First(q => q.AwbNumber == AwbNoForNav);
+                _navManager.NavigateTo($"{Endpoints.AgentSubmitModelsEdit}{agentSubmitModelNav.Id}");
+            }
+        }
+        else if (awbStock != null && awbStock.Customer != null && awbStock.AwbStatus == "Available" && awbStock.Customer.CompanyName == userId)
+        {
+            //CREATE EMPTY BOOKING AND NAVIGATE TO EDITING IT
+
+            await _client.PostAsJsonAsync(Endpoints.AgentSubmitModelsEndpoint, agentSubmitModel);
+            var AgentSubmitModelsForNav = await _client.GetFromJsonAsync<IList<AgentSubmitModel>>(Endpoints.AgentSubmitModelsEndpoint);
+            var agentSubmitModelNav = AgentSubmitModelsForNav.First(q => q.AwbNumber == AwbNoForNav);
+            _navManager.NavigateTo($"{Endpoints.AgentSubmitModelsEdit}{agentSubmitModelNav.Id}");
+
+        }
+        else
+        {
+            await _client.PostAsJsonAsync(Endpoints.AgentSubmitModelsEndpoint, agentSubmitModel);
+            var AgentSubmitModelsForNav = await _client.GetFromJsonAsync<IList<AgentSubmitModel>>(Endpoints.AgentSubmitModelsEndpoint);
+            var agentSubmitModelNav = AgentSubmitModelsForNav.First(q => q.AwbNumber == AwbNoForNav);
+            _navManager.NavigateTo($"{Endpoints.AgentSubmitModelsEdit}{agentSubmitModelNav.Id}");
+        }
+
+
+    }
+
+    private async Task SubmitToProcessing()
+    {
+        var agentSubmitModels = await this.Grid.GetSelectedRecordsAsync();
+
+        if(agentSubmitModels.Count > 0)
+        {
+            agentSubmitModels[0].Submitted = true;
+            var success = await _client.PutAsJsonAsync($"{Endpoints.AgentSubmitModelsEndpoint}{agentSubmitModels[0].Id}", agentSubmitModels[0]);
+
+            if (success.IsSuccessStatusCode)
+            {
+                await js.InvokeVoidAsync("alert", "Submitted");
+            }
+
+            await OnInitializedAsync();
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "No Record Selected!");
+        }
+
+    }
+
+    private async Task CallBack()
+    {
+        var agentSubmitModels = await this.Grid.GetSelectedRecordsAsync();
+
+        if(agentSubmitModels.Count > 0)
+        {
+            agentSubmitModels[0].Submitted = false;
+            var success = await _client.PutAsJsonAsync($"{Endpoints.AgentSubmitModelsEndpoint}{agentSubmitModels[0].Id}", agentSubmitModels[0]);
+
+            if (success.IsSuccessStatusCode)
+            {
+                await js.InvokeVoidAsync("alert", "Called Back");
+            }
+
+            await OnInitializedAsync();
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "No Record Selected!");
+        }
+
+    }
+
+    private async Task MawbDataCapture()
+    {
+        var agentSubmitModels = await this.Grid.GetSelectedRecordsAsync();
+
+        try
+        {
+            var agentSubmitMawb = await _client.GetFromJsonAsync<AgentSubmitMawb>($"{Endpoints.AgentSubmitMawbsEndpoint}GetAgentSubmitMawbByAwb/{agentSubmitModels[0].AwbNumber}");
+            _navManager.NavigateTo($"{Endpoints.AgentSubmitMawbsEdit}{agentSubmitMawb.Id}");
+        }
+        catch
+        {
+            _navManager.NavigateTo($"{Endpoints.AgentSubmitMawbsCreate}{agentSubmitModels[0].Id}");
+        }
+
+        
+    }
+
+    private async Task HawbDataCapture()
+    {
+        var agentSubmitModels = await this.Grid.GetSelectedRecordsAsync();
+
+        try
+        {
+            var agentSubmitMawb = await _client.GetFromJsonAsync<AgentSubmitMawb>($"{Endpoints.AgentSubmitMawbsEndpoint}GetAgentSubmitMawbByAwb/{agentSubmitModels[0].AwbNumber}");
+            _navManager.NavigateTo($"/agentsubmithawbs/agentsubmitmawbindex/{agentSubmitMawb.Id}");
+        }
+        catch
+        {
+            await js.InvokeVoidAsync("alert", "Please capture MAWB data first!");
+        }
+    }
+
+    private async Task RowSelected()
+    {
+        var agentSubmitModels = await this.Grid.GetSelectedRecordsAsync();
+
+        if (agentSubmitModels[0].Submitted)
+        {
+            EditButtonDisabled = true;
+            DeleteButtonDisabled = true;
+            SubmitButtonDisabled = true;
+            CallBackButtonDisabled = false;
+            MawbButtonDisabled = true;
+            HawbButtonDisabled = true;
+        }
+        else
+        {
+            EditButtonDisabled = false;
+            DeleteButtonDisabled = false;
+            SubmitButtonDisabled = false;
+            CallBackButtonDisabled = true;
+            MawbButtonDisabled = false;
+            HawbButtonDisabled = false;
+        }
+
+    }
+
+
+
+    
+}

@@ -1,0 +1,149 @@
+﻿@page "/agentsubmitconsignees/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card card-title">Consignees</h3>
+<hr />
+
+@*<a href="/agentsubmitconsignees/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Consignee
+</a>
+<br/>
+<br/>
+
+@if(AgentSubmitConsignees == null)
+{
+    <div class="alert alert-info">Loading Consignees ...</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var agentsubmitconsignee in AgentSubmitConsignees)
+            {
+                <tr>
+                    <td>@agentsubmitconsignee.Name</td>
+                    <td>@agentsubmitconsignee.AddressA<br/>@agentsubmitconsignee.AddressB</td>
+                    <td>@agentsubmitconsignee.Email</td>
+                    <td>@agentsubmitconsignee.PhoneNumber</td>
+                    <td>
+                        <a href="/agentsubmitconsignees/view/@agentsubmitconsignee.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/agentsubmitconsignees/edit/@agentsubmitconsignee.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick=@(()=>Delete(@agentsubmitconsignee.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}*@
+
+
+<SfGrid DataSource="@AgentSubmitConsignees" AllowPaging="true" AllowSorting="true" AllowFiltering="true" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Cancel", "Update" })" TValue="AgentSubmitConsignee">
+    <GridPageSettings PageSize="50"></GridPageSettings>
+    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"></GridEditSettings>
+    <GridEvents OnActionBegin="ActionBeginHandler" OnActionComplete="ActionCompleteHandler" TValue="AgentSubmitConsignee"></GridEvents>
+    <GridColumns>
+        <GridColumn Field=@nameof(AgentSubmitConsignee.Id) 
+                    HeaderText="ID" 
+                    IsPrimaryKey="true"
+                    IsIdentity="true"
+                    Visible="false">
+        </GridColumn>
+        <GridColumn Field=@nameof(AgentSubmitConsignee.Name) 
+                    HeaderText="Name" 
+                    Width="200">
+        </GridColumn>
+        <GridColumn Field=@nameof(AgentSubmitConsignee.AddressA) 
+                    HeaderText="Addres 1st Row" 
+                    Width="200">
+        </GridColumn>
+        <GridColumn Field=@nameof(AgentSubmitConsignee.AddressB) 
+                    HeaderText=" Addres 2nd Row" 
+                    Width="200">
+        </GridColumn>
+        <GridColumn Field=@nameof(AgentSubmitConsignee.AddressC) 
+                    HeaderText="Addres 3rd Row" 
+                    Width="200">
+        </GridColumn>
+        <GridColumn Field=@nameof(AgentSubmitConsignee.Email) 
+                    HeaderText="Email" 
+                    Width="100">
+        </GridColumn>
+        <GridColumn Field=@nameof(AgentSubmitConsignee.PhoneNumber) 
+                    HeaderText="Phone" 
+                    Width="100">
+        </GridColumn>
+    </GridColumns>
+</SfGrid>
+
+
+@code {
+    private IList<AgentSubmitConsignee> AgentSubmitConsignees;
+
+    protected async override Task OnInitializedAsync()
+    {
+       
+        AgentSubmitConsignees = await _client.GetFromJsonAsync<IList<AgentSubmitConsignee>>(Endpoints.AgentSubmitConsigneesEndpoint);
+        
+    }
+
+    //private async Task Delete(int agentsubmitconsigneeId)
+    //{
+    //    var consignee = AgentSubmitConsignees.First(q => q.Id == agentsubmitconsigneeId);
+    //    var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {consignee.Name}?");
+
+    //    if (confirm)
+    //    {
+    //        await _client.DeleteAsync($"{Endpoints.AgentSubmitConsigneesEndpoint}{agentsubmitconsigneeId}");
+    //        await OnInitializedAsync();
+    //    }
+    //}
+
+    public async Task ActionBeginHandler(ActionEventArgs<AgentSubmitConsignee> Args)
+    {
+        if (Args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            if (Args.Action == "Add")
+            {
+                await _client.PostAsJsonAsync(Endpoints.AgentSubmitConsigneesEndpoint, Args.Data);
+
+            }
+            else
+            {
+                await _client.PutAsJsonAsync($"{Endpoints.AgentSubmitConsigneesEndpoint}{Args.Data.Id}", Args.Data);
+            }
+        }
+        if (Args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Delete))
+        {
+            await _client.DeleteAsync($"{Endpoints.AgentSubmitConsigneesEndpoint}{Args.Data.Id}");
+        }
+    }
+    public async Task ActionCompleteHandler(ActionEventArgs<AgentSubmitConsignee> Args)
+    {
+        if (Args.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            await OnInitializedAsync();
+        }
+    }
+
+}

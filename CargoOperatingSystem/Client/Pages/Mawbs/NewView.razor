@@ -1,0 +1,488 @@
+﻿@page "/mawbs/newview/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<body class="thisBody">
+
+    <div class="hideWhenPrint">
+        <button class="btn-danger" @onclick="Print" style="margin-bottom: 10px;">Print MAWB</button>
+    </div>
+
+
+    <table border="1">
+        <!-- Row ZERO -->
+        <tr>
+            <td colspan="42" >
+                <div style='float: left; text-align: left; font-size: 22px'>@mawb.AwbNumber</div>
+                <div style='float: right; text-align: right; font-size: 22px'>@mawb.AwbNumber</div>
+            </td>
+        </tr>
+
+        <!-- Row A -->
+        <tr>
+            <td class="shipperBox" colspan="21">
+                <div style='float: left; text-align: left'>Shipper's Name and Address</div>
+                <div style='float: right; text-align: right'>Account Number</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (mawb.ShipperName == null){<text>&nbsp;</text>}else{@mawb.ShipperName}</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (mawb.ShipperAddressA == null){<text>&nbsp;</text>}else{@mawb.ShipperAddressA}</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (mawb.ShipperAddressB == null){<text>&nbsp;</text>}else{@mawb.ShipperAddressB}</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (mawb.ShipperAddressC == null){<text>&nbsp;</text>}else{@mawb.ShipperAddressC}</div>
+                    
+            </td>
+
+            <td colspan="21">
+            
+                <div style='float: left; text-align: left'>Not Negotiable</div>
+                <br/>
+                <div style='float: left; text-align: left'>Air Waybill</div>
+                <br/>
+                <div style='float: left; text-align: left'>issued by</div>
+                <div style='float: right; text-align: right; padding-right: 15px'>@if (mawb.AirlineName == null){<text>&nbsp;</text>}else{@mawb.AirlineName}</div>
+                <br/>
+                <div style='float: right; text-align: right; padding-right: 15px'>@if (mawb.AirlineAddressA == null){<text>&nbsp;</text>}else{@mawb.AirlineAddressA}</div>
+                <br/>
+                <div style='float: right; text-align: right; padding-right: 15px'>@if (mawb.AirlineAddressB == null){<text>&nbsp;</text>}else{@mawb.AirlineAddressB}</div>
+            </td>
+                
+        </tr>
+        <!-- Row B -->
+        <tr>
+            <td colspan="21">
+                <div style='float: left; text-align: left'>Consignee's Name and Address</div>
+                <div style='float: right; text-align: right'>Account Number</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (mawb.ConsigneeName == null){<text>&nbsp;</text>}else{@mawb.ConsigneeName}</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (mawb.ConsigneeAddressA == null){<text>&nbsp;</text>}else{@mawb.ConsigneeAddressA}</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (mawb.ConsigneeAddressB == null){<text>&nbsp;</text>}else{@mawb.ConsigneeAddressB}</div>
+                <br/>
+                <div style='float: left; text-align: left'>@if (mawb.ConsigneeAddressC == null){<text>&nbsp;</text>}else{@mawb.ConsigneeAddressC}</div>
+            </td>
+
+            <td colspan="21">
+                <div style='font-size: 8px; margin:0;'>
+                    It is agreed that the goods described herein are accepted in apparent good order and condition
+                    (except as noted)  for carriage  SUBJECT TO THE  CONDITIONS OF  CONTRACT  ON THE REVERSE HEREOF.
+                    ALL GOODS MAY BE CARRIED BY ANY OTHER MEANS INCLUDING ROAD OR ANY OTHER CARRIER UNLESS SPECIFIC
+                    CONTRARY INSTRUCTIONS ARE GIVEN HEREON BY THE SHIPPER. AND SHIPPER AGREES THAT THE SHIPMENT MAY
+                    BE  CARRIED VIA  INTERMEDIATE STOPPING PLACES  WHICH THE CARRIER DEEMS APPROPRIATE.THE SHIPPERS
+                    ATTENTION IS DRAWN TO  THE NOTICE  CONCERNING CARRIER'S  LIMITATIONS OF  LIABILITY. Shipper may
+                    increase such  limitation of  liability by  declaring  higher value  for carriage  and paying a
+                    supplemental charge if required'
+                </div>
+            </td>
+                
+        </tr>
+        <!-- Row C -->
+        <tr>
+            <td colspan="21">
+                <div style='float: left; text-align: left; font-size: 10px;'>Issuing Carrier's Agent Name and City</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.IssuingAgent == null){<text>&nbsp;</text>}else{@mawb.IssuingAgent}</div>
+            </td>
+            <td colspan="21" rowspan="2">
+                <div style='float: left; text-align: left; font-size: 10px;'>Accounting Information</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.AccountingInfoA == null){<text>&nbsp;</text>}else{@mawb.AccountingInfoA}</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.AccountingInfoB == null){<text>&nbsp;</text>}else{@mawb.AccountingInfoB}</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.AccountingInfoC == null){<text>&nbsp;</text>}else{@mawb.AccountingInfoC}</div>
+            </td>
+        </tr>
+        <!-- Row D -->
+        <tr>
+            <td colspan="11">
+                <div style='float: left; text-align: left; font-size: 10px;'>Agent's IATA Code</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.AgentIataCode == null){<text>&nbsp;</text>}else{@mawb.AgentIataCode}</div>
+            </td>
+            <td colspan="10">
+                <div style='float: left; text-align: left; font-size: 10px;'>Account Number</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.AgentAccountNumber == null){<text>&nbsp;</text>}else{@mawb.AgentAccountNumber}</div>
+            </td>
+        </tr>
+        <!-- Row E -->
+        <tr>
+            <td colspan="21">
+                <div style='float: left; text-align: left; font-size: 10px;'>Airport of Departure and Requested Routing</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.Origin == null){<text>&nbsp;</text>}else{@mawb.Origin}</div>
+
+            </td>
+            <td colspan="11">
+                <div style='float: left; text-align: left; font-size: 10px;'>Reference Number</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.ReferenceNo == null){<text>&nbsp;</text>}else{@mawb.ReferenceNo}</div>
+            </td>
+            <td colspan="10">
+                <div style='float: left; text-align: left; font-size: 10px;'>Optional Shipping Information</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.OptionalShippingInfoA == null){<text>&nbsp;</text>}else{@mawb.OptionalShippingInfoA}</div>
+            </td>
+                
+        </tr>
+
+        <tr>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>To</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.FirstFlightDest == null){<text>&nbsp;</text>}else{@mawb.FirstFlightDest}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>By First Carrier</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.FirstCarrierCode == null){<text>&nbsp;</text>}else{@mawb.FirstCarrierCode}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>to</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.SecondFlightDest == null){<text>&nbsp;</text>}else{@mawb.SecondFlightDest}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>by</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.SecondCarrierCode == null){<text>&nbsp;</text>}else{@mawb.SecondCarrierCode}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>to</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.ThirdFlightDest == null){<text>&nbsp;</text>}else{@mawb.ThirdFlightDest}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>by</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.ThirdCarrierCode == null){<text>&nbsp;</text>}else{@mawb.ThirdCarrierCode}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 8px;'>Currency</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.Currency == null){<text>&nbsp;</text>}else{@mawb.Currency}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 6px;'>CHGS Code</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.ChgsCode == null){<text>&nbsp;</text>}else{@mawb.ChgsCode}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 8px;'>WT/VAL</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.WtValPP == null){<text>&nbsp;</text>}else{@mawb.WtValPP}</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 8px;'>Other</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.OtherChgsCodePP == null){<text>&nbsp;</text>}else{@mawb.OtherChgsCodePP}</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 8px;'>Declared Value For Carriage</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.DeclaredValueCarriage == null){<text>&nbsp;</text>}else{@mawb.DeclaredValueCarriage}</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 8px;'>Declared Value For Customs</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.DeclaredValueCustoms == null){<text>&nbsp;</text>}else{@mawb.DeclaredValueCustoms}</div>
+            </td>
+                
+        </tr>
+
+        <tr>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 10px;'>Airport Of Destination</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.Destination == null){<text>&nbsp;</text>}else{@mawb.Destination}</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 8px;'>Requested Flight/Date</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.FirstFlightNoAndDate == null){<text>&nbsp;</text>}else{@mawb.FirstFlightNoAndDate}</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 8px;'>Requested Flight/Date</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.SecondFlightNoAndDate == null){<text>&nbsp;</text>}else{@mawb.SecondFlightNoAndDate}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Amount of Insurance</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.AmountOfInsurance == null){<text>&nbsp;</text>}else{@mawb.AmountOfInsurance}</div>
+            </td>
+            <td colspan="15">
+                <div style='font-size: 8px; margin:0;'>
+                    INSURANCE - If Carrier offers Insurance, and such insurance is 
+                    requested in accordance with the conditions thereof, indicate 
+                    amount to be insured in figures in box marked "amount of insurance".
+                </div>
+                
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="36">
+                <div style='float: left; text-align: left; font-size: 10px;'>Handling Information</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@mawb.HandlingInfoA</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@mawb.HandlingInfoB</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@mawb.HandlingInfoC</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: center; font-size: 10px;'>SCI</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@mawb.Sci</div>
+            </td>
+                
+        </tr>
+
+        <tr class="ratingHeader">
+            <td colspan="3">
+                <div style='float:left; text-align: left; font-size: 10px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px'>No. of Pieces RCP</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 10px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px'>Gross weight</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 10px; margin-left: 5px; margin-right: 5px; margin-top: 5px;'>Rate Class</div>
+                <div style='float: left; text-align: left; font-size: 10px; margin-left: 5px; margin-right: 5px; margin-bottom: 5px'>Commodity Item No.</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px'>Chargeable Weight</div>
+            </td>
+            <td colspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;  margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px'>Rate / Charge</div>
+            </td>
+            <td colspan="6">
+                <div style='float: left; text-align: left; font-size: 10px;  margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px'>Total</div>
+            </td>
+            <td colspan="15">
+                <div style='float: left; text-align: left; font-size: 10px; margin-left: 10px; margin-right: 10px; margin-top: 5px'>Nature and Quantity of Goods</div>
+                <br/>
+                <div style='float: left; text-align: left; font-size: 10px; margin-left: 10px; margin-right: 10px; margin-bottom: 5px'>(Incl. Dimensions or Volume)</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="3">
+                <div class="pcsLine">@mawb.Pieces</div>
+            </td>
+            <td colspan="6">
+                <div class="pcsLine">@mawb.GrossWeight</div>
+            </td>
+            <td colspan="6">
+                <div class="pcsLine">@mawb.RateClass</div>
+            </td>
+            <td colspan="3">
+                <div class="pcsLine">@mawb.GrossWeight</div>
+            </td>
+            <td colspan="3">
+                <div class="pcsLine">@mawb.RateCharge</div>
+            </td>
+            <td colspan="6">
+                <div class="pcsLine">@mawb.TotalCharge</div>
+            </td>
+            
+            <td colspan="15">
+                <div style='float: left; text-align: center;'>@mawb.NatureAndQttyGoodsA</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@mawb.NatureAndQttyGoodsB</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@mawb.NatureAndQttyGoodsC</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@mawb.NatureAndQttyGoodsD</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@mawb.NatureAndQttyGoodsE</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@mawb.NatureAndQttyGoodsF</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@mawb.NatureAndQttyGoodsG</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@mawb.NatureAndQttyGoodsH</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@mawb.NatureAndQttyGoodsI</div>
+                <br/>
+                <div style='float: left; text-align: center;'>@mawb.NatureAndQttyGoodsJ</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Weight Charge Prepaid</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.WeightChargePP == 0){<text>&nbsp;</text>}else{@mawb.WeightChargePP}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Weight Charge Collect</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.WeightChargeCC == 0){<text>&nbsp;</text>}else{@mawb.WeightChargeCC}</div>
+            </td>
+            <td colspan="24" rowspan="3">
+                <div style='float: left; text-align: left; font-size: 10px;'>Other Charges</div>
+                <br/>
+                <div style='float: left; text-align: left; font-size: 10px; padding: 20px'>@mawb.OtherChargeA</div>
+                <div style='float: left; text-align: left; font-size: 10px; padding: 20px'>@mawb.OtherChargeB</div>
+                <div style='float: left; text-align: left; font-size: 10px; padding: 20px'>@mawb.OtherChargeC</div>
+                <div style='float: left; text-align: left; font-size: 10px; padding: 20px'>@mawb.OtherChargeD</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Valuation Charge Prepaid</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.ValuationChargePP == 0){<text>&nbsp;</text>}else{@mawb.ValuationChargePP}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Valuation Charge Collect</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.ValuationChargeCC == 0){<text>&nbsp;</text>}else{@mawb.ValuationChargeCC}</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Tax Prepaid</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.TaxPP == 0){<text>&nbsp;</text>}else{@mawb.TaxPP}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Tax Collect</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.TaxCC == 0){<text>&nbsp;</text>}else{@mawb.TaxCC}</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total other Charges Due Agent PP</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.TotalOtherChargesDueAgentPP == 0){<text>&nbsp;</text>}else{@mawb.TotalOtherChargesDueAgentPP}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total other Charges Due Agent CC</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.TotalOtherChargesDueAgentCC == 0){<text>&nbsp;</text>}else{@mawb.TotalOtherChargesDueAgentCC}</div>
+            </td>
+            <td class=align-bottom colspan="24" rowspan="3">
+                <div style='text-align: center; margin-left: 0; margin-right: 0; margin-top: 65px; margin-bottom: 0px'>
+                    @if (mawb.IssuingPersonFullName == null){<text>&nbsp;</text>}else{@mawb.IssuingPersonFullName} 
+                </div>
+                <div style='text-align: center; font-size: 10px; margin-left: 0; margin-right: 0; margin-top: 0px; margin-bottom: 0px'>
+                    Signature of Shipper or his Agent
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total other Charges Due Carrier PP</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.TotalOtherChargesDueCarrierPP == 0){<text>&nbsp;</text>}else{@mawb.TotalOtherChargesDueCarrierPP}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total other Charges Due Carrier CC</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.TotalOtherChargesDueCarrierCC == 0){<text>&nbsp;</text>}else{@mawb.TotalOtherChargesDueCarrierCC}</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div>&nbsp;</div>
+            </td>
+            <td colspan="9">
+                <div>&nbsp;</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total Prepaid</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.TotalPrepaid == 0){<text>&nbsp;</text>}else{@mawb.TotalPrepaid}</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total Collect</div>
+                <br/>
+                <div style='float: left; text-align: left;'>@if (mawb.TotalCollect == 0){<text>&nbsp;</text>}else{@mawb.TotalCollect}</div>
+            </td>
+            <td class=align-bottom colspan="24" rowspan="2">
+                <div style='text-align: left; margin: 0px'>
+                    @mawb.IssuingDate.ToShortDateString() &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @if (mawb.IssuingPlace == null){<text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text>}else{@mawb.IssuingPlace} 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @if (mawb.IssuingAgent == null){<text>&nbsp;</text>}else{@mawb.IssuingAgent}
+                </div>
+                       
+                <div style='text-align: left; margin: 0px; font-size: 10px;'>
+                    Executed on (date) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at (place) 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Signature of Issuing Carrier or its Agent
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Currency Conversion Rates</div>
+                <br/>
+                <div>&nbsp;</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>CC Charges in Dest. Currency</div>
+                <br/>
+                <div>&nbsp;</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>For Carrier's Use only at Destination</div>
+                <br/>
+                <div>&nbsp;</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Charges at Destination</div>
+                <br/>
+                <div>&nbsp;</div>
+            </td>
+            <td colspan="9">
+                <div style='float: left; text-align: left; font-size: 10px;'>Total Collect Charges</div>
+                <br/>
+                <div>&nbsp;</div>
+            </td>
+            <td colspan="15">
+                <div style='text-align: right; vertical-align: baseline; font-size: 22px'>@mawb.AwbNumber</div>
+            </td>
+        </tr>
+
+    </table>
+    <br/>
+    <br/>
+
+</body>        
+
+
+
+@code {
+    [Parameter] public int id { get; set; }
+    Mawb mawb = new Mawb();
+
+    
+    protected async override Task OnParametersSetAsync()
+    {
+        mawb = await _client.GetFromJsonAsync<Mawb>($"{Endpoints.MawbsEndpoint}{id}");
+
+    }
+
+    private async Task Print()
+    {
+        await js.InvokeVoidAsync("printInvoke");
+    }
+}

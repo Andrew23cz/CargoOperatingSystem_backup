@@ -1,0 +1,34 @@
+﻿@page "/agentsubmitmawbs/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<h3 class="card-title">Master Air Waybill Data Capturing</h3>
+<hr/>
+
+<FormComponent ButtonText="Update" OnValidSubmit="@EditAgentSubmitMawb" agentSubmitMawb="agentSubmitMawb"/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    AgentSubmitMawb agentSubmitMawb = new AgentSubmitMawb();
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        agentSubmitMawb = await _client.GetFromJsonAsync<AgentSubmitMawb>($"{Endpoints.AgentSubmitMawbsEndpoint}{id}");
+
+    }
+
+    private async Task EditAgentSubmitMawb()
+    {
+        var success = await _client.PutAsJsonAsync($"{Endpoints.AgentSubmitMawbsEndpoint}{id}", agentSubmitMawb);
+        if (success.IsSuccessStatusCode)
+        {
+            await js.InvokeVoidAsync("alert", "SAVED");
+
+        }
+        await OnParametersSetAsync();
+
+    }
+}

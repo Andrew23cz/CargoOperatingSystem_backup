@@ -1,0 +1,374 @@
+﻿@inject HttpClient _client
+
+<EditForm Model="@workload" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="row">
+        <button type="submit" class="btn btn-success">
+            @ButtonText
+        </button>
+    </div>
+
+    @*<div class="container-fluid px-0">
+        <div class="row">
+            <div id="ShpmtSpecAndFlts" class="col-3 p-2 mr-2"  style="background-color: darkgray">
+                <div class='row e-input-group form-inline p-3 mx-1'>
+                    <div class="mr-3">
+                        <SfCheckBox @bind-Checked="MawbIssuing" Label="MAWB Issuing" CssClass="e-info"></SfCheckBox><br />
+                    </div>
+
+                    <div>
+                        @if (MawbIssuing)
+                        {
+                            <div>
+                                <InputNumber @bind-Value="@workload.AwbIssuing" class="form-control"/>
+                                <ValidationMessage For="@(() => workload.AwbIssuing)" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="form-inline">
+            <label class="mx-3">
+                <div>
+                    <InputCheckbox @bind-Value="@MawbIssuing" @onchange="@UpdatePage" class="form-control"/>MAWB Issuing
+                    <SfCheckBox @bind-Checked="MawbIssuing" Label="MAWB Issuing" CssClass="e-info"></SfCheckBox><br />
+                </div>
+            </label>
+            @if (MawbIssuing)
+            {
+                <div class="form-inline">
+                    <label class="mr-3">Number of copies:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.AwbIssuing" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AwbIssuing)" />
+                    </div>
+                </div>
+            
+            }
+        </div>
+    </div>*@
+
+    <div class="row">
+        <div class="form-inline mx-3">
+            <label class="mr-3">Rate Sheet:</label>
+            <div>
+                <InputSelect @bind-Value="workload.WorkloadRateSheetId" class="form-control">
+                    <option value="">-- Select Rate Sheet --</option>
+                    @if (WorkloadRateSheets != null)
+                    {
+                        foreach (var workloadRateSheet in WorkloadRateSheets)
+                        {
+                            <option value="@workloadRateSheet.Id">@workloadRateSheet.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => workload.WorkloadRateSheetId)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-0">
+        <div class="row">
+            <div id="ShpmtSpecAndFlts" class="col-3 p-2 mr-2"  style="background-color: darkgray">
+                <div class="form-group">
+                    <label class="mr-3">Mawb Issuing:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.AwbIssuing" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AwbIssuing)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>HAWB Issuing:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.HawbIssuing" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.HawbIssuing)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Cargo Labels:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.CargoLabels" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.CargoLabels)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Acceptance Assistance:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.AcceptanceAssist" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AcceptanceAssist)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Documents Correction:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.DocumentsCorrection" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.DocumentsCorrection)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Printing Corrected Documents:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.PrintingCorrectedDocs" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.PrintingCorrectedDocs)" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="ShpmtSpecAndFlts" class="col-3 p-2 mr-2"  style="background-color: darkgray">
+                <div class="form-group">
+                    <label>Import Cargo Processing:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.ImportCgoProcessing" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.ImportCgoProcessing)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Special Cargo Labels:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.SpecCargoLabels" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.SpecCargoLabels)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>After Opening Hours Svc:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.AfterOpeningHoursService" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AfterOpeningHoursService)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Manual Data Capture:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.ManualDataInsertion" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.ManualDataInsertion)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Picking-Up Documents:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.PickUpDocuments" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.PickUpDocuments)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Preparation For Security Check:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.SecurityCheckPrepare" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.SecurityCheckPrepare)" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="ShpmtSpecAndFlts" class="col-3 p-2 mr-2"  style="background-color: darkgray">
+                <div class="form-group">
+                    <label>Security Check Assistance:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.SecurityCheckAssist" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.SecurityCheckAssist)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Packing Assistance:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.PackingAssist" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.PackingAssist)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>DG Acceptance Assistance:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.AcceptanceAssistDG" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AcceptanceAssistDG)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>DG Consulting:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.CosultingDG" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.CosultingDG)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="ShpmtSpecAndFlts" class="col-3 p-2 mr-2 mt-2"  style="background-color: darkgray">
+                <div class="form-group">
+                    <label>Additional Service A:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.AdditionalServiceA" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AdditionalServiceA)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Additional Service B:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.AdditionalServiceB" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AdditionalServiceB)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Additional Service C:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.AdditionalServiceC" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AdditionalServiceC)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Additional Service D:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.AdditionalServiceD" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AdditionalServiceD)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Additional Service E:</label>
+                    <div>
+                        <InputNumber @bind-Value="@workload.AdditionalServiceE" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AdditionalServiceE)" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="ShpmtSpecAndFlts" class="col-6 p-2 mr-2 mt-2 pr-2"  style="background-color: darkgray">
+                <div class="form-group">
+                    <label>Additional Service A Description:</label>
+                    <div>
+                        <InputText @bind-Value="@workload.AdditionalServiceNoteA" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AdditionalServiceNoteA)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Additional Service B Description:</label>
+                    <div>
+                        <InputText @bind-Value="@workload.AdditionalServiceNoteB" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AdditionalServiceNoteB)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Additional Service C Description:</label>
+                    <div>
+                        <InputText @bind-Value="@workload.AdditionalServiceNoteC" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AdditionalServiceNoteC)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Additional Service D Description:</label>
+                    <div>
+                        <InputText @bind-Value="@workload.AdditionalServiceNoteD" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AdditionalServiceNoteD)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Additional Service E Description:</label>
+                    <div>
+                        <InputText @bind-Value="@workload.AdditionalServiceNoteE" class="form-control"/>
+                        <ValidationMessage For="@(() => workload.AdditionalServiceNoteE)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    
+    
+    @*<div class="form-group">
+        <label>Additional Service A:</label>
+        <div>
+            <InputNumber @bind-Value="@workload.AdditionalServiceA" class="form-control"/>
+            <ValidationMessage For="@(() => workload.AdditionalServiceA)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Additional Service A Description:</label>
+        <div>
+            <InputText @bind-Value="@workload.AdditionalServiceNoteA" class="form-control"/>
+            <ValidationMessage For="@(() => workload.AdditionalServiceNoteA)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Additional Service B:</label>
+        <div>
+            <InputNumber @bind-Value="@workload.AdditionalServiceB" class="form-control"/>
+            <ValidationMessage For="@(() => workload.AdditionalServiceB)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Additional Service B Description:</label>
+        <div>
+            <InputText @bind-Value="@workload.AdditionalServiceNoteB" class="form-control"/>
+            <ValidationMessage For="@(() => workload.AdditionalServiceNoteB)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Additional Service C:</label>
+        <div>
+            <InputNumber @bind-Value="@workload.AdditionalServiceC" class="form-control"/>
+            <ValidationMessage For="@(() => workload.AdditionalServiceC)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Additional Service C Description:</label>
+        <div>
+            <InputText @bind-Value="@workload.AdditionalServiceNoteC" class="form-control"/>
+            <ValidationMessage For="@(() => workload.AdditionalServiceNoteC)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Additional Service D:</label>
+        <div>
+            <InputNumber @bind-Value="@workload.AdditionalServiceD" class="form-control"/>
+            <ValidationMessage For="@(() => workload.AdditionalServiceD)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Additional Service D Description:</label>
+        <div>
+            <InputText @bind-Value="@workload.AdditionalServiceNoteD" class="form-control"/>
+            <ValidationMessage For="@(() => workload.AdditionalServiceNoteD)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Additional Service E:</label>
+        <div>
+            <InputNumber @bind-Value="@workload.AdditionalServiceE" class="form-control"/>
+            <ValidationMessage For="@(() => workload.AdditionalServiceE)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Additional Service E Description:</label>
+        <div>
+            <InputText @bind-Value="@workload.AdditionalServiceNoteE" class="form-control"/>
+            <ValidationMessage For="@(() => workload.AdditionalServiceNoteE)" />
+        </div>
+    </div>*@
+
+</EditForm>
+
+@code {
+    [Parameter] public Workload workload { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private IList<WorkloadRateSheet> WorkloadRateSheets;
+    private bool MawbIssuing { get; set; } = false;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        WorkloadRateSheets = await _client.GetFromJsonAsync<IList<WorkloadRateSheet>>(Endpoints.WorkloadRateSheetsEndpoint);
+    }
+
+    private async Task UpdatePage()
+    {
+        await OnParametersSetAsync();
+    }
+
+}

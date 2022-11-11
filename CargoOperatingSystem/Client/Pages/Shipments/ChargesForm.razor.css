@@ -1,0 +1,54 @@
+﻿#ChargeRow {
+    font-family: Calibri;
+    max-width: fit-content;
+    background-color: lightgray;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+    margin-bottom: 15px;
+}
+
+#CurrencySelect {
+    font-family: Calibri;
+    max-width: fit-content;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+    margin-bottom: 4px;
+}
+
+#ChargeLabel {
+    max-width: fit-content;
+    font-family: Calibri;
+    font-weight: bold;
+    color: white;
+    font-size: 18px;
+    margin-bottom: 4px;
+    padding-left: 0px
+}
+
+#CurrencySelectLabel {
+    grid-area: AwbNumber;
+    padding-right: 15px;
+    background-color: lightgray;
+    font-weight: bolder;
+    color: black;
+    font-family: Calibri;
+}
+
+#CurrencySelect {
+    grid-area: AwbNumber;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    background-color: lightgray;
+    border: 1px solid;
+    border-color: black;
+    color: black;
+    font-family: Calibri;
+}

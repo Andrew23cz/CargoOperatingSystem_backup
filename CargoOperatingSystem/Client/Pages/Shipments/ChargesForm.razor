@@ -1,0 +1,201 @@
+﻿@inject HttpClient _client
+
+<EditForm id="ChargeForm" Model="@charge" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    
+    <div id="ChargeLabel" class="row">
+        <label style="margin:0">Charges Input</label>
+    </div>
+
+    <div id="SelectRow01" class="row mb-1">
+        <div class="form-group mt-1 mr-3">
+            <div class="form-inline">
+                <label id="CurrencySelectLabel">Currency:</label>
+                <div>
+                    <InputSelect @bind-Value="charge.CurrencyId" class="form-control-sm">
+                        <option value="">-- Select Currency --</option>
+                        @if (Currencies != null)
+                        {
+                            foreach (var currency in Currencies)
+                            {
+                                <option value="@currency.Id">@currency.Code</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => charge.CurrencyId)" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group mt-1 mr-3">
+            <div class="form-inline">
+                <label id="ChargeTypeSelectLabel">Charge Type:</label>
+                <div>
+                    <InputSelect @bind-Value="charge.ChargeType" class="form-control-sm">
+                        <option value="">-- Select Charge Type --</option>
+                        <option value="gw">GW/kg</option>
+                        <option value="chw">ChW/kg</option>
+                        <option value="pc">Per piece</option>
+                        <option value="awb">Per MAWB</option>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => charge.ChargeType)" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="SelectRow02" class="row mb-1">
+        <div class="form-group mt-1 mr-3">
+            <div class="form-inline">
+                <label id="ChargeDueSelectLabel">Charge Due:</label>
+                <div>
+                    <InputSelect @bind-Value="charge.ChargeDue" @oninput="@SupplierConfirm" class="form-control-sm">
+                        <option value="">-- Select Charge Due ... --</option>
+                        <option value="carrier">Carrier</option>
+                        <option value="supplier">Supplier</option>
+                        <option value="gsa">GSA</option>
+                        <option value="none">None</option>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => charge.ChargeDue)" />
+                </div>
+            </div>
+        </div>
+
+        @if (dueSupplierCheck)
+        {
+            <div class="form-group mt-1 mr-3">
+                <div class="form-inline">
+                    <label id="SupplierSelectLabel">Supplier:</label>
+                    <div>
+                        <InputSelect @bind-Value="charge.SupplierId" class="form-control-sm">
+                            <option value="">-- Select Supplier --</option>
+                            @if (Currencies != null)
+                            {
+                                foreach (var supplier in Suppliers)
+                                {
+                                    <option value="@supplier.Id">@supplier.CompanyName</option>
+                                }
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => charge.SupplierId)" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div id="SelectRow03" class="row mb-1">
+        <div class="form-group mt-1 mr-3">
+            <div class="form-inline">
+                <label id="ChargeNameSelectLabel">Charge Name:</label>
+                <div>
+                    <InputSelect @bind-Value="charge.ChargeName" @oninput="@OtherChargeConfirm" class="form-control-sm">
+                        <option value="">-- Select Charge Name ... --</option>
+                        <option value="airfreight">Air Freight</option>
+                        <option value="other">Other Charges</option>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => charge.ChargeName)" />
+                </div>
+            </div>
+        </div>
+
+        @if (otherChargeCheck)
+        {
+            <div class="form-group mt-1 mr-3">
+                <div class="form-inline">
+                    <label id="OtherChargeSelectLabel">Other Charge Code:</label>
+                    <div>
+                        <InputSelect @bind-Value="charge.OtherChargeCode" class="form-control-sm">
+                            <option value="">-- Select Code --</option>
+                            <option value="">-- Select Charge Name ... --</option>
+                            <option value="fsc">Fuel Surcharge - FSC</option>
+                            <option value="ssc">Security Surcharge - SSC</option>
+                            <option value="dgr">Dangerous Goods - DGR</option>
+                            <option value="eli">Lithium Batteries - ELI</option>
+                        </InputSelect>
+                        <ValidationMessage For="@(() => charge.OtherChargeCode)" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    
+    <div id="ChargeRow" class="row pl-3">
+        <div class="form-group mt-1 mr-3">
+            <label style="margin:0">Amount</label>
+            <div>
+                <InputNumber @bind-Value="@charge.Amount" class="form-control-sm"/>
+                <ValidationMessage For="@(()=> charge.Amount)" />
+            </div>
+        </div>
+         <div class="form-group mt-1 mr-3">
+            <label style="margin:0">Notes</label>
+            <div>
+                <InputText @bind-Value="@charge.Note" class="form-control-sm"/>
+                <ValidationMessage For="@(()=> charge.Note)" />
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" form="ChargeForm" class="btn btn-info">
+        <span class="oi oi-plus"></span>
+        Add Charge
+    </button>
+    
+    
+
+</EditForm>
+
+@code {
+
+    [Parameter] public Charge charge { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    IList<Currency> Currencies;
+    IList<Supplier> Suppliers;
+
+    private bool dueSupplierCheck = false;
+    private bool otherChargeCheck = false;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Suppliers = await _client.GetFromJsonAsync<IList<Supplier>>($"{Endpoints.SuppliersEndpoint}");
+        Currencies = await _client.GetFromJsonAsync<IList<Currency>>($"{Endpoints.CurrencyEndpoint}");
+    }
+
+
+    private async Task SupplierConfirm()
+    {
+        await OnInitializedAsync();
+
+        if (charge.ChargeDue == "supplier")
+        {
+            dueSupplierCheck = true;
+        }
+        else
+        {
+            dueSupplierCheck = false;
+        }
+
+        await OnInitializedAsync();
+    }
+
+    private async Task OtherChargeConfirm()
+    {
+        await OnInitializedAsync();
+
+        if (charge.ChargeName == "other")
+        {
+            otherChargeCheck = true;
+        }
+        else
+        {
+            otherChargeCheck = false;
+        }
+
+        await OnInitializedAsync();
+    }
+
+}

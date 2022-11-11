@@ -1,0 +1,1562 @@
+﻿@media (orientation: portrait) {
+    #hawbgrid01 {
+        display: grid;
+        grid-template-areas: "awbno01               awbno01               awbno02               awbno02"
+            "shipperlabel          shipperaccountno      airlinelabels         airline"
+            "shipper               shipper               airlinelabels         airline"
+            "shipper               shipper               airlinenote           airlinenote"
+            "consigneelabel        consigneeaccountno    conditions01          conditions01"
+            "consignee             consignee             conditions01          conditions01"
+            "issuingagentlabel     issuingagentlabel     accountinginfolabel   accountinginfolabel"
+            "issuingagent          issuingagent          accountinginfo        accountinginfo"
+            "agentiatacodelabel    agentaccountnolabel   accountinginfo        accountinginfo"
+            "agentiatacode         agentaccountno        accountinginfo        accountinginfo";
+        grid-template-columns: 1fr auto auto 1.2fr;
+        grid-template-rows: auto auto auto auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #hawbgrid01 {
+        display: grid;
+        width: 50%;
+        grid-template-areas: "awbno01               awbno01               awbno02               awbno02"
+            "shipperlabel          shipperaccountno      airlinelabels         airline"
+            "shipper               shipper               airlinelabels         airline"
+            "shipper               shipper               airlinenote           airlinenote"
+            "consigneelabel        consigneeaccountno    conditions01          conditions01"
+            "consignee             consignee             conditions01          conditions01"
+            "issuingagentlabel     issuingagentlabel     accountinginfolabel   accountinginfolabel"
+            "issuingagent          issuingagent          accountinginfo        accountinginfo"
+            "agentiatacodelabel    agentaccountnolabel   accountinginfo        accountinginfo"
+            "agentiatacode         agentaccountno        accountinginfo        accountinginfo";
+        grid-template-columns: 1fr auto auto 1.2fr;
+        grid-template-rows: auto auto auto auto;
+    }
+}
+
+#awbno01 {
+    grid-area: awbno01;
+    font-size: 16px;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#awbno02 {
+    grid-area: awbno02;
+    text-align: right;
+    font-size: 16px;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#shipperaccountno {
+    grid-area: shipperaccountno;
+    font-size: 10px;
+    text-align: left;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#shipper {
+    grid-area: shipper;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#shipperlabel {
+    grid-area: shipperlabel;
+    font-size: 10px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#consigneeaccountno {
+    grid-area: consigneeaccountno;
+    font-size: 10px;
+    text-align: left;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#consignee {
+    grid-area: consignee;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#consigneelabel {
+    grid-area: consigneelabel;
+    font-size: 10px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#airlinelabels {
+    grid-area: airlinelabels;
+    font-size: 14px;
+    padding-top: 3px;
+    padding-left: 3px;
+    padding-bottom: 3px;
+    border-color: black;
+}
+
+#airline {
+    grid-area: airline;
+    font-size: 14px;
+    padding-left: 20px;
+    padding-top: 10px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#airlinenote {
+    grid-area: airlinenote;
+    font-size: 10px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    padding-right: 3px;
+    border-right: 1px solid;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#conditions01 {
+    grid-area: conditions01;
+    font-size: 8px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    padding-right: 3px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#issuingagentlabel {
+    grid-area: issuingagentlabel;
+    font-size: 10px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#issuingagent {
+    grid-area: issuingagent;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#agentiatacodelabel {
+    grid-area: agentiatacodelabel;
+    font-size: 10px;
+    border-left: 1px solid;
+    border-color: black;
+}
+
+#agentiatacode {
+    grid-area: agentiatacode;
+    font-size: 14px;
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+    border-color: black;
+}
+
+#agentaccountnolabel {
+    grid-area: agentaccountnolabel;
+    font-size: 10px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#agentaccountno {
+    grid-area: agentaccountno;
+    font-size: 14px;
+    padding-top: 5px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#accountinginfolabel {
+    grid-area: accountinginfolabel;
+    font-size: 10px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#accountinginfo {
+    grid-area: accountinginfo;
+    font-size: 14px;
+    padding-left: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+
+@media (orientation: portrait) {
+
+    #hawbgrid02 {
+        display: grid;
+        grid-template-areas: "airportdeparturelabel refnumberlabel optionalshipinfolabel optionalshipinfolabel"
+            "airportdeparture      refnumber      optionalshipinfo01     optionalshipinfo02";
+        grid-template-columns: 3fr 1fr 1fr 1fr;
+        grid-template-rows: auto auto auto auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #hawbgrid02 {
+        display: grid;
+        width: 50%;
+        grid-template-areas: "airportdeparturelabel refnumberlabel optionalshipinfolabel optionalshipinfolabel"
+            "airportdeparture      refnumber      optionalshipinfo01  optionalshipinfo02";
+        grid-template-columns: 3fr 1fr 1fr 1fr;
+        grid-template-rows: auto auto auto auto;
+    }
+}
+
+#airportdeparturelabel {
+    grid-area: airportdeparturelabel;
+    font-size: 10px;
+    border-right: 1px solid;
+    border-left: 1px solid;
+    border-color: black;
+}
+
+#airportdeparture {
+    grid-area: airportdeparture;
+    font-size: 14px;
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    border-right: 1px solid;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#refnumberlabel {
+    grid-area: refnumberlabel;
+    text-align: center;
+    font-size: 10px;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#refnumber {
+    grid-area: refnumber;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#optionalshipinfolabel {
+    grid-area: optionalshipinfolabel;
+    font-size: 10px;
+    text-align: center;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#optionalshipinfo01 {
+    grid-area: optionalshipinfo01;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#optionalshipinfo02 {
+    grid-area: optionalshipinfo02;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+@media (orientation: portrait) {
+
+    #hawbgrid03 {
+        display: grid;
+        grid-template-areas: "to01-lbl firstcarrier-lbl routingdest-lbl to02-lbl by01-lbl to03-lbl by02-lbl currency-lbl chgs-lbl wtval-lbl   wtval-lbl    other-lbl   other-lbl    decval-lbl decvalcust-lbl"
+            "to01-lbl firstcarrier-lbl routingdest-lbl to02-lbl by01-lbl to03-lbl by02-lbl currency-lbl chgs-lbl wtvalPP-lbl wtvalCOL-lbl otherPP-lbl otherCOL-lbl decval-lbl decvalcust-lbl"
+            "to01     firstcarrier     firstcarrier    to02     by01     to03     by02     currency     chgs     wtvalPP     wtvalCOL     otherPP     otherCOL     decval     decvalcust";
+        grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #hawbgrid03 {
+        display: grid;
+        width: 50%;
+        grid-template-areas: "to01-lbl firstcarrier-lbl routingdest-lbl to02-lbl by01-lbl to03-lbl by02-lbl currency-lbl chgs-lbl wtval-lbl   wtval-lbl    other-lbl   other-lbl    decval-lbl decvalcust-lbl"
+            "to01-lbl firstcarrier-lbl routingdest-lbl to02-lbl by01-lbl to03-lbl by02-lbl currency-lbl chgs-lbl wtvalPP-lbl wtvalCOL-lbl otherPP-lbl otherCOL-lbl decval-lbl decvalcust-lbl"
+            "to01     firstcarrier     firstcarrier    to02     by01     to03     by02     currency     chgs     wtvalPP     wtvalCOL     otherPP     otherCOL     decval     decvalcust";
+        grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+    }
+}
+
+#to01-lbl {
+    grid-area: to01-lbl;
+    font-size: 10px;
+    padding-left: 2px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#to02-lbl {
+    grid-area: to02-lbl;
+    font-size: 10px;
+    border-left: 1px solid;
+    padding-left: 2px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#to03-lbl {
+    grid-area: to03-lbl;
+    font-size: 10px;
+    padding-left: 2px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#by01-lbl {
+    grid-area: by01-lbl;
+    font-size: 10px;
+    padding-left: 2px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#by02-lbl {
+    grid-area: by02-lbl;
+    font-size: 10px;
+    padding-left: 2px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#firstcarrier-lbl {
+    grid-area: firstcarrier-lbl;
+    font-size: 10px;
+    border-color: black;
+}
+
+#routingdest-lbl {
+    grid-area: routingdest-lbl;
+    height: 12px;
+    font-size: 10px;
+    text-align: right;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    padding-right: 2px;
+    border-color: black;
+}
+
+#currency-lbl {
+    grid-area: currency-lbl;
+    font-size: 10px;
+    text-align: center;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#chgs-lbl {
+    grid-area: chgs-lbl;
+    font-size: 9px;
+    text-align: center;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#wtval-lbl {
+    grid-area: wtval-lbl;
+    font-size: 9px;
+    text-align: center;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#other-lbl {
+    grid-area: other-lbl;
+    font-size: 9px;
+    text-align: center;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#decval-lbl {
+    grid-area: decval-lbl;
+    font-size: 9px;
+    text-align: center;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#decvalcust-lbl {
+    grid-area: decvalcust-lbl;
+    font-size: 9px;
+    text-align: center;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#wtvalPP-lbl {
+    grid-area: wtvalPP-lbl;
+    font-size: 9px;
+    text-align: center;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#wtvalCOL-lbl {
+    grid-area: wtvalCOL-lbl;
+    font-size: 9px;
+    text-align: center;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#otherPP-lbl {
+    grid-area: otherPP-lbl;
+    font-size: 9px;
+    text-align: center;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#otherCOL-lbl {
+    grid-area: otherCOL-lbl;
+    font-size: 9px;
+    text-align: center;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#to01 {
+    grid-area: to01;
+    text-align: center;
+    font-size: 14px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#to02 {
+    grid-area: to02;
+    text-align: center;
+    font-size: 14px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#to03 {
+    grid-area: to03;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#by01 {
+    grid-area: by01;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#by02 {
+    grid-area: by02;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#firstcarrier {
+    grid-area: firstcarrier;
+    text-align: left;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#currency {
+    grid-area: currency;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#chgs {
+    grid-area: chgs;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#wtvalPP {
+    grid-area: wtvalPP;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#wtvalCOL {
+    grid-area: wtvalCOL;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#otherPP {
+    grid-area: otherPP;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#otherCOL {
+    grid-area: otherCOL;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#decval {
+    grid-area: decval;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#decvalcust {
+    grid-area: decvalcust;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+@media (orientation: portrait) {
+
+    #hawbgrid04 {
+        display: grid;
+        grid-template-areas: "airportdest_lbl airportdest_lbl fltdate_lbl   fltdate_lbl   fltdate_lbl    fltdate_lbl    insurance_lbl insurance_lbl insurancenote insurancenote"
+            "airportdest     airportdest     fltdate01     fltdate01     fltdate02      fltdate02      insurance     insurance     insurancenote insurancenote"
+            "handling_lbl    handling_lbl    handling_lbl  handling_lbl  handling_lbl   handling_lbl   handling_lbl  handling_lbl  handling_lbl  handling_lbl"
+            "handlinginfo    handlinginfo    handlinginfo  handlinginfo  handlinginfo   handlinginfo   handlinginfo  handlinginfo  handlinginfo  sci_lbl"
+            "handlinginfo    handlinginfo    handlinginfo  handlinginfo  handlinginfo   handlinginfo   handlinginfo  handlinginfo  handlinginfo  sci";
+        grid-template-columns: 2fr 2fr 2fr 1fr 2fr 1fr 2fr 1fr 7fr 2fr;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #hawbgrid04 {
+        display: grid;
+        width: 50%;
+        grid-template-areas: "airportdest_lbl airportdest_lbl fltdate_lbl   fltdate_lbl   fltdate_lbl    fltdate_lbl    insurance_lbl insurance_lbl insurancenote insurancenote"
+            "airportdest     airportdest     fltdate01     fltdate01     fltdate02      fltdate02      insurance     insurance     insurancenote insurancenote"
+            "handling_lbl    handling_lbl    handling_lbl  handling_lbl  handling_lbl   handling_lbl   handling_lbl  handling_lbl  handling_lbl  handling_lbl"
+            "handlinginfo    handlinginfo    handlinginfo  handlinginfo  handlinginfo   handlinginfo   handlinginfo  handlinginfo  handlinginfo  sci_lbl"
+            "handlinginfo    handlinginfo    handlinginfo  handlinginfo  handlinginfo   handlinginfo   handlinginfo  handlinginfo  handlinginfo  sci";
+        grid-template-columns: 2fr 2fr 2fr 1fr 2fr 1fr 2fr 1fr 7fr 2fr;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto auto;
+    }
+}
+
+#airportdest_lbl {
+    grid-area: airportdest_lbl;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#fltdate_lbl {
+    grid-area: fltdate_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#insurance_lbl {
+    grid-area: insurance_lbl;
+    text-align: center;
+    font-size: 9px;
+    border-color: black;
+}
+
+#handling_lbl {
+    grid-area: handling_lbl;
+    font-size: 10px;
+    border-right: 1px solid;
+    border-left: 1px solid;
+    border-color: black;
+}
+
+#sci_lbl {
+    grid-area: sci_lbl;
+    text-align: left;
+    font-size: 10px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#insurancenote {
+    grid-area: insurancenote;
+    font-size: 9px;
+    padding: 2px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#airportdest {
+    grid-area: airportdest;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#fltdate01 {
+    grid-area: fltdate01;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#fltdate02 {
+    grid-area: fltdate02;
+    text-align: center;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#insurance {
+    grid-area: insurance;
+    text-align: center;
+    font-size: 14px;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#handlinginfo {
+    grid-area: handlinginfo;
+    text-align: left;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#sci {
+    grid-area: sci;
+    font-size: 14px;
+    text-align: left;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+@media (orientation: portrait) {
+
+    #hawbgrid05 {
+        display: grid;
+        grid-template-areas: "pcs_lbl grosswt__lbl kglb_lbl rateclass_lbl commitem_lbl chweight_lbl ratecharge_lbl total_lbl goods_lbl"
+            "pcs     grosswt      kglb     rateclass     commitem     chweight     ratecharge     total     goods"
+            "pcsttl  grosswtttl   kglb     rateclass     commitem     chweight     ratecharge     totalttl  goods";
+        grid-template-columns: 2fr 4fr 1fr 1fr 4fr 4fr 4fr 6fr 12fr;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #hawbgrid05 {
+        display: grid;
+        width: 50%;
+        grid-template-areas: "pcs_lbl grosswt__lbl kglb_lbl rateclass_lbl commitem_lbl chweight_lbl ratecharge_lbl total_lbl goods_lbl"
+            "pcs     grosswt      kglb     rateclass     commitem     chweight     ratecharge     total     goods"
+            "pcsttl  grosswtttl   kglb     rateclass     commitem     chweight     ratecharge     totalttl  goods";
+        grid-template-columns: 2fr 4fr 1fr 1fr 4fr 4fr 4fr 6fr 12fr;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto;
+    }
+}
+
+#pcs_lbl {
+    grid-area: pcs_lbl;
+    text-align: center;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#grosswt__lbl {
+    grid-area: grosswt__lbl;
+    text-align: center;
+    font-size: 10px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#kglb_lbl {
+    grid-area: kglb_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#rateclass_lbl {
+    grid-area: rateclass_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#commitem_lbl {
+    grid-area: commitem_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#chweight_lbl {
+    grid-area: chweight_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#ratecharge_lbl {
+    grid-area: ratecharge_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#total_lbl {
+    grid-area: total_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#goods_lbl {
+    grid-area: goods_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#pcs {
+    grid-area: pcs;
+    height: 210px;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 5px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#grosswt {
+    grid-area: grosswt;
+    height: 210px;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#kglb {
+    grid-area: kglb;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#rateclass {
+    grid-area: rateclass;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#commitem {
+    grid-area: commitem;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#chweight {
+    grid-area: chweight;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#ratecharge {
+    grid-area: ratecharge;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#total {
+    grid-area: total;
+    height: 210px;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#goods {
+    grid-area: goods;
+    font-size: 14px;
+    padding-top: 5px;
+    padding-left: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#pcsttl {
+    grid-area: pcsttl;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#grosswtttl {
+    grid-area: grosswtttl;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#totalttl {
+    grid-area: totalttl;
+    font-size: 14px;
+    padding-left: 5px;
+    padding-top: 5px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+@media (orientation: portrait) {
+
+    #hawbgrid06 {
+        display: grid;
+        grid-template-areas:    "prepaid_lbl   wtcharge_lbl  wtcharge_lbl    collect_lbl     othcharges_lbl othcharges_lbl othcharges_lbl"
+                                "wtchargePP    wtchargePP    wtchargeCOL     wtchargeCOL     othcharges     othcharges     othcharges"
+                                "prepaid01_lbl valcharge_lbl valcharge_lbl   collect01_lbl   othcharges     othcharges     othcharges"
+                                "valchargePP   valchargePP   valchargeCOL    valchargeCOL    othcharges     othcharges     othcharges"
+                                "prepaid02_lbl tax_lbl       tax_lbl         collect02_lbl   othcharges     othcharges     othcharges"
+                                "taxPP         taxPP         taxCOL          taxCOL          othcharges     othcharges     othcharges";
+
+        grid-template-columns: 1fr 1fr 1fr 1fr 1.5fr 1.95fr 2fr;
+        grid-template-rows: auto auto auto auto auto auto auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #hawbgrid06 {
+        display: grid;
+        width: 50%;
+        grid-template-areas:    "prepaid_lbl   wtcharge_lbl  wtcharge_lbl    collect_lbl     othcharges_lbl othcharges_lbl othcharges_lbl"
+                                "wtchargePP    wtchargePP    wtchargeCOL     wtchargeCOL     othcharges     othcharges     othcharges"
+                                "prepaid01_lbl valcharge_lbl valcharge_lbl   collect01_lbl   othcharges     othcharges     othcharges"
+                                "valchargePP   valchargePP   valchargeCOL    valchargeCOL    othcharges     othcharges     othcharges"
+                                "prepaid02_lbl tax_lbl       tax_lbl         collect02_lbl   othcharges     othcharges     othcharges"
+                                "taxPP         taxPP         taxCOL          taxCOL          othcharges     othcharges     othcharges";
+
+        grid-template-columns: 1fr 1fr 1fr 1fr 1.5fr 1.95fr 2fr;
+        grid-template-rows: auto auto auto auto auto auto auto;
+    }
+}
+
+#prepaid_lbl {
+    grid-area: prepaid_lbl;
+    text-align: center;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#prepaid01_lbl {
+    grid-area: prepaid01_lbl;
+    text-align: center;
+    border-left: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#prepaid02_lbl {
+    grid-area: prepaid02_lbl;
+    text-align: center;
+    border-left: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#wtcharge_lbl {
+    grid-area: wtcharge_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#collect_lbl {
+    grid-area: collect_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#collect01_lbl {
+    grid-area: collect01_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#collect02_lbl {
+    grid-area: collect02_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#valcharge_lbl {
+    grid-area: valcharge_lbl;
+    text-align: center;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#tax_lbl {
+    grid-area: tax_lbl;
+    text-align: center;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#othcharges_lbl {
+    grid-area: othcharges_lbl;
+    border-right: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#wtchargePP {
+    grid-area: wtchargePP;
+    text-align: center;
+    font-size: 14px;
+    padding-left: 3px;
+    padding-top: 3px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#wtchargeCOL {
+    grid-area: wtchargeCOL;
+    text-align: center;
+    font-size: 14px;
+    padding-left: 3px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#valchargePP {
+    grid-area: valchargePP;
+    text-align: center;
+    font-size: 14px;
+    padding-left: 3px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#valchargeCOL {
+    grid-area: valchargeCOL;
+    text-align: center;
+    font-size: 14px;
+    padding-left: 3px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#taxPP {
+    grid-area: taxPP;
+    text-align: center;
+    font-size: 14px;
+    padding-left: 3px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#taxCOL {
+    grid-area: taxCOL;
+    text-align: center;
+    font-size: 14px;
+    padding-left: 3px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#othcharges {
+    grid-area: othcharges;
+    font-size: 14px;
+    padding-left: 3px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+
+@media (orientation: portrait) {
+
+    #hawbgrid07 {
+        display: grid;
+        grid-template-areas:    "prepaid03_lbl tocda_lbl     tocda_lbl       collect03_lbl   shippernote     shippernote      shippernote"
+                                "tocdaPP       tocdaPP       tocdaCOL        tocdaCOL        shippernote     shippernote      shippernote"
+                                "prepaid04_lbl tocdc_lbl     tocdc_lbl       collect04_lbl   shippernote     shippernote      shippernote"
+                                "tocdcPP       tocdcPP       tocdcCOL        tocdcCOL        shippernote     shippernote      shippernote"
+                                "emptyA        emptyA        emptyB          emptyB          shipper_lbl     shipper_lbl      shipper_lbl"
+                                "ttlPP_lbl     ttlPP_lbl     ttlCOL_lbl      ttlCOL_lbl      carriersign     carriersign      carriersign"
+                                "ttlPP         ttlPP         ttlCOL          ttlCOL          carriersign     carriersign      carriersign"
+                                "cucorates_lbl cucorates_lbl cccharindst_lbl cccharindst_lbl carriersigndate carriersignplace carriersignname"
+                                "cucorates     cucorates     cccharindst     cccharindst     carrier_lbl_01  carrier_lbl_01   carrier_lbl_01"
+                                "cucorates     cucorates     cccharindst     cccharindst     carrier_lbl_02  carrier_lbl_03   carrier_lbl_04"
+                                "carrieruse    carrieruse    chgsdest_lbl    chgsdest_lbl    ttlcolchgs_lbl  empty01          awbno03"
+                                "carrieruse    carrieruse    chgsdest        chgsdest        ttlcolchgs      empty01          empty02";
+
+        grid-template-columns: 1fr 1fr 1fr 1fr 1.5fr 1.95fr 2fr;
+        grid-template-rows: auto auto auto auto auto auto auto;
+    }
+}
+
+@media (orientation: landscape) {
+    #hawbgrid07 {
+        display: grid;
+        width: 50%;
+        grid-template-areas:    "prepaid03_lbl tocda_lbl     tocda_lbl       collect03_lbl   shippernote     shippernote      shippernote"
+                                "tocdaPP       tocdaPP       tocdaCOL        tocdaCOL        shippernote     shippernote      shippernote"
+                                "prepaid04_lbl tocdc_lbl     tocdc_lbl       collect04_lbl   shippernote     shippernote      shippernote"
+                                "tocdcPP       tocdcPP       tocdcCOL        tocdcCOL        shippernote     shippernote      shippernote"
+                                "emptyA        emptyA        emptyB          emptyB          shipper_lbl     shipper_lbl      shipper_lbl"
+                                "ttlPP_lbl     ttlPP_lbl     ttlCOL_lbl      ttlCOL_lbl      carriersign     carriersign      carriersign"
+                                "ttlPP         ttlPP         ttlCOL          ttlCOL          carriersign     carriersign      carriersign"
+                                "cucorates_lbl cucorates_lbl cccharindst_lbl cccharindst_lbl carriersigndate carriersignplace carriersignname"
+                                "cucorates     cucorates     cccharindst     cccharindst     carrier_lbl_01  carrier_lbl_01   carrier_lbl_01"
+                                "cucorates     cucorates     cccharindst     cccharindst     carrier_lbl_02  carrier_lbl_03   carrier_lbl_04"
+                                "carrieruse    carrieruse    chgsdest_lbl    chgsdest_lbl    ttlcolchgs_lbl  empty01          awbno03"
+                                "carrieruse    carrieruse    chgsdest        chgsdest        ttlcolchgs      empty01          empty02";
+
+        grid-template-columns: 1fr 1fr 1fr 1fr 1.5fr 1.95fr 2fr;
+        grid-template-rows: auto auto auto auto auto auto auto;
+    }
+}
+
+#prepaid03_lbl {
+    grid-area: prepaid03_lbl;
+    text-align: center;
+    border-left: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#prepaid04_lbl {
+    grid-area: prepaid04_lbl;
+    text-align: center;
+    border-left: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#collect03_lbl {
+    grid-area: collect03_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#collect04_lbl {
+    grid-area: collect04_lbl;
+    text-align: center;
+    font-size: 10px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#tocda_lbl {
+    grid-area: tocda_lbl;
+    text-align: center;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#tocdc_lbl {
+    grid-area: tocdc_lbl;
+    text-align: center;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#shipper_lbl {
+    grid-area: shipper_lbl;
+    text-align: center;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#tocdaPP {
+    grid-area: tocdaPP;
+    text-align: center;
+    font-size: 14px;
+    padding-left: 3px;
+    padding-top: 3px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#tocdaCOL {
+    grid-area: tocdaCOL;
+    text-align: center;
+    font-size: 14px;
+    padding-left: 3px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#tocdcPP {
+    grid-area: tocdcPP;
+    text-align: center;
+    font-size: 14px;
+    padding-left: 3px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#tocdcCOL {
+    grid-area: tocdcCOL;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#shippernote {
+    grid-area: shippernote;
+    font-size: 10px;
+    padding: 2px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#ttlPP_lbl {
+    grid-area: ttlPP_lbl;
+    text-align: center;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#ttlCOL_lbl {
+    grid-area: ttlCOL_lbl;
+    text-align: center;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#cucorates_lbl {
+    grid-area: cucorates_lbl;
+    text-align: center;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#cccharindst_lbl {
+    grid-area: cccharindst_lbl;
+    text-align: center;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#chgsdest_lbl {
+    grid-area: chgsdest_lbl;
+    text-align: center;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#carrier_lbl_01 {
+    grid-area: carrier_lbl_01;
+    text-align: center;
+    border-right: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+#carrier_lbl_02 {
+    grid-area: carrier_lbl_02;
+    font-size: 10px;
+    text-align: left;
+    padding-left: 20px;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#carrier_lbl_03 {
+    grid-area: carrier_lbl_03;
+    font-size: 10px;
+    text-align: left;
+    padding-left: 20px;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#carrier_lbl_04 {
+    grid-area: carrier_lbl_04;
+    font-size: 9px;
+    text-align: left;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#ttlcolchgs_lbl {
+    grid-area: ttlcolchgs_lbl;
+    text-align: center;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    font-size: 10px;
+    border-color: black;
+}
+
+
+#emptyA {
+    grid-area: emptyA;
+    text-align: center;
+    font-size: 10px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#emptyB {
+    grid-area: emptyB;
+    text-align: center;
+    font-size: 10px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#empty01 {
+    grid-area: empty01;
+    font-size: 10px;
+    border-color: black;
+}
+
+#empty02 {
+    grid-area: empty02;
+    font-size: 10px;
+    border-color: black;
+}
+
+#ttlPP {
+    grid-area: ttlPP;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 3px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#ttlCOL {
+    grid-area: ttlCOL;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#cucorates {
+    grid-area: cucorates;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 3px;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#cccharindst {
+    grid-area: cccharindst;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#carrieruse {
+    grid-area: carrieruse;
+    text-align: left;
+    font-size: 10px;
+    padding-left: 3px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#carriersigndate {
+    grid-area: carriersigndate;
+    font-size: 14px;
+    padding-left: 20px;
+    border-color: black;
+}
+
+#carriersignplace {
+    grid-area: carriersignplace;
+    font-size: 14px;
+    padding-left: 20px;
+    border-color: black;
+}
+
+#carriersignname {
+    grid-area: carriersignname;
+    font-size: 14px;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#carriersign {
+    grid-area: carriersign;
+    border-right: 1px solid;
+    border-color: black;
+}
+
+#chgsdest {
+    grid-area: chgsdest;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#ttlcolchgs {
+    grid-area: ttlcolchgs;
+    text-align: center;
+    font-size: 14px;
+    padding-top: 3px;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: black;
+}
+
+#awbno03 {
+    grid-area: awbno03;
+    text-align: right;
+    font-size: 16px;
+    padding-top: 3px;
+    border-color: black;
+}

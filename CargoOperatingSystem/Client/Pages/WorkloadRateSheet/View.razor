@@ -1,0 +1,18 @@
+﻿@page "/workloadratesheets/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">View Workload Rate Sheet</h3>
+
+<FormComponent workloadRateSheet="workloadRateSheet" isDisabled=true/> 
+
+@code {
+    [Parameter] public int id { get; set; }
+    WorkloadRateSheet workloadRateSheet = new WorkloadRateSheet();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        workloadRateSheet = await _client.GetFromJsonAsync<WorkloadRateSheet>($"{Endpoints.WorkloadRateSheetsEndpoint}{id}");
+    }
+}

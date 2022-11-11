@@ -1,0 +1,76 @@
+﻿@page "/hawbs/create/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<div class="row">
+    <h3 class="card-title">Create HAWB</h3>
+</div>
+
+<FormComponent ButtonText="Create HAWB" OnValidSubmit="@CreateHawb" hawb="hawb"/>
+
+
+@code {
+
+    [Parameter]public int id { get; set; }
+    private Mawb mawb = new Mawb();
+    private Hawb hawb = new Hawb();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        mawb = await _client.GetFromJsonAsync<Mawb>($"{Endpoints.MawbsEndpoint}{id}");
+        hawb.MawbId = mawb.Id;
+        hawb.AwbNumber = mawb.AwbNumber;
+        hawb.Pieces = mawb.Pieces;
+        hawb.GrossWeight = mawb.GrossWeight;
+        hawb.ChargeableWeight = mawb.ChargeableWeight;
+        hawb.Volume = mawb.Volume;
+        hawb.IssuingAgent = mawb.IssuingAgent;
+        hawb.IssuingAgentAddressA = mawb.IssuingAgentAddressA;
+        hawb.IssuingAgentAddressB = mawb.IssuingAgentAddressB;
+        hawb.IssuingAgentAddressC = mawb.IssuingAgentAddressC;
+        hawb.AgentIataCode = mawb.AgentIataCode;
+        hawb.IssuingDate = mawb.IssuingDate;
+        hawb.IssuingPlace = mawb.IssuingPlace;
+        hawb.IssuingPersonFullName = mawb.IssuingPersonFullName;
+        hawb.Origin = mawb.Origin;
+        hawb.Destination = mawb.Destination;
+        hawb.FirstCarrierCode = mawb.FirstCarrierCode;
+        hawb.FirstFlightDest = mawb.FirstFlightDest;
+        hawb.FirstFlightNoAndDate = mawb.FirstFlightNoAndDate;
+        hawb.SecondCarrierCode = mawb.SecondCarrierCode;
+        hawb.SecondFlightDest = mawb.SecondFlightDest;
+        hawb.SecondFlightNoAndDate = mawb.SecondFlightNoAndDate;
+        hawb.ThirdCarrierCode = mawb.ThirdCarrierCode;
+        hawb.ThirdFlightDest = mawb.ThirdFlightDest;
+        hawb.Commodity = mawb.Commodity;
+        hawb.Currency = mawb.Currency;
+        hawb.NatureAndQttyGoodsA = mawb.NatureAndQttyGoodsA;
+        hawb.NatureAndQttyGoodsB = mawb.NatureAndQttyGoodsB;
+        hawb.NatureAndQttyGoodsC = mawb.NatureAndQttyGoodsC;
+        hawb.NatureAndQttyGoodsD = mawb.NatureAndQttyGoodsD;
+        hawb.NatureAndQttyGoodsE = mawb.NatureAndQttyGoodsE;
+        hawb.NatureAndQttyGoodsF = mawb.NatureAndQttyGoodsF;
+        hawb.NatureAndQttyGoodsG = mawb.NatureAndQttyGoodsG;
+        hawb.NatureAndQttyGoodsH = mawb.NatureAndQttyGoodsH;
+        hawb.NatureAndQttyGoodsI = mawb.NatureAndQttyGoodsI;
+        hawb.NatureAndQttyGoodsJ = mawb.NatureAndQttyGoodsJ;
+        hawb.HandlingInfoA = mawb.HandlingInfoA;
+        hawb.HandlingInfoA = mawb.HandlingInfoB;
+        hawb.HandlingInfoA = mawb.HandlingInfoC;
+        hawb.OtherChargeA = mawb.OtherChargeA;
+        hawb.OtherChargeB = mawb.OtherChargeB;
+        hawb.OtherChargeC = mawb.OtherChargeC;
+        hawb.OtherChargeD = mawb.OtherChargeD;
+
+
+    }
+        
+    private async Task CreateHawb()
+    {
+        await _client.PostAsJsonAsync(Endpoints.HawbsEndpoint, hawb);
+        _navManager.NavigateTo($"/hawbs/mawbindex/{id}");
+    }
+}

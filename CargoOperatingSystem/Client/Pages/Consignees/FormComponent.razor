@@ -1,0 +1,60 @@
+﻿<EditForm Model="@consignee" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group">
+        <label>Name:</label>
+        <div>
+            <InputText @bind-Value="@consignee.Name" class="form-control"/>
+            <ValidationMessage For="@(()=> consignee.Name)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Address (1st row):</label>
+        <div>
+            <InputText @bind-Value="@consignee.AddressA" class="form-control"/>
+            <ValidationMessage For="@(()=> consignee.AddressA)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Address (2nd row):</label>
+        <div>
+            <InputText @bind-Value="@consignee.AddressB" class="form-control"/>
+            <ValidationMessage For="@(()=> consignee.AddressB)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Address (3rd row):</label>
+        <div>
+            <InputText @bind-Value="@consignee.AddressC" class="form-control"/>
+            <ValidationMessage For="@(()=> consignee.AddressC)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Email:</label>
+        <div>
+            <InputText @bind-Value="@consignee.Email" class="form-control"/>
+            <ValidationMessage For="@(()=> consignee.Email)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Phone Number:</label>
+        <div>
+            <InputNumber @bind-Value="@consignee.PhoneNumber" class="form-control"/>
+            <ValidationMessage For="@(()=> consignee.PhoneNumber)" />
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-success btn-block">
+        @ButtonText
+    </button>
+
+</EditForm>
+
+@code {
+
+    [Parameter] public Consignee consignee { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+}

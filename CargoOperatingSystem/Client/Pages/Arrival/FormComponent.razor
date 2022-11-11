@@ -1,0 +1,159 @@
+﻿@inject HttpClient _client
+
+<EditForm Model="@arrival" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <button type="submit" class="btn btn-success">
+        @ButtonText
+    </button>
+
+    <hr/>
+    <br/>
+
+    <div class="form-inline mt-1 mr-3">
+        <label id="InputLabelCheckBox">Organize pickup of shipment:</label>
+        <div>
+            <InputCheckbox @bind-Value="@arrival.PickupCheck" class="form-control-sm"/>
+            <ValidationMessage For="@(()=> arrival.PickupCheck)" />
+        </div>
+    </div>
+
+    @if (arrival.PickupCheck)
+    {
+        <div class="form-group">
+            <label>Arrival to GHA: </label>
+            <div>
+                <InputSelect @bind-Value="arrival.PickupId" @oninput="@PickupSwitchConfirm" class="form-control">
+                    <option value="">-- Select Pickup Template --</option>
+                    @if (Pickups != null)
+                    {
+                        foreach (var pickup in Pickups)
+                        {
+                            <option value="@pickup.Id">@pickup.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => arrival.PickupId)" />
+            </div>
+        </div>
+    }
+    else
+    {
+        
+    }
+
+    <div class="form-group row">
+        <label for="createdDate" class="col-sm-3">Arrival Date:</label>
+        <InputDateTime @bind-Value="@arrival.ArrivalTime" class="form-control" />
+        <ValidationMessage For="@(()=> arrival.ArrivalTime)"></ValidationMessage>
+    </div>
+
+    <div class="form-group">
+        <label>Arrival to GHA: </label>
+        <div>
+            <InputSelect @bind-Value="arrival.SupplierId" @oninput="@SupplierSwitchConfirm" class="form-control">
+                <option value="">-- Select GHA --</option>
+                @if (Suppliers != null)
+                {
+                    foreach (var supplier in Suppliers)
+                    {
+                        <option value="@supplier.Id">@supplier.CompanyName</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => arrival.SupplierId)" />
+        </div>
+    </div>
+
+    @if (!selectSupplierConfirm)
+    {
+        <div class="form-group">
+            <label>Custom Arrival Point:</label>
+            <div>
+                <InputText @bind-Value="@arrival.ArrivalPoint" class="form-control"/>
+                <ValidationMessage For="@(()=> arrival.ArrivalPoint)" />
+            </div>
+        </div>
+    }
+
+    <div class="form-group">
+        <label>License Plate:</label>
+        <div>
+            <InputText @bind-Value="@arrival.LicensePlate" class="form-control"/>
+            <ValidationMessage For="@(()=> arrival.LicensePlate)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Driver Name:</label>
+        <div>
+            <InputText @bind-Value="@arrival.DriverName" class="form-control"/>
+            <ValidationMessage For="@(()=> arrival.DriverName)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Car Colour:</label>
+        <div>
+            <InputText @bind-Value="@arrival.CarColour" class="form-control"/>
+            <ValidationMessage For="@(()=> arrival.CarColour)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Phone Number:</label>
+        <div>
+            <InputNumber @bind-Value="@arrival.DriverPhone" class="form-control"/>
+            <ValidationMessage For="@(()=> arrival.DriverPhone)" />
+        </div>
+    </div>
+    
+</EditForm>
+
+@code {
+    [Parameter] public Arrival arrival { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private IList<Supplier> Suppliers;
+    private IList<Pickup> Pickups;
+    private bool selectSupplierConfirm = false;
+    private bool selectPickupConfirm = false;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Suppliers = await _client.GetFromJsonAsync<IList<Supplier>>(Endpoints.SuppliersEndpoint);
+        Pickups = await _client.GetFromJsonAsync<IList<Pickup>>(Endpoints.PickupsEndpoint);
+        
+    }
+
+    private async Task SupplierSwitchConfirm()
+    {
+        if (selectSupplierConfirm)
+        {
+            selectSupplierConfirm = false;
+        }
+        else
+        {
+            selectSupplierConfirm = true;
+        }
+
+        await OnInitializedAsync();
+    }
+
+    private async Task PickupSwitchConfirm()
+    {
+        if (selectPickupConfirm)
+        {
+            selectPickupConfirm = false;
+        }
+        else
+        {
+            selectPickupConfirm = true;
+        }
+
+        await OnInitializedAsync();
+    }
+
+}

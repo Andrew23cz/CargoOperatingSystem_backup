@@ -1,0 +1,121 @@
+﻿@page "/agentsubmithawbs/agentsubmitmawbindex/{id:int}"
+@using System.Net
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@inject IJSRuntime js
+@attribute [Authorize]
+
+<div class="form-group mx-3">
+    <label>MAWB Number: @agentSubmitMawb.AwbNumber </label>
+</div>
+<hr/>
+
+<a href="/agentsubmithawbs/create/@agentSubmitMawb.Id" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New HAWB
+</a>
+<br/>
+<br/>
+
+@if(thisShipmentHawbs == null)
+{
+    <div class="alert alert-info">Loading HAWBs ...</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>HAWB Number</th>
+                <th>Pieces</th>
+                <th>GW</th>
+                <th>Vol</th>
+                <th>ChW</th>
+                <th>Shipper</th>
+                <th>Consignee</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var agentSubmitHawb in thisShipmentHawbs)
+            {
+                <tr>
+                    <td>@agentSubmitHawb.HawbNumber</td>
+                    <td>@agentSubmitHawb.Pieces</td>
+                    <td>@agentSubmitHawb.GrossWeight</td>
+                    <td>@agentSubmitHawb.Volume</td>
+                    <td>@agentSubmitHawb.ChargeableWeight</td>
+                    <td>@agentSubmitHawb.ShipperName</td>
+                    <td>@agentSubmitHawb.ConsigneeName</td>
+                    <td>
+                        <a href="/agentsubmithawbs/view/@agentSubmitHawb.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/agentsubmithawbs/edit/@agentSubmitHawb.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick=@(()=>Delete(@agentSubmitHawb.Id))>
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
+
+
+
+
+@code {
+    [Parameter] public int id { get; set; }
+    private AgentSubmitMawb agentSubmitMawb = new AgentSubmitMawb();
+    //private IList<AgentSubmitHawb> AgentSubmitHawbs;
+    private IList<AgentSubmitHawb> thisShipmentHawbs;
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        agentSubmitMawb = await _client.GetFromJsonAsync<AgentSubmitMawb>($"{Endpoints.AgentSubmitMawbsEndpoint}{id}");
+        thisShipmentHawbs = await _client.GetFromJsonAsync<IList<AgentSubmitHawb>>($"{Endpoints.AgentSubmitHawbsEndpoint}GetHawbByAwbNumber/{agentSubmitMawb.AwbNumber}");
+        
+        //AgentSubmitHawbs = await _client.GetFromJsonAsync<IList<AgentSubmitHawb>>(Endpoints.AgentSubmitHawbsEndpoint);
+        //thisShipmentHawbs = AgentSubmitHawbs.Where(q => q.AwbNumber == agentSubmitMawb.AwbNumber).ToList();
+        //try
+        //{
+        //    thisShipmentHawbs = await _client.GetFromJsonAsync<IList<AgentSubmitHawb>>($"{Endpoints.AgentSubmitHawbsEndpoint}GetHawbByAwbNumber/{agentSubmitMawb.AwbNumber}");
+        //}
+        //catch(HttpRequestException ex)
+        //{
+        //    if (ex.StatusCode == HttpStatusCode.NotFound)
+        //    {
+        //        await NoRecordAlert();
+        //    }
+
+        //}
+
+    }
+
+    private async Task NoRecordAlert()
+    {
+        await js.InvokeVoidAsync("alert", "No HAWB Records found for this MAWB!");
+    }
+
+    private async Task Delete(int hawbId)
+    {
+        var hawb = thisShipmentHawbs.First(q => q.Id == hawbId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete this HAWB: {hawb.HawbNumber}?");
+
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.AgentSubmitHawbsEndpoint}{hawbId}");
+            await OnInitializedAsync();
+        }
+    }
+
+    
+
+
+}

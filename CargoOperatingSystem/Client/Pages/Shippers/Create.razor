@@ -1,0 +1,24 @@
+﻿@page "/shippers/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@attribute [Authorize]
+
+<h3 class="card-title">Create Shipper</h3>
+<hr />
+<br/>
+
+<FormComponent ButtonText="Create Shipper" OnValidSubmit="@CreateShipper" shipper="shipper"/> 
+
+
+@code {
+
+    Shipper shipper = new Shipper();
+
+    private async Task CreateShipper()
+    {
+        await _client.PostAsJsonAsync(Endpoints.ShippersEndpoint, shipper);
+        _navManager.NavigateTo(Endpoints.ShippersIndex);
+    }
+
+
+}
